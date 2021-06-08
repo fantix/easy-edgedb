@@ -210,8 +210,7 @@ SELECT City;
 }
 ```
 
-这仅仅是告诉我有三个 `City` 类型的对象。
-This only tells us that there are three objects of type `City`. To see inside them, we can add property or link names to the query. This is called describing the [shape](https://www.edgedb.com/docs/edgeql/expressions/shapes/#ref-eql-expr-shapes) of the data we want. We'll select all `City` types and display their `modern_name` with this query:
+这仅仅是告诉我有三个 `City` 类型的对象。查看它们的内部，我们可以给查询添加属性或链接名称。这被称为描述我们想要的数据的[形状](https://www.edgedb.com/docs/edgeql/expressions/shapes/#ref-eql-expr-shapes) 。我们选择所有 `City` 类型并通过下面这个查询显示他们的  `modern_name`：
 
 ```edgeql
 SELECT City {
@@ -219,17 +218,17 @@ SELECT City {
 };
 ```
 
-Once again, you don't need the comma after `modern_name` because it's at the end of the query.
+再一次说明，你不是必须在 `modern_name` 后面使用逗号，因为他是查询的末尾。
 
-You will remember that one of our cities (Vienna) doesn't have anything for `modern_name`. But it still shows up as an "empty set", because every value in EdgeDB is a set of elements, even if there's nothing inside. Here is the result:
+相信你还记得，书中提到的其中一个城市（维也纳 Vienna）并没有与之前不同的现代名称 `modern_name`。但是它仍会显示一个“空集”，因为在 EdgeDB 中，所有数值都是元素的集合，即使里面灭有任何东西。这是上面查询的结果：
 
 ```
 {Object {modern_name: {}}, Object {modern_name: 'Budapest'}, Object {modern_name: 'Bistrița'}}
 ```
 
-So there is some object with an empty set for `modern_name`, while the other two have a name. This shows us that EdgeDB doesn't have `null` like in some languages: if nothing is there, it will return an empty set.
+因此有对象的 `modern_name` 是空集，同时另外两个对象有各自的名字。这再一次向我们展示，EdgeDB 不存在其他一些语言里存在的 `null`，如果什么都没有，它会返回一个空的集合。 
 
-The first object is a mystery so we'll add `name` to the query so we can see that it's the city of Vienna:
+目前看来第一个对象是个谜（因为不存在 `modern_name`），因此我们将在查询中添加 `name`，以便我们可以看到它是城市“维也纳”：
 
 ```edgeql
 SELECT City {
@@ -238,7 +237,7 @@ SELECT City {
 };
 ```
 
-This gives the output:
+由此得到输出：
 
 ```
 {
@@ -248,15 +247,15 @@ This gives the output:
 }
 ```
 
-If you just want to return a single part of a type without the object structure, you can use `.` after the type name. For example, `SELECT City.modern_name` will give this output:
+如果你只想返回类型的单个部分，而不是一个对象结构，你可以在类型名称后使用 `.` 。比如，`SELECT City.modern_name` 将输出结果：
 
 ```
 {'Budapest', 'Bistrița'}
 ```
 
-This type of expression is called a _path expression_ or a _path_, because it is the direct path to the values inside. And each `.` moves on to the next path, if there is another one to follow.
+这种类型的表达式称为 _path 表达式_ 或 _path_，因为它是通往内部数值的直接路径。并且每个 `.` 都意味着前往再下一个路径，如果还有再深一层数值需要跟踪的话。
 
-You can also change property names like `modern_name` to any other name if you want by using `:=` after the name you want. Those names you choose become the variable names that are displayed. For example:
+如果需要，你也可以通过在所需名称后使用 `:=` 将诸如 `modern_name` 之类的属性名称更改为成任何其他名称。你所选定的那些名称将成为显示的变量名。例如：
 
 ```edgeql
 SELECT City {
@@ -265,7 +264,7 @@ SELECT City {
 };
 ```
 
-This prints:
+这将打印出：
 
 ```
 {
@@ -275,9 +274,9 @@ This prints:
 }
 ```
 
-This will not change anything inside the schema - it's just a quick variable name to use in a query.
+这将不会改变架构里的任何内容 —— 它只是一个在查询中使用的快速变量名。
 
-By the way, `.name` is short for `City.name`. You can also write `City.name` each time (that's called the _fully qualified name_), but it's not required.
+顺便说一下，`.name` 是 `City.name` 的缩写。你也可以每次写 `City.name`（这被称为 _fully qualified name_），但不是必需的。
 
 So if you can make a quick `name_in_dracula` property from `.name`, can we make other things too? Indeed we can. For the moment we'll just keep it simple but here is one example:
 
