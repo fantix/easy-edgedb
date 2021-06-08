@@ -3,27 +3,28 @@ tags: Object Types, Select, Insert
 leadImage: illustration_01.jpg
 ---
 
-# Chapter 1 - Jonathan Harker travels to Transylvania
+# 第一章 - 乔森纳·哈克前往特兰西瓦尼亚
 
-In the beginning of the book we see the main character Jonathan Harker, a young lawyer who is going to meet a client. The client is a rich man named Count Dracula who lives somewhere in Eastern Europe. Jonathan doesn't yet know that Count Dracula is a vampire, so he's enjoying the trip to a new part of Europe. The book begins with Jonathan writing in his journal as he travels. The parts that are good for a database are in **bold**:
+在本书（《德拉库拉》）的开头，我们看到主人公乔森纳·哈克（Jonathan Harker）是一位年轻的律师，他正要去见一位客户。客户是一位生活在东欧某个地方的富人，名叫德拉库拉伯爵（Count Dracula）。乔森纳尚不知德拉库拉是一个吸血鬼，因此他还沉浸在前往欧洲新地方的旅行中。本书开始于乔森纳旅行时写下的日志。如下，其中粗体的部分适合存入数据库：
 
-> **3 May**. **Bistritz**.—Left **Munich** at **8:35 P.M.**, on **1st May**, arriving at **Vienna** early next morning; should have arrived at 6:46, but train was an hour late. **Buda-Pesth** seems a wonderful place, from the glimpse which I got of it from the train...
 
-## Schema, object types
+> **五月三日**，**比斯特里察（Bistritz）** —— 于 **五月一日** **8:35 P.M.** 离开 **慕尼黑（Munich）**，次日清晨抵达 **维也纳（Vienna）**；本应在 6:46 到达，但火车晚点了一个小时。从我在火车上瞥到的来看，**布达佩斯（Buda-Pesth）** 似乎是一个很棒的地方。
 
-This is already a lot of information, and it helps us start to think about our database schema. The language used for EdgeDB is called EdgeQL, and is used to define, mutate, and query data. Inside it is [SDL (schema definition language)](https://edgedb.com/docs/edgeql/sdl/index#ref-eql-sdl) that makes migration easy, and which we will learn in this book. So far our schema needs the following:
+## 架构，对象类型（Schema, object types）
 
-- Some kind of City or Location type. These types that we can create are called [object types](https://www.edgedb.com/docs/datamodel/objects#object-types), made out of properties and links. What properties should a City type have? Perhaps a name and a location, and sometimes a different name or spelling. Bistritz for example is now called Bistrița (it's in Romania), and Buda-Pesth is now written Budapest.
-- Some kind of Person type. We need it to have a name, and also a way to track the places that the person visited.
+这已经包含了很多信息了，它帮助我们开始思考我们的数据库架构。EdgeDB 使用的语言称为 EdgeQL，它用于定义、变异和查询数据。它的内核是 [SDL（模式定义语言）](https://edgedb.com/docs/edgeql/sdl/index#ref-eql-sdl)，它使迁移变得更加容易，我们将在本书中学习。到目前为止，我们的架构需要以下内容：
 
-To make a type inside a schema, just use the keyword `type` followed by the type name, then `{}` curly brackets. Our `Person` type will start out like this:
+- 城市或位置类型。我们可以创建的这些类型称为 [对象类型](https://www.edgedb.com/docs/datamodel/objects#object-types)，由属性和链接组成。一个城市类型应该有什么样的属性？可能是名字和地理位置，以及有时会使用的不同的名称或拼写。比如，Bistritz（比斯特里察）现在叫做 Bistrița（这个城市在罗马尼亚），而 Buda-Pesth（布达佩斯）现在会被写为 Budapest.
+- 人类类型。我们需要赋予它姓名，以及一种方式去追踪他所访问过的地方。
+
+在模型里创建一个类型，仅需要使用关键字 `type` 并跟随对应的类型名及花括号 `{}`。人类的类型 `Person` 可如下创建
 
 ```sdl
 type Person {
 }
 ```
 
-That's all you need to create a type, but there's nothing inside there yet. Inside the brackets we add the properties for our `Person` type. Use `required property` if the type needs it, and just `property` if it is optional.
+现在你已经完成了一个类型的创建，但里面还什么都没有。我们可以在花括号中为 `Person` 添加属性。如果属性是必须的，我们使用 `required property` 前置在属性名前，如果属性是可选的，我们使用  `property`。
 
 ```sdl
 type Person {
@@ -32,19 +33,19 @@ type Person {
 }
 ```
 
-With `required property name` our `Person` objects are always guaranteed to have a name - you can't make a `Person` object without it. Here's the error message if you try:
+属性  `required property name` 意味着，使用 `Person` 这个类型创建的对象必须拥有一个名称，即你不能创建一个没有名称的 `Person` 的对象，否则你会看到这样的错误提示：
 
 ```
 MissingRequiredError: missing value for required property default::Person.name
 ```
 
-A `str` is just a string, and goes inside either single quotes: `'Jonathan Harker'` or double quotes: `"Jonathan Harker"`. The `\` escape character before a quote makes EdgeDB treat it like just another letter: `'Jonathan Harker\'s journal'`.
+ `str` 是指一个字符串，可以包含在单引号内：`'Jonathan Harker'` 或双引号：`"Jonathan Harker"`。引号前的 `\` 转义字符可使 EdgeDB 将其视为一个字母：`'Jonathan Harker\'s journal'`。
 
-An `array` is a collection of the same type, and our array here is an array of `str`s. We want it to look like this: `["Bistritz", "Vienna", "Buda-Pesth"]`. The idea is to easily search later and see which character has visited where.
+`array` 是相同类型的集合，即数组，我们这里的数组是一个 `str` 的数组。我们希望它看起来像这样：`["Bistritz", "Vienna", "Buda-Pesth"]`。这样便于我们稍后搜索并查看哪个角色访问过哪里。
 
-`places_visited` is not a `required` property because we might later add minor characters that don't go anywhere. Maybe one person will be the "innkeeper_in_bistritz" or something, and we won't know or care about `places_visited` for him.
+`places_visited` 不是一个 `required` 属性，因为我们之后可能会添加不会去任何地方的配角。也许会是“比斯特里察的某个客栈老板”或是其他什么人，我们并不了解或关心他的 `places_visited`。
 
-Now for our City type:
+现在让我们继续创建城市类型：
 
 ```sdl
 type City {
@@ -53,35 +54,35 @@ type City {
 }
 ```
 
-This is similar, just properties with strings. The book Dracula was published in 1897 when spelling for cities was sometimes different. All cities have a name in the book (that's why it's `required`), but some won't need a different modern name. Vienna is still Vienna, for example. We are imagining that our game will link the city names to their modern names so we can easily place them on a map.
+这是类似的，只是带有字符串的属性。《德拉库拉》这本书出版于 1897 年，当时有些城市的名称拼写与现在有所不同。书中所有的城市都有名称（这就是为什么我们要在名称属性前用 `required`），但有些城市并不需要不同的现代名称。比如，维也纳（Vienna）至今仍然拼写为维也纳（Vienna）。我们设想我们的游戏会将书中的城市名称与其现代名称关联起来，以便我们可以轻松地在地图上找到他们。
 
-## Migration
+## 迁移（Migration）
 
-We haven't created our database yet, though. There are two small steps that we need to do first [after installing EdgeDB](https://edgedb.com/download). First we create a database with the `CREATE DATABASE` keyword and our name for it:
+我们尚未创建我们的数据库。 [在安装 EdgeDB 后](https://edgedb.com/download) 我们需要做两个步骤。第一步，我们需要用关键字 `CREATE DATABASE` 及我们要赋予其的名称来创建一个数据库：
 
 ```edgeql
 CREATE DATABASE dracula;
 ```
 
-Then we type `\c dracula` to connect to it.
+然后我们键入 `\c dracula` 去链接它。
 
-Lastly, we we need to do a migration. This will give the database the structure we need to start interacting with it. Migrations are not difficult with EdgeDB:
+最后，我们需要做一个迁移。这将为数据库提供我们开始与之交互所需的结构。 EdgeDB 的迁移并不困难：
 
-- First you start them with `START MIGRATION TO {}`
-- Inside this you add at least one `module`, so your types can be accessed. A module is a namespace, a place where similar types go together. The part on the left side of the `::` is the name of the module, and the type inside is to the right. If you wrote `module default` and then `type Person`, the type `Person` would be at `default::Person`. So when you see a type like `std::bytes` for example, this means the type `bytes` inside `std` (the standard library).
-- Then you add the types we mentioned above, and finish up the block by ending with a `}`. Then outside of that, type `POPULATE MIGRATION` to add the data.
-- Finally, you type `COMMIT MIGRATION` and the migration is done.
+- 首先，键入 `START MIGRATION TO {}`
+- 在这个里面你至少要添加一个 `module`，你的类型才可以被访问。一个模块是一个命名空间，是相似类型聚集在一起的地方。`::` 左边的部分是模块的名称，右边是模块里包含的类型。如果你写了 `module default`，然后写 `type Person`，这意味着类型 `Person` 就会是 `default::Person`。因此，例如，当你看到像 `std::bytes` 这样的类型时，这意味着 `std`（标准库）中的类型 `bytes`。
+- 然后添加我们上面提及的类型，并以`}`结尾结束该块。然后在此之外，键入 `POPULATE MIGRATION` 以添加数据。
+- 最后，键入 `COMMIT MIGRATION` 以完成迁移。
 
-There are naturally a lot of other commands beyond this, though we won't need them for this book. You could bookmark these four pages for later use, however:
+当然，除此之外还有很多其他命令，尽管我们在本书中不需要它们。但你可以将下面的四个页面添加至书签以供今后使用：
 
-- [Admin commands](https://www.edgedb.com/docs/cheatsheet/admin): Creating user roles, setting passwords, configuring ports, etc.
-- [CLI commands](https://www.edgedb.com/docs/cheatsheet/cli): Creating databases, roles, setting passwords for roles, connecting to databases, etc.
-- [REPL commands](https://www.edgedb.com/docs/cheatsheet/repl): Mostly shortcuts for a lot of the commands we'll be using in this book.
-- [Various commands](https://www.edgedb.com/docs/edgeql/statements/tx_rollback#rollback) about rolling back transactions, declaring savepoints, and so on.
+- [Admin commands](https://www.edgedb.com/docs/cheatsheet/admin): 创建用户角色，设置密码，配置端口等。
+- [CLI commands](https://www.edgedb.com/docs/cheatsheet/cli): 创建数据库，角色，为角色设置密码，链接数据库等。
+- [REPL commands](https://www.edgedb.com/docs/cheatsheet/repl): 主要介绍我们将在本书中使用的许多命令的快捷方式。
+- [Various commands](https://www.edgedb.com/docs/edgeql/statements/tx_rollback#rollback) 关于回滚事务、保存点声明等。
 
-There are also a few places to download packages to highlight your syntax if you like. EdgeDB has these packages available for [Atom](https://atom.io/packages/edgedb), [Visual Studio Code](https://marketplace.visualstudio.com/itemdetails?itemName=magicstack.edgedb), [Sublime Text](https://packagecontrol.io/packages/EdgeDB), and [Vim](https://github.com/edgedb/edgedb-vim).
+我们还提供了以下编辑器的语法高亮插件，如果你愿意，可以通过相应的链接进行下载：[Atom](https://atom.io/packages/edgedb)，[Visual Studio Code](https://marketplace.visualstudio.com/itemdetails?itemName=magicstack.edgedb)，[Sublime Text](https://packagecontrol.io/packages/EdgeDB)，[Vim](https://github.com/edgedb/edgedb-vim).
 
-So here's the `City` type we just made:
+这里，我们创建类型 `City` 如下：
 
 ```edgeql
 type City {
@@ -90,48 +91,48 @@ type City {
 }
 ```
 
-## Selecting
+## 选择（Selecting）
 
-Here are three operators in EdgeDB that have the `=` sign:
+在 EdgeDB 里，有三个包含了 `=` 的操作符：
 
-- `:=` is used to declare,
-- `=` is used to check equality (not `==`),
-- `!=` is the opposite of `=`.
+- `:=` 用于声明，
+- `=` 用于检查相等性 (不是 `==`),
+- `!=` 是 `=` 相反的意思。
 
-Let's try them out with `SELECT`. `SELECT` is the main query command in EdgeDB, and you use it to see results based on the input that comes after it.
+让我们用 `SELECT` 来试试这些操作符。`SELECT` 是 EdgeDB 里主要的查询命令，你可以使用它根据其后面的输入语句查询相应的结果。
 
-By the way, keywords in EdgeDB are case insensitive, so `SELECT`, `select` and `SeLeCT` are all the same. But using capital letters is the normal practice for databases so we'll continue to use them that way.
+顺便说一句，EdgeDB 里的关键字不区分大小写，因此使用 `SELECT`，`select` 和 `SeLeCT` 都是一样的效果。但是使用大写字母是数据库的常规做法，因此我们将继续以这种方式使用它们。
 
-First we'll just select a string:
+首先，我们选择一个字符串：
 
 ```edgeql
 SELECT 'Jonathan Harker\'s journey begins.';
 ```
 
-This returns `{'Jonathan Harker\'s journey begins.'}`, no surprise there. Did you notice that it's returned inside a `{}`? The `{}` means that it's a set, and in fact [everything in EdgeDB is a set](https://www.edgedb.com/docs/edgeql/overview#everything-is-a-set) (make sure to remember that). It's also why EdgeDB doesn't have null: where you would have null in other languages, EdgeDB just gives you an empty set: `{}`.
+这将返回 `{'Jonathan Harker\'s journey begins.'}`，这并不惊讶。你是否注意到它是在一个花括号 `{}` 里返回的？这个 `{}` 意味着它是一个集合，并且事实上，[在 EdgeDB 里一切都是一个集合](https://www.edgedb.com/docs/edgeql/overview#everything-is-a-set)（请确保记住这一点）。这也是为什么 EdgedB 里没有 null：在其他语言里会有 null，在 EdgeDB 里你只会得到一个空集：`{}`。
 
-Next we'll use `:=` to assign a variable:
+接下来，我们用 `:=` 为一个变量赋值：
 
 ```edgeql
 SELECT jonathans_name := 'Jonathan Harker';
 ```
 
-This just returns what we gave it: `{'Jonathan Harker'}`. But this time it's a string that we assigned called `jonathans_name` that is being returned.
+这只是返回了我们给它的内容 `{'Jonathan Harker'}`。但是这次返回的是我们分配的名为 `jonathans_name` 的字符串。
 
-Now let's do something with this variable. We can use the keyword `WITH` to use this variable and then compare it to `'Count Dracula'`:
+现在让我们用这个变量做一些事情。我们可以通过关键字 `WITH` 使用这个变量，然后将它和 `'Count Dracula'` 进行比较：
 
 ```edgeql
 WITH jonathans_name := 'Jonathan Harker',
 SELECT jonathans_name != 'Count Dracula';
 ```
 
-The output is `{true}`. Of course, you can just write `SELECT 'Jonathan Harker' != 'Count Dracula'` for the same result. Soon we will actually do something with the variables we assign with `:=`.
+输出结果是 `{true}`。当然，你可以只是写 `SELECT 'Jonathan Harker' != 'Count Dracula'` 而得到同样的额结果。很快我们就会对我们用 `:=` 分配的变量做一些事情。
 
-## Inserting objects
+## 插入对象（Inserting objects）
 
-Let's get back to the schema. Later on we can think about adding time zones and locations for the cities for our imaginary game. But in the meantime, we will add some items to the database using `INSERT`.
+让我们回到架构上。稍后我们可以考虑为我们想象的游戏添加城市的时区和位置。但与此同时，我们将使用 `INSERT` 向数据库添加一些项目。
 
-Don't forget to separate each property by a comma, and finish the `INSERT` with a semicolon. EdgeDB also prefers two spaces for indentation.
+别忘了用逗号分割各个属性，并用分号结束 `INSERT`。EdgeDB 也倾向用两个空格作为缩进。
 
 ```edgeql
 INSERT City {
@@ -149,9 +150,9 @@ INSERT City {
 };
 ```
 
-Note that a comma at the end is optional - you can put it in or leave it out. Here we put a comma at the end sometimes and left it out at other times to show this.
+注意最后一项末尾的逗号是可选的 —— 你可以加上逗号，也可以不加逗号。在这里，我们有时会在末尾添加一个逗号，而在其他时候则将其省略。
 
-Finally, the `Person` insert would look like this:
+最后，`Person` 的插入看起来像这样：
 
 ```edgeql
 INSERT Person {
@@ -160,46 +161,46 @@ INSERT Person {
 };
 ```
 
-But hold on a second. That insert won't link it to any of the `City` inserts that we already did. Here's where our schema needs some improvement:
+但是请稍等，这个插入将不会链接到任何我们已经做过插入的 `City`。这是我们的架构需要改进的地方：
 
-- We have a `Person` type and a `City` type,
-- The `Person` type has the property `places_visited` with the names of the cities, but they are just strings in an array. It would be better to link this property to the `City` type somehow.
+- 我们拥有一个 `Person` 类型和一个 `City` 类型,
+- `Person` 类型具有带有城市名称的 `places_visited` 属性，但它们只是数组中的字符串。最好是能以某种方式将这个属性链接到 `City` 类型。
 
-So let's not do that `Person` insert. We'll fix the `Person` type soon by changing `array<str>` from a `property` to something called `multi link` to the `City` type. This will actually join them together.
+所以我们先不要做 `Person` 的插入。我们将先通过将 `property` 的 `array<str>` 更改为 `City` 类型的、称为 `multi link` 的内容来修复 `Person` 类型。这将使他们连接在一起。
 
-But first let's look a bit closer at what happens when we use `INSERT`.
+但首先让我们仔细看看当我们使用 `INSERT` 时发生了什么。
 
-As you can see, `str`s are fine with unicode letters like ț. Even emojis and special characters are just fine: you could even create a `City` called '🤠' or '(╯°□°)╯︵ ┻━┻' if you wanted to.
+正如你所见，`str` 适用于像 ț 这样的 unicode 字母。甚至表情符号和特殊字符也很 OK：如果你愿意，你甚至可以创建一个名为“🤠”或“(╯°□°)╯︵ ┻━┻”的 `City`。
 
-EdgeDB also has a byte literal type that gives you the bytes of a string. This is mainly for raw data that humans don't need to view such when saving to files. They must be characters that are 1 byte long.
+EdgeDB 也有一个字节文字类型，它为你提供字符串的字节。这主要用于人们在保存到文件时不需要查看的原始数据。它们必须是 1 个字节长的字符。
 
-You create byte literals by adding a `b` in front of the string:
+你可以通过在字符串前添加一个 `b` 来创建一个字节文字：
 
 ```edgeql-repl
 edgedb> SELECT b'Bistritz';
 {b'Bistritz'}
 ```
 
-And because the characters must be 1 byte, only ASCII works for this type. So the name in `modern_name` as a byte literal will generate an error because of the `ț`:
+因为字符必须是 1 个字节，只有 ASCII 才适用于这种类型。所以使用字节类型的 `modern_name` 中的名称如果有类似 `ț` 这样的字符，将会产生错误：
 
 ```edgeql-repl
 edgedb> SELECT b'Bistrița';
 error: invalid bytes literal: character 'ț' is unexpected, only ascii chars are allowed in bytes literals
 ```
 
-Every time you `INSERT` an item, EdgeDB gives you a `uuid` back. That's the unique number for each item. It will look like this:
+每当你 `INSERT` 一个项目时，EdgeDB 都会给你一个 `uuid`。这是每个项目的唯一编号，类似于：
 
 ```
 {Object {id: d2af670c-f1d6-11ea-a30f-8b40bc5413e0}}
 ```
 
-It is also what shows up when you use `SELECT` to select a type. Just typing `SELECT` with a type will show you all the `uuid`s for the type. Let's look at all the cities we have so far:
+这也是你使用 `SELECT` 选择一个类型时会显示的内容。只需键入带有类型的 `SELECT` 就会显示该类型的所有 `uuid`。让我们看看到目前为止我们拥有的所有城市：
 
 ```edgeql
 SELECT City;
 ```
 
-This gives us three items:
+这个命令返回了我们三个项目：
 
 ```
 {
@@ -209,6 +210,7 @@ This gives us three items:
 }
 ```
 
+这仅仅是告诉我有三个 `City` 类型的对象。
 This only tells us that there are three objects of type `City`. To see inside them, we can add property or link names to the query. This is called describing the [shape](https://www.edgedb.com/docs/edgeql/expressions/shapes/#ref-eql-expr-shapes) of the data we want. We'll select all `City` types and display their `modern_name` with this query:
 
 ```edgeql
