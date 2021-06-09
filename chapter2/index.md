@@ -3,13 +3,13 @@ tags: Scalar Types, Abstract Types, Filter
 leadImage: illustration_02.jpg
 ---
 
-# Chapter 2 - At the Hotel in Bistritz
+# 第二章 - 在比斯特里茨的酒店
 
-We continue to read the story as we think about the database we need to store the information. The important information is in bold:
+我们继续阅读这个故事，并思考哪些信息我们需要存入数据库。重要的信息以粗体显示：
 
-> Jonathan Harker has found a hotel in **Bistritz**, called the **Golden Krone Hotel**. He gets a welcome letter there from Dracula, who is waiting in his **castle**. Jonathan Harker will have to take a **horse-driven carriage** to get there tomorrow. We also see that Jonathan Harker is from **London**. The innkeeper at the Golden Krone Hotel seems very afraid of Dracula. He doesn't want Jonathan to leave and says it will be dangerous, but Jonathan doesn't listen. An old lady gives Jonathan a golden crucifix and says it will protect him. Jonathan is embarrassed, and takes it to be polite. Jonathan has no idea how much it will help him later.
+> 乔纳森·哈克（Jonathan Harker）在 **比斯特里茨（Bistritz）** 发现了一家酒店, 叫做 **金克朗酒店（Golden Krone Hotel）**。他在酒店里收到一封来自德拉库拉的欢迎信，信中说明德拉库拉正在 **城堡（castle）** 里等他。乔森纳·哈克（Jonathan Harker）明天必须搭乘 **马车（horse-driven carriage）** 才能到达那里。我们也看到乔纳森·哈克（Jonathan Harker）来自 **伦敦（London）**。金克朗酒店（Golden Krone Hotel）的老板似乎很害怕德古拉。他不想让乔纳森（Jonathan）离开并表明前往城堡会很危险，但乔纳森（Jonathan）并没有听进去。一位老太太给了乔纳森（Jonathan）一个金色的十字架，并说这会保护他。乔纳森（Jonathan）感到尴尬，但认为这可能是出于礼貌，他并不知道之后这会对他有多大的帮助。
 
-Now we are starting to see some detail about the city. Reading the story, we see that we could add another property to `City`, and we will call it `important_places`. That's where places like the **Golden Krone Hotel** could go. We're not sure if the places will be their own types yet, so we'll just make it an array of strings: `property important_places -> array<str>;` We can put the names of important places in there and maybe develop it more later. It will now look like this:
+现在我们开始看一下关于这座城市的一些细节。通过阅读这个故事，我们看到我们可以添加另一个属性给 `City`，我们叫它 `important_places`。比如可以去像 **金克朗酒店（Golden Krone Hotel）** 这样的地方。我们尚不确定这些地方是否将拥有属于他们自己的类型，因此我们只是定义它为一个字符串数组，像这样：`property important_places -> array<str>;` 我们可以把这些重要地点的名字放进去，也许之后还会发展出更多的内容。现在它看起来像这样：
 
 ```sdl
 type City {
@@ -19,7 +19,7 @@ type City {
 }
 ```
 
-Now our original insert for Bistritz will look like this:
+现在我们对 Bistritz 的原始插入将如下所示：
 
 ```edgeql
 INSERT City {
@@ -29,23 +29,23 @@ INSERT City {
 };
 ```
 
-## Enums, scalar types, and extending
+## 枚举、标量类型和扩展（Enums, scalar types, and extending）
 
-We now have two types of transport in the book: train, and horse-drawn carriage. The book is based in 1887, and our game will let the characters use types of transport that were available that year. Here an `enum` (enumeration) is probably the best choice, because an `enum` is about making one choice between options. The variants of the enum should be written in UpperCamelCase.
+到目前位置，我们在书中有提到两种交通工具：火车和马车。这本书以 1887 年为背景，我们的游戏将让角色使用当年可用的交通工具。这里的 `enum`（枚举）可能是最好的选择，因为 `enum` 是在选项之间做出一个选择。枚举的变量应该用大写驼峰式（UpperCamelCase）进行书写。
 
-Here we see the word `scalar` for the first time: this is a `scalar type` because it only holds a single value at a time. The other types (`City`, `Person`) are `object types` because they can hold multiple values at the same time.
+这里我们第一次看到单词 `scalar`：这是一个“标量类型”（`scalar type`），因为它一次只保存一个值。其他类型（`City`, `Person`）是“对象类型”（`object types`）因为他们能够同时保存多个值。
 
-The other keyword we will see for the first time is `extending`, which means to take a type as a base and extend it. This gives you all the power of the type that you are extending, and adds some more options. We will write our `Transport` type like this:
+另一个我们第一次看到的关键词是 `extending`：它意味着以一个类型作为基础并扩展它。这使你对你想要扩展的类型有更多的权利，可以添加更多选项。我们将按如下来写 `Transport` 类型：
 
 ```sdl
 scalar type Transport extending enum<Feet, Train, HorseDrawnCarriage>;
 ```
 
-Did you notice that `scalar type` ends with a semicolon and the other types don't? That's because the other types have a `{}` to make a full expression. But here on a single line we don't have `{}` so we need the semicolon to show that the expression ends here.
+你是否留意到 `scalar type` 是以一个分号结尾的，而其他类型并非如此？这是因为其他类型有一个 `{}` 以构成一个完整的表达式。但是这里的单行代码我们并没有 `{}`，所以在这里我们需要用分号来说明表达式的结束。
 
-This `Transport` type is going to be for player characters in our game, not the people in the book (their stories and choices are already finished). That means that we will need a `PC` type and an `NPC` type, but our `Person` type should stay too - we can use it a base type for both. To do this, we can make `Person` an `abstract type` instead of just a `type`. Then with this abstract type, we can use the keyword `extending` for the other `PC` and `NPC` types.
+这个 `Transport` 类型将被用于我们游戏中的玩家角色，而不是书中的人物（他们的故事和选择已成定局）。这意味着我们需要一个 `PC` 类型和一个 `NPC` 类型，但我们的 `Person` 类型也应该保留 - 我们可以将它用作两者的基本类型。为此，我们可以让 `Person` 成为一个 `abstract type` 而不仅仅是一个 `type`。然后有了这个抽象类型，我们可以对其他 `PC` 和 `NPC` 类型使用关键字 `extending`。
 
-So now this part of the schema looks like this:
+所以现在这部分架构看起来像这样：
 
 ```sdl
 abstract type Person {
@@ -61,7 +61,7 @@ type NPC extending Person {
 }
 ```
 
-Now the characters from the book will be `NPC`s (non-player characters), while `PC` is being made with our game in mind. And because `Person` is now an abstract type, we can't insert it directly anymore. It will give us this error if we try to do something like `INSERT Person {name := 'Mr. HasAName'};`:
+现在书中的角色将是 `NPC`（非玩家角色），而 `PC` 是在考虑我们的游戏的情况下设定的。因为 `Person` 现在是一个抽象类型，我们不能再对其进行直接的插入。如果你尝试执行 `INSERT Person {name := 'Mr. HasAName'};`，将会收到错误提示：
 
 ```
 error: cannot insert into abstract object type 'default::Person'
@@ -71,11 +71,11 @@ error: cannot insert into abstract object type 'default::Person'
   │        ^^^^^^^ error
 ```
 
-No problem - just change `Person` to `NPC` and it will work.
+没关系 —— 只要将 `Person` 改为 `NPC`，它就可以工作了。
 
-Also, `SELECT` on an abstract type is just fine - it will select all the types that extend from it.
+此外，`SELECT` 一个抽象类型是没有问题的 —— 它将会选择出所有从它扩展出的类型。
 
-Let's also experiment with a player character. We'll make one called Emil Sinclair who starts out traveling by horse-drawn carriage. We'll also just give him `City` so he'll have all three cities.
+让我们也试验一下玩家角色。我们创建一个名叫 Emil Sinclair 的人，他开始乘坐马车旅行。我们也将 `City` 给他，于是他也拥有了三个造访过的城市。
 
 ```edgeql
 INSERT PC {
@@ -85,33 +85,33 @@ INSERT PC {
 };
 ```
 
-Entering `places_visited := City` is short for `places_visited := (SELECT City)` - you don't have to type `SELECT` every time.
+`places_visited := City` 是对 `places_visited := (SELECT City)` 的简写 —— 你不是必须每次都输入 `SELECT` 部分。
 
-Note that we didn't just write `HorseDrawnCarriage`, because we have to choose the enum `Transport` and then make a choice of one of the variants. The `<>` angle brackets do _casting_, meaning to change one type into another. EdgeDB won't try to change one type into another unless you ask it to with casting. That's why this won't give us `true`:
+请注意，我们并没有只是写了 `HorseDrawnCarriage`，我们必须选择枚举类型 `Transport` 并选择其中一个枚举值。`<>` 尖括号做 _casting_，意思是将一种类型转换为另一种类型。EdgeDB 不会自行尝试将一种类型更改为另一种类型，除非你要求它进行转换。这就是为什么下面的语句不会给我们 `true` 的原因：
 
 ```edgeql
 SELECT 'Feet' IS Transport;
 ```
 
-We will get an output of `{false}`, because 'Feet' is just a `str` and nothing else. But this will work:
+我们将得到一个 `{false}` 的输出结果，因为 'Feet' 仅仅是一个 `str`。但是下面将会返回 `true`：
 
 ```edgeql
 SELECT <Transport>'Feet' IS Transport;
 ```
 
-Then we get `{true}`.
+然后我们如愿得到 `{true}`。
 
-You can cast more than once at a time if you need to. This example isn't something you will need to do but shows how you can cast over and over again if you want:
+如果需要，你可以一次性转换多次。下面这个例子不是你需要做的，只是为了展示如果你愿意，你可以如何一遍又一遍地做类型转换：
 
 ```edgeql
 SELECT <str><int64><str><int32>50 is str;
 ```
 
-That also gives us `{true}` because all we did is ask if it is a `str`, which it is.
+这个也会返回我们 `{true}`，因为我们所做的只是询问它是否是一个 `str`，且它确实是。
 
-Casting works from right to left, with the final cast on the far left. So `<str><int64><str><int32>50` means "50 into an int32 into a string into an int64 into a string". Or you can read it left to right like this: "A string from an int64 from a string from an int32 from the number 50".
+类型转换从右往左执行，最后的转换是在最左侧。因此，`<str><int64><str><int32>50` 意味着“50 先变成了 int32，再变成了 str，又变成了 int64，最后又变成了 str。
 
-Also note that casting is only for scalar types: user-created object types like `City` and `Person` are too complex to simply cast into each other.
+此外，需要注意类型转换仅适用于标量类型 `scalar type`：用户创建的对象类型，如 `City` 和 `Person` 都太复杂，并不能简单地相互转换。
 
 ## Filter
 
