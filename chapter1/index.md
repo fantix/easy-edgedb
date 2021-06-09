@@ -5,7 +5,7 @@ leadImage: illustration_01.jpg
 
 # 第一章 - 乔森纳·哈克前往特兰西瓦尼亚
 
-在本书（《德拉库拉》）的开头，我们看到主人公乔森纳·哈克（Jonathan Harker）是一位年轻的律师，他正要去见一位客户。客户是一位生活在东欧某个地方的富人，名叫德拉库拉伯爵（Count Dracula）。乔森纳尚不知德拉库拉是一个吸血鬼，因此他还沉浸在前往欧洲新地方的旅行中。本书开始于乔森纳旅行时写下的日志。如下，其中粗体的部分适合存入数据库：
+在小说《德拉库拉》的开头，我们看到主人公乔森纳·哈克（Jonathan Harker）是一位年轻的律师，他正要去见一位客户。客户是一位生活在东欧某个地方的富人，名叫德拉库拉伯爵（Count Dracula）。乔森纳尚不知德拉库拉是一个吸血鬼，因此他还沉浸在前往欧洲新地方的旅行中。本书开始于乔森纳旅行时写下的日志。如下，其中粗体的部分适合存入数据库：
 
 
 > **五月三日**，**比斯特里察（Bistritz）** —— 于 **五月一日** **8:35 P.M.** 离开 **慕尼黑（Munich）**，次日清晨抵达 **维也纳（Vienna）**；本应在 6:46 到达，但火车晚点了一个小时。从我在火车上瞥到的来看，**布达佩斯（Buda-Pesth）** 似乎是一个很棒的地方。
@@ -278,7 +278,7 @@ SELECT City {
 
 顺便说一下，`.name` 是 `City.name` 的缩写。你也可以每次写 `City.name`（这被称为 _fully qualified name_），但不是必需的。
 
-So if you can make a quick `name_in_dracula` property from `.name`, can we make other things too? Indeed we can. For the moment we'll just keep it simple but here is one example:
+所以，如果你可以对 `.name` 做一个快速索引的属性 `name_in_dracula`，我们也可以做其他类似的事情吗？我们确实可以，为了简单易懂，我们在这里举一个例子：
 
 ```edgeql
 SELECT City {
@@ -288,7 +288,7 @@ SELECT City {
 };
 ```
 
-And here is the output:
+这是输出结果：
 
 ```
 {
@@ -298,13 +298,13 @@ And here is the output:
 }
 ```
 
-Also note that `oh_and_by_the_way` is of type `str` even though we didn't have to tell it. EdgeDB is strongly typed: everything needs a type and it will not try to mix them together. So if you write `SELECT 'Jonathan Harker' + 8;` it will simply refuse with an error: `QueryError: operator '+' cannot be applied to operands of type 'std::str' and 'std::int64'`.
+还要注意，`oh_and_by_the_way` 的类型是 `str`，即使我们不必说明它。EdgeDB 是强类型的：一切都需要一个类型，它不会尝试将不同类型混合在一起。因此，如果你写 `SELECT 'Jonathan Harker' + 8;`，EdgeDB 将拒绝你并给出错误提示 `QueryError: operator '+' cannot be applied to operands of type 'std::str' and 'std::int64'`。
 
-On the other hand, it can use "type inference" to guess the type, and that is what it does here: it knows that we are creating a `str`. We will look at changing types and working with different types soon.
+另一方面，EdgeDB 可以使用“类型推断”来猜测类型，这就是 EdgeDB 在上面的例子里所做的：它知道我们正在创建一个 `str`。我们之后很快就会看到如何改变类型及使用不同的类型。
 
-## Links
+## 链接（Links）
 
-So now the last thing left to do is to change our `property` in `Person` called `places_visited` to a `link`. Right now, `places_visited` gives us the names we want, but it makes more sense to link `Person` and `City` together. After all, the `City` type has `.name` inside it which is better to link to than rewriting everything inside `Person`. We'll change `Person` to look like this:
+所以现在剩下要做的最后一件事是将 `Person` 中名为 `places_visited` 的 `property` 更改为一个 `link`。现在，`places_visited` 为我们提供了我们想要的名称，但将 `Person` 和 `City` 联系在一起才更有意义。毕竟，`City` 类型内部有 `.name`，链接比重写 `Person` 中的所有内容更好些。我们将把 `Person` 改成这样：
 
 ```sdl
 type Person {
@@ -313,9 +313,9 @@ type Person {
 }
 ```
 
-We wrote `multi` in front of `link` because one `Person` should be able to link to more than one `City`. The opposite of `multi` is `single`, which only allows one object to link to it. But `single` is the default, so if you just write `link` then EdgeDB will treat it as `single`.
+我们在 `link`前写了 `multi`，因为一个 `Person` 应该客户链接不止一个 `City`。`multi` 的相反是 `single`，使用 `single` 意味着仅允许链接一个对象。因为 `single` 是默认的，因此如果你仅仅写 `link`，EdgeDB 将把它视为 `single`。
 
-Now when we insert Jonathan Harker, he will be connected to the type `City`. Don't forget that `places_visited` is not `required`, so we can still insert with just his name to create him:
+现在当我们插入乔纳森·哈克（Jonathan Harker）时，他将被链接到类型 `City`。别忘了属性 `places_visited` 不是 `required`，所以我们仍然可以在插入的时候仅仅使用他的名字进行创建：
 
 ```edgeql
 INSERT Person {
@@ -323,7 +323,7 @@ INSERT Person {
 };
 ```
 
-But this would only create a `Person` type connected to the `City` type but with nothing in it. Let's see what's inside:
+这会生成一个 `Person` 类型的对象，其 `places_visited` 属性被链接到 `City` 类型且没有任何内容。让我们执行看看里面是什么：
 
 ```edgeql
 SELECT Person {
@@ -332,9 +332,9 @@ SELECT Person {
 };
 ```
 
-Here is the output: `{Object {name: 'Jonathan Harker', places_visited: {}}}`
+执行后会输出：`{Object {name: 'Jonathan Harker', places_visited: {}}}`
 
-But we want to have Jonathan be connected to the cities he has traveled to. We'll change `places_visited` when we `INSERT` to `places_visited := City`:
+但是我们想要把乔森纳（Jonathan）关联到他所去过的城市。我们在做 `INSERT` 的时候，可以将 `places_visited` 变为 `places_visited := City`：
 
 ```edgeql
 INSERT Person {
@@ -343,16 +343,16 @@ INSERT Person {
 };
 ```
 
-We haven't filtered anything, so it will put all the `City` types in there. Now let's see the places that Jonathan has visited. The code below is almost but not quite what we need:
+我们没有过滤任何东西，所以 EdgeDB 会把所有 `City` 类型的对象放进来。现在然我们看看乔纳斯（Jonathan）都去了哪些地方。尝试一下下面的代码，你会发现这还不完全是我们需要的：
 
 ```edgeql
-select Person {
+SELECT Person {
   name,
   places_visited
 };
 ```
 
-Here is the output:
+执行后的输出:
 
 ```
   Object {
@@ -365,7 +365,7 @@ Here is the output:
   },
 ```
 
-Close! But we didn't mention any properties inside `City` so we just got the object id numbers. Now we just need to let EdgeDB know that we want to see the `name` property of the `City` type. To do that, add a colon and then put `name` inside curly brackets.
+和我们理想的结果已经很接近了！因为我们没有提及 `City` 里的任何属性，所以我们只能得到一堆 Object ID。现在我们仅仅需要让 EdgeDB 知道我们实际上是想看到 `City` 类型中的 `name`。为了得到想要的结果，我们需要在 `places_visited`  后面添加一个冒号，并将 `name` 放到随后的花括号中：
 
 ```edgeql
 select Person {
@@ -376,7 +376,7 @@ select Person {
 };
 ```
 
-Success! Now we get the output we wanted:
+太棒了！现在我们可以从输出结果中得到我们想要的了：
 
 ```
   Object {
@@ -385,28 +385,28 @@ Success! Now we get the output we wanted:
   },
 ```
 
-Of course, Jonathan Harker has been inserted with a connection to every city in the database. Right now we only have three `City` objects, so this is no problem yet. But later on we will have more cities and won't be able to just write `places_visited := City` for all the other characters. For that we will need `FILTER`, which we will learn to use in the next chapter.
+当然，乔森纳·哈克已经成功被插入到数据库中并关联了每一个造访过的城市。现在我们只有三个 `City` 对象，所以这还没有什么问题。但是稍后我们将有更多的城市，并且不能对其他所有角色都使用 `places_visited := City`（因为他们造访过的城市列表并不一样）。为此，我们将需要用到 `FILTER`，我们将在下一章中学习如何使用它。
 
-[Here is all our code so far up to Chapter 1.](code.md)
+[这里是第一章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
-1. Entering the code below returns an error. Try adding one character to make it return `{true}`.
+1. 输入下面的代码将会被返回一个错误，请尝试通过添加一个字符，使其返回结果为 `{true}`。
 
    ```edgeql
    WITH my_name = 'Timothy',
    SELECT my_name != 'Benjamin';
    ```
 
-2. Try inserting a `City` called Constantinople, but now known as İstanbul.
-3. Try displaying all the names of the cities in the database. (Hint: you can do it in a single line of code and won't need `{}` to do it)
-4. Try selecting all the `City` types along with their `name` and `modern_name` properties, but change `.name` to say `old_name` and change `modern_name` to say `name_now`.
-5. Will typing `SelecT City;` produce an error?
+2. 请尝试插入一个名为 Constantinople 的 `City`，且存储其现在的命名为 İstanbul。
+3. 请尝试显示数据库中所有城市的名称。（提示：使用单行代码就可以做到，并不需要使用 `{}` ）
+4. 请尝试 SELECT 出所有城市的 `name` 和 `modern_name`，并支持用 `old_name` 来访问 `.name`，用 `name_now` 访问 `.modern_name`。
+5. 键入 `SelecT City;` 会发生错误吗？
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Jonathan Harker arrives in Romania._
+__下一章:__ _乔森纳·哈克抵达罗马尼亚_
