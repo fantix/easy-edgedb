@@ -1,12 +1,12 @@
 # Chapter 1 Questions and Answers
 
-#### 1. Entering the code below returns an error. Try adding one character to make it return `{true}`.
+#### 1. 输入下面的代码将会被返回一个错误，请尝试通过添加一个字符，使其返回结果为 `{true}`。
 
-Answer: change `WITH my_name = 'Timothy'` to `WITH my_name := 'Timothy'`. This will assign the string 'Timothy' to `my_name` (instead of trying to compare 'Timothy' to `my_name` which doesn't exist). Then it will compare it to `'Benjamin'` and return `{true}` because they are not equal.
+答案：将 `WITH my_name = 'Timothy'` 修改为 `WITH my_name := 'Timothy'`。这样将给 `my_name` 赋值字符串 'Timothy'（而不是仅仅使用 '=' 尝试用 'Timothy' 和一个上不存在的变量 `my_name` 做比较）。然后用 '!=' 对被赋予 'Timothy' 的 `my_name` 与 `'Benjamin'` 进行比较，并返回了 `{true}`，因为他们确实不相等。
 
 ---
 
-#### 2. Try inserting a `City` called Constantinople, but now known as İstanbul.
+#### 2. 请尝试插入一个名为 Constantinople 的 `City`，且存储其现在的命名为 İstanbul。
 
 ```edgeql
 INSERT City {
@@ -17,13 +17,13 @@ INSERT City {
 
 ---
 
-#### 3. Try displaying all the names of the cities in the database.
+#### 3. 请尝试显示数据库中所有城市的名称。（提示：使用单行代码就可以做到，并不需要使用 `{}` ）
 
-This is all you need: `SELECT City.name;`
+答案：`SELECT City.name;`
 
 ---
 
-#### 4. Try selecting all the `City` types along with their `name` and `modern_name` properties, but change `.name` to say `old_name` and change `modern_name` to say `name_now`.
+#### 4. 请尝试 SELECT 出所有城市的 `name` 和 `modern_name`，并支持在输出结果中用 `old_name` 来表达 `.name`，用 `name_now` 表达 `.modern_name`。
 
 ```edgeql
 SELECT City {
@@ -32,10 +32,10 @@ SELECT City {
 };
 ```
 
-Of course, this will not change the name of the properties. `old_name` and `name_now` only show up in this one query.
+当然，这并不意味着我们对这些属性的名称进行了修改。`old_name` 和 `name_now` 仅会在本次查询结果中出现。
 
 ---
 
-#### 5. Will typing `SelecT City;` produce an error?
+#### 5. 键入 `SelecT City;` 会发生错误吗？
 
-No, because keywords are case insensitive.
+答案：不会，因为 EdgeDB 里的关键字对大小写不敏感。
