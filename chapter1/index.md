@@ -12,7 +12,7 @@ leadImage: illustration_01.jpg
 
 ## 架构，对象类型（Schema, object types）
 
-这已经包含了很多信息了，它帮助我们开始思考我们的数据库架构。EdgeDB 使用的语言称为 EdgeQL，它用于定义、变异和查询数据。它的内核是 [SDL（模式定义语言）](https://edgedb.com/docs/edgeql/sdl/index#ref-eql-sdl)，它使迁移变得更加容易，我们将在本书中学习。到目前为止，我们的架构需要以下内容：
+这已经包含了很多信息了，它帮助我们开始思考我们的数据库架构。EdgeDB 使用的语言称为 EdgeQL，它用于定义、变异和查询数据。它的内核是 [SDL（架构定义语言）](https://edgedb.com/docs/edgeql/sdl/index#ref-eql-sdl)，它使迁移变得更加容易，我们将在本书中学习。到目前为止，我们的架构需要以下内容：
 
 - 城市或位置类型。我们可以创建的这些类型称为 [对象类型](https://www.edgedb.com/docs/datamodel/objects#object-types)，由属性和链接组成。一个城市类型应该有什么样的属性？可能是名字和地理位置，以及有时会使用的不同的名称或拼写。比如，Bistritz（比斯特里察）现在叫做 Bistrița（这个城市在罗马尼亚），而 Buda-Pesth（布达佩斯）现在会被写为 Budapest.
 - 人类类型。我们需要赋予它姓名，以及一种方式去追踪他所访问过的地方。
