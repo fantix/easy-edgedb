@@ -3,10 +3,11 @@ tags: Local Time, Advanced Filtering
 leadImage: illustration_04.jpg
 ---
 
-# Chapter 4 - "What a strange man this Count Dracula is."
+# 第四章 - "德拉库拉伯爵真是个奇怪的人"
 
-> Jonathan Harker wakes up late and is alone in the castle. Dracula appears after nightfall and they talk **through the night**. Dracula is making plans to move to London, and Jonathan gives him some advice about buying houses. Jonathan tells Dracula that a big house called Carfax would be a good house to buy. It's very big and quiet. It's close to an asylum for crazy people, but not too close. Dracula likes the idea. He then tells Jonathan not to go into any of the locked rooms in the castle, because it could be dangerous. Jonathan sees that it's almost morning - they talked through the whole night again. Dracula suddenly stands up and says he must go, and leaves the room. Jonathan thinks about **Mina** back in London, who he is going to marry when he returns. He is beginning to feel that there is something wrong with Dracula, and the castle. Seriously, where are the other people?
+> 乔纳森·哈克（Jonathan Harker）起晚了，独自一人在城堡里。夜幕降临后，德拉库拉出现了，他们聊了**一个通宵（through the night）**。德拉库拉（Dracula）正在制定搬到伦敦的计划，乔纳森（Jonathan）给了他一些关于买房的建议。乔纳森告诉德拉库拉，一个叫 Carfax 的大房子是一个值得购买的好房子。它很大且安静。它附近有一家疯人院，但又不至于太近。德拉库拉喜欢这个主意。然后他告诉乔纳森不要进入城堡中任何上了锁的房间，因为很危险。乔纳森发现已经快到早上了 —— 他们又聊了整整一夜。德拉库拉突然站起来说他必须走了，然后离开了房间。乔纳森想着回到了伦敦的**米娜（Mina）** ，等他回去他们即将完婚。他开始觉得德拉库拉和他的城堡有些问题。说真的，其他人在哪里？
 
+首先，让我们创建一个乔纳森的女朋友 —— Mina Murray。
 First let's create Jonathan's girlfriend, Mina Murray. But we'll also add a new link to the `Person` type in the schema called `lover`:
 
 ```sdl
