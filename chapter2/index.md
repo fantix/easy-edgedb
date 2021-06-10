@@ -113,9 +113,9 @@ SELECT <str><int64><str><int32>50 is str;
 
 此外，需要注意类型转换仅适用于标量类型 `scalar type`：用户创建的对象类型，如 `City` 和 `Person` 都太复杂，并不能简单地相互转换。
 
-## Filter
+## 过滤（Filter）
 
-Finally, let's learn how to `FILTER` before we're done Chapter 2. You can use `FILTER` after the curly brackets in `SELECT` to only show certain results. Let's `FILTER` to only show `Person` types that have the name 'Emil Sinclair':
+最后，在我们结束第二章内前，让我们一起来学习一下如何使用 `FILTER`。你可以在 `SELECT` 中的花括号后面使用 `FILTER` 来控制只显示某些结果。让我们用 `FILTER` 来仅显示名为“Emil Sinclair”的 `Person` 类型：
 
 ```edgeql
 SELECT Person {
@@ -124,27 +124,27 @@ SELECT Person {
 } FILTER .name = 'Emil Sinclair';
 ```
 
-`FILTER .name` is short for `FILTER Person.name`. You can write `FILTER Person.name` too if you want - it's the same thing.
+`FILTER .name` 是 `FILTER Person.name` 的缩写。如果你愿意，你也可以写 `FILTER Person.name` —— 它们是一样的。
 
-The output is this:
+输出结果如下：
 
 ```
 {Object {name: 'Emil Sinclair', places_visited: {Object {name: 'Munich'}, Object {name: 'Buda-Pesth'}, Object {name: 'Bistritz'}}}}
 ```
 
-Let's filter the cities now. One flexible way to search is with `LIKE` or `ILIKE` to match on parts of a string.
+现在让我们来过滤城市。一种灵活的搜索方式是使用“LIKE”或“ILIKE”来匹配字符串的一部分。
 
-- `LIKE` is case-sensitive: "Bistritz" matches "Bistritz" but "bistritz" does not.
-- `ILIKE` is not case-sensitive (the I in ILIKE means **insensitive**), so "Bistritz" matches "BiStRitz", "bisTRITz", etc.
+- `LIKE` 是区分大小写的：“Bistritz”可以匹配“Bistritz”，但和“bistritz”并不匹配.
+- `ILIKE` 是不区分大小写的（ILIKE 中的 I 是指**不敏感（insensitive）**），所以“Bistritz”可以匹配“BiStRitz”，也可以匹配“bisTRITz”。
 
-You can also add `%` on the left and/or right which means match anything before or after. Here are some examples with the matched part **in bold**:
+你也可以通过添加 `%`在你想匹配部分的左侧或右侧以示意匹配规则。以下是匹配**粗体**部分的一些示例：
 
-- `LIKE Bistr%` matches "**Bistr**itz" (but not "bistritz"),
-- `ILIKE '%IsTRiT%'` matches "B**istrit**z",
-- `LIKE %athan Harker` matches "Jon**athan Harker**",
-- `ILIKE %n h%` matches "Jonatha**n H**arker".
+- `LIKE Bistr%` 可以匹配到 “**Bistr**itz”（但不匹配 “bistritz”），
+- `ILIKE '%IsTRiT%'` 可以匹配到 “B**istrit**z”，
+- `LIKE %athan Harker` 可以匹配到 “Jon**athan Harker**”，
+- `ILIKE %n h%` 可以匹配到 “Jonatha**n H**arker”。
 
-Let's `FILTER` to get all the cities that start with a capital B. That means we'll need `LIKE` because it's case-sensitive:
+让我们用 `FILTER` 过滤出所有首字母是大写字母 B 的城市。这意味着我们需要使用 `LIKE`，因为它是对大小写敏感的：
 
 ```edgeql
 SELECT City {
@@ -153,23 +153,23 @@ SELECT City {
 } FILTER .name LIKE 'B%';
 ```
 
-Here is the result:
+这是输出结果：
 
 ```
   Object {name: 'Buda-Pesth', modern_name: 'Budapest'},
   Object {name: 'Bistritz', modern_name: 'Bistrița'},
 ```
 
-You can also index a string with `[]` square brackets, starting at 0. For example, the indexes in the string 'Jonathan' look like this:
+你也可以用 `[]` 方括号索引一个字符串，从 0 开始。比如，字符串“Jonathan”的索引如下所示：
 
 ```
 J o n a t h a n
 0 1 2 3 4 5 6 7
 ```
 
-So `'Jonathan'[0]` is 'J' and `'Jonathan'[4]` is 't'.
+因此 `'Jonathan'[0]` 是“J”，`'Jonathan'[4]` 是“t”。
 
-Let's try it:
+让我们试一下下面的语句：
 
 ```edgeql
 SELECT City {
@@ -178,54 +178,53 @@ SELECT City {
 } FILTER .name[0]; = 'B'; # First character must be 'B'
 ```
 
-That gives the same result. Careful though: if you set the number too high then it will try to search outside of the string, which is an error. If we change 0 to 18 (`FILTER .name[18]; = 'B';`), we'll get this:
+这同样会给出我们想要的结果。不过要小心：如果你将数字设置得太高（超过字符串本身的长度），那么它会尝试在字符串之外进行搜索，这会带来错误。比如，如果我们将 0 更改为 18 (`FILTER .name[18]; = 'B';`)，我们将得到：
 
 ```
 ERROR: InvalidValueError: string index 18 is out of bounds
 ```
 
-Plus, if you have any `City` types with a name of `''`, even a search for index 0 will cause an error. 
+此外，如果你有一个名字为 `''` 的 `City` 类型，即使搜索索引为 0 也会导致错误。
 
-You can also slice a string to get a piece of it. Because 'Jonathan' starts at zero, its index values look like this:
+你还可以切片一个字符串以得到字符串的一部分。因为“Jonathan”从 0 开始，它的索引值如下所示：
 
 ```
 |J|o|n|a|t|h|a|n|
 0 1 2 3 4 5 6 7 8
 ```
 
-It's 8 characters long, so it fits entirely between 0 and 8. If you take a "slice" of it between indexes 2 and 5, you get 'nat' (`'Jonathan'[2:5]` = 'nat'), because it starts at 2 and goes *up to* 5 - but not including index 5. It's sort of like when you phone your friend to tell them that you're 'at their house': you're not telling them that you're inside it.
+它的长度是 8 个字符，因此它完全介于 0 和 8 之间。如果你在索引 2 和 5 之间“slice”它，你会得到“nat”（`'Jonathan'[2:5]` = 'nat'），因为它开始于 2，直到 5 —— 但并不包括索引 5 对应的字符。
 
-Negative index values are counted from the end of 'Jonathan', which is 8, so -1 corresponds to `8 - 1` (= 7), etc.
+负的索引值从“Jonathan”的末尾开始计数，即 8，所以 -1 对应的是 `8 - 1` (= 7)，以此类推。
 
-So what if you want to make sure that you won't get an error with an index number that might be too high? Here you can use `LIKE` or `ILIKE` with an empty parameter, because it will just give an empty set: `{}` instead of an error. `LIKE` and `ILIKE` are safer than indexing if there is a chance of having data that is too short in a property. There is a small lesson to be had here:
+那么，如果你想确保不会因索引号数字过高而引发错误该怎么办？在这里，您可以使用带有空参数的 `LIKE` 或 `ILIKE`，因为它只会给出一个空集：`{}` 而不是错误。如果属性中有可能包含太短的数据，`LIKE` 和 `ILIKE` 比使用索引更保险。这里需要强调：
 
-- "no data" in Edgedb is shown as an empty set: `{}`
-- `""` (an empty string) is actually data.
+- 在 Edgedb 中，“无数据”会被显示为空集：`{}`；
+- `""`（一个空字符串）实际上也是数据。
 
-Keeping that in mind helps you understand the behaviour between the two.
+记住它们有助于你理解他们两者之间的行为。
 
+最后，你是否注意到我们刚刚用 `#` 写了一个注释？EdgeDB 中的注释很简单：一行中 `#` 右侧的任何内容都会被忽略，被视为“注释”。
 
-Finally, did you notice that we wrote a comment with `#` just now? Comments in EdgeDB are simple: anything to the right of `#` on a line gets ignored.
-
-So this:
+因此语句：
 
 ```edgeql
 SELECT 1887#0503 is the first day of the book Dracula when...
 ;
 ```
 
-returns `{1887}`.
+只是会返回 `{1887}`.
 
-[Here is all our code so far up to Chapter 2.](code.md)
+[这里是第二章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
-1. Change the following `SELECT` to display `{100}` by casting: `SELECT '99' + '1'`;
-2. Select all the `City` types that start with 'Mu' (case sensitive).
-3. Select the third letter (i.e. index number 2) of the name of every `NPC`.
-4. Imagine an abstract type called `HasAString`:
+1. 使用类型转换修改语句 `SELECT '99' + '1'`，使其输出结果为 `{100}`；
+2. 选择出所有以“Mu”开头的 `City` 类型（需要区分大小写）；
+3. 选择出每个 `NPC` 名字的第三个字母（即索引号是 2）；
+4. 假设有一个抽象类型叫做 `HasAString`:
 
    ```sdl
    abstract type HasAString {
@@ -233,9 +232,9 @@ returns `{1887}`.
    };
    ```
 
-   How would you change the `Person` type to extend `HasAString`?
+   你将如何修改 `Person` 类型成为 `HasAString` 的扩展类型？
 
-5. This query only shows the id numbers of the places visited. How do you show their name?
+5. 下面的查询仅会展示造访过的地方的 id。请问如何展示它们的名字？
 
    ```edgeql
    SELECT Person {
@@ -243,8 +242,8 @@ returns `{1887}`.
    };
    ```
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Jonathan gets into the carriage and travels into the cold mountains._
+__下一章:__ _乔纳森坐上马车，前往寒冷的山脉。_
