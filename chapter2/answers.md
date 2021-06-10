@@ -1,20 +1,20 @@
 # Chapter 2 Questions and Answers
 
-#### 1. Change the following `SELECT` to display `{100}` by casting: `SELECT '99' + '1'`;
+#### 1. 使用类型转换修改语句 `SELECT '99' + '1'`，使其输出结果为 `{100}`；
 
-You can cast with a numeric type, such as `SELECT <int64>'99' + <int64>'1'`. Note that the types don't have to be the same, but EdgeDB will convert them automatically if you do this. You can see this with a query like `SELECT <int64>'99' + <int16>'1' IS int64;`, which returns `{true}`: it will convert the smaller `int16` to the larger `int64` if you add them together.
+你可以用数字类型进行类型转换，比如 `SELECT <int64>'99' + <int64>'1'`。注意：这里的类型不是必须一样的，但是如果你使用了不同的类型，EdgeDB 将会自动对它们进行转换。你可以通过类似 `SELECT <int64>'99' + <int16>'1' IS int64;` 的查询来验证，它会返回 `{true}`：如果你将它们加在一起，EdgeDB 会将较小的 `int16` 转换为较大的 `int64`。
 
-#### 2. Select all the `City` types that start with 'Mu' (case sensitive).
+#### 2. 选择出所有以“Mu”开头的 `City` 类型（需要区分大小写）；
 
-`SELECT City FILTER .name LIKE 'Mu%';` - don't forget the `%` so that it will match cities like Munich.
+`SELECT City FILTER .name LIKE 'Mu%';` —— 别忘了 `%`，这样才可能匹配上类似名为 **Mu**nich 的城市。
 
-#### 3. Select the third letter (i.e. index number 2) of the name of every city.
+#### 3. 选择出每个 `NPC` 名字的第三个字母（即索引号是 2）；
 
-`SELECT NPC.name[2];` will do it.
+`SELECT NPC.name[2];`
 
-#### 4. How would you change the `Person` type to extend `HasAString`?
+#### 4. 你将如何修改 `Person` 类型成为 `HasAString` 的扩展类型？
 
-Just add `extending HasAString` to the type, which would now look like this:
+添加 `extending HasAString` 到 `Person` 的定义里，如下所示：
 
 ```sdl
 abstract type Person extending HasAString {
@@ -23,9 +23,9 @@ abstract type Person extending HasAString {
 }
 ```
 
-#### 5. This query only shows the id numbers of the places visited. How do you show their name?
+#### 5. 下面的查询仅会展示造访过的地方的 id。请问如何展示它们的名字？
 
-Change it to this:
+修改为：
 
 ```edgeql
 SELECT Person {
@@ -33,7 +33,7 @@ SELECT Person {
 };
 ```
 
-Don't forget the `:` and remember that spacing doesn't matter, so you could write it this way too:
+别忘了 `:`，且空格间距无关紧要，因此你也可以写为：
 
 ```edgeql
 SELECT Person {
