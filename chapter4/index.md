@@ -7,8 +7,7 @@ leadImage: illustration_04.jpg
 
 > 乔纳森·哈克（Jonathan Harker）起晚了，独自一人在城堡里。夜幕降临后，德拉库拉出现了，他们聊了**一个通宵（through the night）**。德拉库拉（Dracula）正在制定搬到伦敦的计划，乔纳森（Jonathan）给了他一些关于买房的建议。乔纳森告诉德拉库拉，一个叫 Carfax 的大房子是一个值得购买的好房子。它很大且安静。它附近有一家疯人院，但又不至于太近。德拉库拉喜欢这个主意。然后他告诉乔纳森不要进入城堡中任何上了锁的房间，因为很危险。乔纳森发现已经快到早上了 —— 他们又聊了整整一夜。德拉库拉突然站起来说他必须走了，然后离开了房间。乔纳森想着回到了伦敦的**米娜（Mina）** ，等他回去他们即将完婚。他开始觉得德拉库拉和他的城堡有些问题。说真的，其他人在哪里？
 
-首先，让我们创建一个乔纳森的女朋友 —— Mina Murray。
-First let's create Jonathan's girlfriend, Mina Murray. But we'll also add a new link to the `Person` type in the schema called `lover`:
+首先，让我们创建乔纳森的女朋友 —— 米娜·默里（Mina Murray）。同时我们还将增加在 `Person` 类型的结构中增加一个新的指向 `Person` 类型的链接，并命名为 `lover`：
 
 ```sdl
 abstract type Person {
@@ -18,9 +17,9 @@ abstract type Person {
 }
 ```
 
-With this we can link the two of them together. We will assume that a person can only have one `lover`, so this is a `single link` but we can just write `link`.
+这样我就可以把乔纳森和米娜联系在一起了。我们假设一个人只能有一个 `lover`，所以它是一个 `single link`，但我们可以只写 `link`。
 
-Mina is in London, and we don't know if she has been anywhere else. So let's do a quick insert to create the city of London. It couldn't be easier:
+米娜目前在伦敦，且我们不知道她是否去过其他什么地方。所以让我们先快速插入一条数据以创建城市伦敦。这再简单不过了：
 
 ```edgeql
 INSERT City {
@@ -28,11 +27,11 @@ INSERT City {
 };
 ```
 
-To give her the city of London, we can just do a quick `SELECT City FILTER .name = 'London'`. This will give her the `City` that matches `.name = 'London'`, but it won't give an error if the city's not there: it will just return a `{}` empty set.
+为了记录米娜造访的城市有伦敦市，我们只需要做一个快速的查询：`SELECT City FILTER .name = 'London'`。这将为她提供与 `.name = 'London'` 匹配的 `City`，如果该城市不存在，也不会给出错误：它只会返回一个 `{}` 空集。
 
-## DETACHED, LIMIT, and EXISTS
+## 分离，限制和存在（DETACHED, LIMIT, and EXISTS）
 
-For `lover` it is the same process but a bit more complicated:
+我们创建一个名为“Mina Murray”的 NPC，关于其 `lover` 的赋值部分稍微复杂一些：
 
 ```edgeql
 INSERT NPC {
@@ -44,12 +43,12 @@ INSERT NPC {
 };
 ```
 
-You'll notice two things here:
+这里，你可能已经注意到了两件事：
 
-- `DETACHED`. This is because we are inside of an `INSERT` for the `NPC` type, but we want to link to the same type: another `NPC`. We need to add `DETACHED` to specify that we are talking about `NPC` in general, not the `NPC` that we are inserting right now.
-- `LIMIT 1`. This is because the link is a `single link`. EdgeDB doesn't know how many results we might get: for all it knows, there might be 2 or 3 or more `Jonathan Harkers`. To guarantee that we are only creating a `single link`, we use `LIMIT 1`. And of course `LIMIT 2`, `LIMIT 3` etc. will work just fine if we want to link to a certain maximum number of objects.
+- `DETACHED`：这是因为我们在 `NPC` 类型的 `INSERT` 内想要链接到另一个相同类型的 `NPC`。我们需要添加 `DETACHED` 来指明此处我们正在谈论的是泛指的 `NPC`，而不是现在正在插入的这个 `NPC`。
+- `LIMIT 1`：这是因为该链接是 `single link`。 EdgeDB 不知道执行 `SELECT DETACHED NPC FILTER .name = 'Jonathan Harker'` 会得到多少结果，可能有 2 个或 3 个或更多的 `Jonathan Harkers`。为了保证我们只创建一个 `single link`，我们使用 `LIMIT 1`。
 
-Now we want to make a query to see who is single and who is not. This is easy by using a "computable", where we can create a new variable that we define with `:=`. First here is a normal query:
+现在我们想查询一下谁是单身，谁不是。我们可以在其中创建一个新的变量并用 `:=` 来赋予它一个判断公式。首先先来看一下下面这个常规的查询：
 
 ```edgeql
 SELECT Person {
@@ -60,7 +59,7 @@ SELECT Person {
 };
 ```
 
-This gives us:
+执行后得到输出：
 
 ```
 {
@@ -71,18 +70,18 @@ This gives us:
 }
 ```
 
-Okay, so Mina Murray has a lover but Jonathan Harker does not yet, because he was inserted first. We'll learn some techniques later in Chapters 6, 14 and 15 to deal with this. In the meantime we'll just leave Jonathan Harker with `{}` for `link lover`.
+好的，所以米娜·默里（Mina Murray）有一个爱人，但乔纳森·哈克（Jonathan Harker）还没有，因为我们之前创建它的时候还没有 `lover` 这个属性。我们将会在后续的第 6、14、15章学习一些技巧来处理这种情况。这里我们就先暂时保持乔纳森·哈克的 `link lover` 是  `{}`。
 
-Back to the query: what if we just want to say `true` or `false` depending on if the character has a lover? To do that we can add a computable to the query, using `EXISTS`. `EXISTS` will return `true` if a set is returned, and `false` if it gets `{}` (if there is nothing). This is once again a result of not having null in EdgeDB. It looks like this:
+回到查询语句：如果我们只是想根据角色是否有爱人来返回 `true` 或 `false` 怎么办？我们可以使用 `EXISTS` 在查询语句中添加一个 “computable”（可计算的数据，类似 `NOT EXISTS Person.lover`）。如下所示，如果 `Person.lover` 返回的是一个有内容的集合，则`EXISTS` 将返回 `true`；如果它返回的是 `{}`（即什么都没有），则 `EXISTS` 返回`false`。这再次表明 EdgeDB 中没有 null。由此，我们调整查询语句为：
 
 ```edgeql
-select Person {
+SELECT Person {
   name,
   is_single := NOT EXISTS Person.lover,
 };
 ```
 
-Now this prints:
+这次打印出的结果是：
 
 ```
   Object {name: 'Count Dracula', is_single: true},
@@ -92,9 +91,9 @@ Now this prints:
   Object {name: 'Emil Sinclair', is_single: true},
 ```
 
-This also shows why abstract types are useful. Here we did a quick search on `Person` for data from `Vampire`, `PC` and `NPC`, because they all come from `abstract type Person`.
+这也说明了为什么抽象类型很有用。在这里，我们快速搜索了 `Person` 中来自 `Vampire`、`PC` 和 `NPC` 的所有数据，因为它们都来自 `abstract type Person`。
 
-We can also put the computable in the type itself. Here's the same computable except now it's inside the `Person` type:
+我们也可以将可计算数据（“computables”）放在类型本身中。如下所示，我们把 `NOT EXISTS .lover` 放到了 `Person` 类型定义中：
 
 ```sdl
 abstract type Person {
@@ -105,41 +104,41 @@ abstract type Person {
 }
 ```
 
-We won't keep `is_single` in the type definition though, because it's not useful enough for our game.
+不过我们接下来并不会在这个类型定义中保留 `is_single`，这里只是示意你还可以如何做。
 
-You might be curious about how computables are represented in databases on the back end. They are interesting because they [don't show up in the actual database](https://www.edgedb.com/docs/datamodel/computables), and only appear when you query them. And of course you don't specify the type because the computable itself determines the type. You can kind of imagine this when you look at a query with a quick computable like `SELECT country_name := 'Romania'`. Here, `country_name` is computed every time we do a query, and the type is determined to be a string. A computable on a type does the same thing. But nevertheless, they still work in the same way as all other links and properties because the instructions for the computable are part of the type itself and do not change. In other words, they are a bit different on the back but the same up front.
+您可能对可计算数据（“computables”）在后端数据库中的表示方式感到好奇。它们很有趣，因为它们 [不会出现在实际数据库中](https://www.edgedb.com/docs/datamodel/computables)，他们仅在你查询时出现。当然你不必指定类型，因为这由可计算数据自身决定。比如，当你的查询带有一个快速可计算公式，类似 `SELECT country_name := 'Romania'` 时，每次执行查询时 EdgeDB 都会计算 `country_name` ，且类型被确定为字符串。当可计算数据（“computables”）放在类型本身中，所做的是事情是一样的。类型定义中的计算属性做的事情其实是一样的。但无论如何，计算属性用起来同常规的属性或者链接并无二致，因为计算属性的公式在定义类型的时候就写死了。换言之，计算属性虽底层实现不同，但对使用者来说都是一样的属性。
 
-## Ways to tell time
+## 报时的方法（Ways to tell time）
 
-We will now learn about time, because it might be important for our game. Remember, vampires can only go outside at night.
+现在我们来学习时间，这也是十分重要的。请记住，吸血鬼只能在夜幕降临后出去（因为他们害怕阳光）。
 
-The part of Romania where Jonathan Harker is has an average sunrise of around 7 am and a sunset of 7 pm. This changes by season, but to keep it simple we will just use 7 am and 7 pm to decide if it's day or night.
+乔纳森·哈克（Jonathan Harker）正处的罗马尼亚平均的日出时间是 7 am，日落时间是 7 pm。随着季节不同会有所变化，但为了简单起见，我们将仅使用早上 7 点和晚上 7 点来决定是白天还是黑夜。
 
-EdgeDB uses two major types for time.
+EdgeDB 使用两种主要的时间类型。
 
-- `std::datetime`, which is very precise and always has a timezone. Times in `datetime` use the ISO 8601 standard.
-- `cal::local_datetime`, which doesn't worry about timezone.
+- `std::datetime`：这是非常精确的并且总是有一个时区。`datetime` 中的时间使用 ISO 8601 标准。
+- `cal::local_datetime`：这个不会考虑时区。
 
-There are two others that are almost the same as `cal::local_datetime`:
+还有两个与 `cal::local_datetime` 几乎相同的时间类型：
 
-- `cal::local_time`, when you only need to know the time of day, and
-- `cal::local_date`, when you only need to know the month, the day, and year.
+- `cal::local_time`：当你只需要知道一天中的时间时；
+- `cal::local_date`：当您只需要知道月、日和年时。
 
-We'll start with `cal::local_time` first.
+我们先从 `cal::local_time` 开始。
 
-`cal::local_time` is easy to create, because you can just cast to it from a `str` in the format 'HH:MM:SS':
+`cal::local_time` 是很容易创建的，因为你可以从“HH:MM:SS”格式的`str`转换到它：
 
 ```edgeql
 SELECT <cal::local_time>('15:44:56');
 ```
 
-This gives us the output:
+执行后输出：
 
 ```
 {<cal::local_time>'15:44:56'}
 ```
 
-We will imagine that our game has a clock that gives the time as a `str`, like the '15:44:56' in the example above. We'll make a quick `Time` type that can help. It looks like this:
+我们假设我们的游戏故事中有一个时钟，它以 `str` 的形式给出时间，就像上面例子中的 '15:44:56'。让我们来创建一个 `Time` 类型，这会对后续很有帮助：
 
 ```sdl
 type Time {
@@ -149,23 +148,23 @@ type Time {
 }
 ```
 
-`.date[0:2]` is an example of ["slicing"](https://www.edgedb.com/docs/edgeql/funcops/array#operator::ARRAYSLICE). [0:2] means start from index 0 (the first index) and stop _before_ index 2, which means indexes 0 and 1. This is fine because to cast a `str` to `cal::local_time` you need to write the hour with two numbers (e.g. 09 is okay, but 9 is not).
+`.date[0:2]` 是 ["切片（slicing）"](https://www.edgedb.com/docs/edgeql/funcops/array#operator::ARRAYSLICE) 的一个例子。[0:2] 表示从索引 0（第一个索引）开始，在索引 2_之前_ 停止，即索引 0 和 1。这也说明当你要将 `str` 转换为 `cal::local_time`时，您需要用两个数字来表示小时（例如 09 可以，但 9 不行）。
 
-So this won't work:
+即如下语句是无法工作的：
 
 ```edgeql
 SELECT <cal::local_time>'9:55:05';
 ```
 
-It gives this error:
+它将会给出错误：
 
 ```
 ERROR: InvalidValueError: invalid input syntax for type cal::local_time: '9:55:05'
 ```
 
-Because of that, we are sure that slicing from index 0 to 2 will give us two numbers that indicate the hour of the day.
+因此，我们确信从索引 0 到 2 的切片将为我们提供两个表示一天中的小时的数字。
 
-Now with this `Time` type, we can get the hour by doing this:
+现在使用这个 `Time` 类型，我们可以通过执行以下操作来获取小时。首先插入时间：
 
 ```edgeql
 INSERT Time {
@@ -173,7 +172,7 @@ INSERT Time {
 };
 ```
 
-And then we can `SELECT` our `Time` objects and everything inside:
+然后我们可以 `SELECT` 我们的 `Time` 对象和里面的所有东西：
 
 ```edgeql
 SELECT Time {
@@ -183,11 +182,11 @@ SELECT Time {
 };
 ```
 
-That gives us a nice output that shows everything, including the hour:
+执行后，我们得到了期望的输出，它展示了所有，包括小时：
 
 `{Object {date: '09:55:05', local_time: <cal::local_time>'09:55:05', hour: '09'}}`.
 
-Finally, we can add some logic to the `Time` type to see if vampires are awake or asleep. We could use an `enum` but to be simple, we will just make it a `str`.
+最后，我们可以在 `Time` 类型中添加一些逻辑来查看吸血鬼是醒着还是睡着了。我们可以使用一个 `enum`，但为了简单起见，我们将它设为一个 `str`。
 
 ```sdl
 type Time {
@@ -199,16 +198,16 @@ type Time {
 }
 ```
 
-So `awake` is calculated like this:
+因此，`awake` 是如下这样计算的：
 
-- First EdgeDB checks to see if the hour is greater than 7 and less than 19 (7 pm). But it's better to compare with a number than a string, so we write `<int16>.hour` instead of `.hour` so it can compare a number to a number.
-- Then it gives us a string saying either 'asleep' or 'awake' depending on that.
+- 首先 EdgeDB 会查看取到的小时的数值是否大于 7 且小于 19（晚上 7 点）。但是这里用数字进行比较比与字符串进行比较要好，因此我们编写`<int16>.hour` 而不是`.hour`，这样它就可以通过强制转换用数字与数字进行比较。
+- 然后 EdgeDB 会基于比较结果给出一个字符串来说明现在的状态是“睡着（'asleep'）”或“醒着（'awake'）”。
 
-Now if we `SELECT` this with all the properties, it will give us this:
+现在，如果我们对所有属性进行 `SELECT`，我们将得到：
 
 `Object {date: '09:55:05', local_time: <cal::local_time>'09:55:05', hour: '09', awake: 'asleep'}`
 
-One more note on `ELSE`: you can keep on using `ELSE` as many times as you like in the format `(result) IF (condition) ELSE`. Here's an example:
+关于 `ELSE` 的另一个注意事项：你可以在 `(result) IF (condition) ELSE` 中多次使用 `ELSE`。下面是一个例子：
 
 ```
 property awake := 'just waking up' IF <int16>.hour = 19 ELSE
