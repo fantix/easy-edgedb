@@ -3,23 +3,23 @@ tags: Datetime, Describing Types
 leadImage: illustration_05.jpg
 ---
 
-# Chapter 5 - Jonathan tries to leave the castle
+# 第五章 - 乔纳森试图离开城堡
 
-Poor Jonathan is not having much luck. Here's what happens to him in this chapter:
+可怜的乔纳森（Jonathan）运气不佳，在这一章里他发生了什么？
 
-> During the day, Jonathan decides to try to explore the castle but too many doors and windows are locked. He doesn't know how to get out, and wishes he could at least send Mina a letter. He pretends that there is no problem, and keeps talking to Dracula during the night. One night he sees Dracula climb out of his window and down the castle wall, like a snake. Now he is very afraid, and knows that Dracula is not human. A few days later he breaks one of the doors and finds another part of the castle. The room is very strange and he feels sleepy. When he opens his eyes, he sees three vampire women next to him. He is attracted to and afraid of them at the same time. He wants to kiss them, but knows that he will die if he does. They come closer, and he can't move...
+> 白天，乔纳森决定尝试探索这座城堡，但太多的门窗都被锁上了。他不知道怎么出去，希望至少能给米娜寄一封信。他假装没有问题，在夜里继续不停地和德拉库拉聊天。一天晚上，他看到德拉库拉爬出窗口，像一条蛇一样爬下城墙。他很害怕，知道了德拉库拉应该不是人类。几天后，他打破了一扇门，发现了城堡的另一部分。这个房间很奇怪，让他开始犯困。当他睁开眼睛时，他看到了三个吸血鬼女人在他的身边。他既被她们吸引又害怕她们。他想亲吻她们，但他知道如果他这样做了就会死。她们靠得更近了，但他无法动弹……
 
-## std::datetime
+## 日期时间（std::datetime）
 
-Since Jonathan was thinking of Mina back in London, let's learn about `std::datetime` because it uses time zones. To create a datetime, you can just cast a string in ISO 8601 format with `<datetime>`. That format looks like this:
+由于乔纳森（Jonathan）想到了回到伦敦的米娜（Mina），让我们了解一下 `std::datetime`，因为它使用时区。要创建日期时间，您只需使用 `<datetime>` 转换为 ISO 8601 格式的字符串。该格式如下所示：
 
 `YYYY-MM-DDTHH:MM:SSZ`
 
-And an actual date looks like this.
+实际日期看起来像这样：
 
 `'2020-12-06T22:12:10Z'`
 
-The `T` inside there is just a separator, and the `Z` at the end stands for "zero timeline". That means that it is 0 different (offset) from UTC: in other words, it _is_ UTC.
+其中 `T` 只是一个分隔符，最后的 `Z` 代表“零时间线（zero timeline）”。这意味着它与 UTC 有 0° 的偏移：换句话说，它_就是_UTC。
 
 One other way to get a `datetime` is to use the `to_datetime()` function. [Here is its signature](https://edgedb.com/docs/edgeql/funcops/datetime/#function::std::to_datetime), which shows that there are six ways to make a `datetime` with this function depending on how you want to make it. EdgeDB will know which one of the six you have chosen depending on what input you give it.
 
