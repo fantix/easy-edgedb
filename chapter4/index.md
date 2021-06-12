@@ -216,9 +216,9 @@ property awake := 'just waking up' IF <int16>.hour = 19 ELSE
                   'awake';
 ```
 
-## SELECT while you INSERT
+## 插入时做选择（SELECT while you INSERT）
 
-Back in Chapter 3, we learned how to select while deleting at the same time. You can do the same thing with `INSERT` by enclosing it in brackets and then selecting that, same as with any other `SELECT`. Because when we insert a new `Time`, all we get is a `uuid`:
+回到第 3 章，我们学习了如何在删除的同时做选择。你可以用 `INSERT` 做同样的事情，把它括在小括号中，然后选择它，与其他 `SELECT` 一样。当我们插入一个新的 `Time`，我们只能得到一个 `uuid`：
 
 ```edgeql
 INSERT Time {
@@ -226,9 +226,9 @@ INSERT Time {
 };
 ```
 
-The output is just something like this: `{Object {id: 528941b8-f638-11ea-acc7-2fbb84b361f8}}`
+输出是这样的：`{Object {id: 528941b8-f638-11ea-acc7-2fbb84b361f8}}`
 
-So let's wrap the whole entry in `SELECT ()` so we can display its properties as we insert it. Because it's enclosed in brackets, EdgeDB will do that operation first, and then give it for us to select and do a normal query. Besides the properties to display, we can also add a computable while we are at it. Let's give it a try:
+因此，让我们将整个输入包装在 `SELECT ()` 中，这样我们就可以在插入它时显示它的属性了。因为是括号括起来的，所以 EdgeDB 会先做括号里的操作，然后再用选择做一个普通的查询。除了要显示的属性外，我们还可以添加一个可计算的数据。让我们来试一试吧：
 
 ```edgeql
 SELECT ( # Start a selection
@@ -244,15 +244,15 @@ SELECT ( # Start a selection
   };
 ```
 
-Now the output is more meaningful to us: `{Object {date: '22.44.10', hour: '22', awake: 'awake', double_hour: 44}}` We know the date and the hour, we can see that vampires are awake, and even make a computable from the object we just entered.
+现在的输出结果对我们更有意义了：`{Object {date: '22.44.10', hour: '22', awake: 'awake', double_hour: 44}}`。我们知道了时间和小时，我们可以了解到吸血鬼是醒着的，我们甚至可以对我们刚刚输入的对象做计算。
 
-[Here is all our code so far up to Chapter 4.](code.md)
+[这里是第四章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
-1. This insert is not working.
+1. 下面的插入语句不工作：
 
    ```edgeql
    INSERT NPC {
@@ -261,25 +261,25 @@ Now the output is more meaningful to us: `{Object {date: '22.44.10', hour: '22',
    };
    ```
 
-   The error is: `invalid reference to default::NPC: self-referencing INSERTs are not allowed`. What keyword can we use to make this insert work?
+   报错是：`invalid reference to default::NPC: self-referencing INSERTs are not allowed`。我们可以使用什么关键字来使这个插入语句工作呢？
 
-   Bonus: there is another method we could use too to make it work without the keyword. Can you think of another way?
+   另外，我们也可以使用另一种方法来使其在没有添加关键字的情况下工作。你能想到别的办法吗？
 
-2. How would you display up to 2 `Person` types (and their `name` property) whose names include the letter `a`?
+2. 请显示最多 2 个名称包含字母 `a` 的 `Person` 类型的对象（以及它们的 `name` 属性）。
 
-3. How would you display all the `Person` types (and their names) that have never visited anywhere?
+3. 请显示从未访问过任何地方的所有 `Person` 类型的对象（以及它们的 `name` 属性）。
 
-   Hint: all the `Person` types for which `.places_visited` returns `{}`.
+   提示：获取 `.places_visited` 返回 `{}` 的所有 `Person` 类型的对象。
 
-4. Imagine that you have the following `cal::local_time` type:
+4. 假设你有以下 `cal::local_time` 类型：
 
    ```edgeql
    SELECT has_nine_in_it := <cal::local_time>'09:09:09';
    ```
 
-   This displays `{<cal::local_time>'09:09:09'}` but instead you want to display {true} if it has a 9 and {false} otherwise. How could you do that?
+   这会显示：`{<cal::local_time>'09:09:09'}`。如何改为：结果有 9 则显示 {true}，否则显示 {false}？
 
-5. We are inserting a character called The Innkeeper's Son:
+5. 我们现在插入一个名为“The Innkeeper's Son”的角色：
 
    ```edgeql
    INSERT NPC {
@@ -288,10 +288,10 @@ Now the output is more meaningful to us: `{Object {date: '22.44.10', hour: '22',
    };
    ```
 
-   How would you `SELECT` this insert at the same time to display the `name`, `age`, and `age_ten_years_later` that is made from `age` plus 10?
+   你将如何在插入的同时，用 `SELECT` 来显示它的 `name`，`age` 和 `age_ten_years_later`？`age_ten_years_later` 是指 `age` 加 10。
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Jonathan's curiosity gets the better of him. What's inside this castle?_
+__下一章：__ _乔纳森的好奇心占了上风：城堡里有什么？_
