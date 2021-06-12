@@ -1,36 +1,36 @@
 # Chapter 5 Questions and Answers
 
-#### 1. What do you think `SELECT std::to_datetime(3600);` will return, and why?
+#### 1. 你认为 `SELECT to_datetime(3600);` 将返回什么？为什么？
 
-The one function signature that takes a single integer is this one:
+可以接收单个整数的函数签名是下面这个：
 
 ```
 std::to_datetime(epochseconds: int64) -> datetime
 ```
 
-And since it gives the number of seconds after the Unix Epoch (1970), it will return this:
+由于它给出了 Unix Epoch (1970) 之后的秒数，它将返回：
 
 `{<datetime>'1970-01-01T00:01:00Z'}`
 
-So one hour (3600 seconds) after the epoch began.
+即在纪元开始后一小时（3600 秒）。
 
-#### 2. Will `SELECT <int16>9 + 1.06n IS decimal;` work? And if it does, will it return `{true}`?
+#### 2. `SELECT <int16>9 + 1.06n IS decimal;` 能工作吗？如果可以，它将返回 `{true}` 吗？
 
-Yes, and yes. EdgeDB will choose `decimal` as the more precise of the two types. You can also see the type just with `SELECT <int16>9 + 1.06n;` because the return shows the n: `{10.06n}`
+可以工作，会返回 `{true}`。 EdgeDB 将选择 `decimal` 作为两种类型中更精确的。你也可以只用 `SELECT <int16>9 + 1.06n;` 来查看类型，因为返回结果中有 n: `{10.06n}`。
 
-#### 3. How many seconds went by between 5:00 am on Christmas Day 2003 in Turkmenistan (TMT) and 7:00 pm on New Year's Eve for the same year in Uzbekistan (UZT)?
+#### 3. 从 2003 年土库曼斯坦 (TMT) 圣诞节的早上 5:00 到乌兹别克斯坦 (UZT) 同年新年除夕夜的晚上 7:00 之间过去了多少秒？
 
-This one is easy with the `to_datetime()` function:
+使用 `to_datetime()` 函数很容易做到：
 
 ```edgeql
 SELECT to_datetime(2003, 12, 31, 19, 0, 0, 'UZT') - to_datetime(2003, 12, 25, 5, 0, 0, 'TMT');
 ```
 
-The answer is 568,000 seconds: `{568800s}`
+答案是 568,000 秒：`{568800s}`。
 
-#### 4. How would you write the same query using `WITH` for each of the two times?
+#### 4. 如何用对上题中的两个时间 `WITH` 写出同样查询效果的查询语句？
 
-It would look something like this (depending on the name you give the variable and the order you prefer):
+可以这样写 (取决于你给变量所起的名字及你倾向的顺序)：
 
 ```edgeql
 WITH
@@ -39,11 +39,11 @@ WITH
 SELECT uzbek_time - turkmen_time;
 ```
 
-The output is exactly the same: `{568800s}`
+输出完全相同：`{568800s}`。
 
-#### 5. What's the best way to describe a type if you only want to see how you wrote it?
+#### 5. 如果您只想查看如何编写的某个类型，那么描述该类型的最佳方式是什么？
 
-The best way is `DESCRIBE TYPE AS SDL`, which doesn't have all the extra info that `AS TEXT` gives you. Here's `MinorVampire` for example:
+最佳方式是：`DESCRIBE TYPE AS SDL`，没有 `AS TEXT` 给出的所有额外信息。以 `MinorVampire` 为例:
 
 ```
 {
@@ -53,4 +53,4 @@ The best way is `DESCRIBE TYPE AS SDL`, which doesn't have all the extra info th
 }
 ```
 
-It doesn't show any of the information from the `Person` type that it extends.
+它不显示来自它所扩展的 `Person` 类型的任何信息。
