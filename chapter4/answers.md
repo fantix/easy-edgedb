@@ -1,8 +1,8 @@
 # Chapter 4 Questions and Answers
 
-#### 1. This insert is not working.
+#### 1. 下面的插入语句不工作：
 
-The keyword to make it work is `DETACHED`, so that we can pull from the `NPC` type in general instead of the `NPC` type we are inserting:
+使用关键字 `DETACHED`可以使语句正常工作，这样我们就可以从泛指的 `NPC` 类型中进行提取，而不是从我们正在插入的 `NPC` 类型中提取：
 
 ```edgeql
 INSERT NPC {
@@ -11,7 +11,7 @@ INSERT NPC {
 };
 ```
 
-One other method that can work is this:
+另一种可行的方法是：
 
 ```edgeql
 INSERT NPC {
@@ -20,11 +20,11 @@ INSERT NPC {
 };
 ```
 
-We changed `SELECT NPC` to `SELECT Person`. Even though `NPC` extends from `Person`, `Person` is a different type so we can draw from it without needing to write `DETACHED`.
+我们将 `SELECT NPC` 改为了 `SELECT Person`。尽管 `NPC` 是从 `Person` 扩展而来的，但 `Person` 是一种不同的类型，因此我们可以从中提取而无需编写 `DETACHED`。
 
-#### 2. How would you display up to 2 `Person` types (and their `name` property) whose names include the letter `a`?
+#### 2. 请显示最多 2 个名称包含字母 `a` 的 `Person` 类型的对象（以及它们的 `name` 属性）。
 
-Like this, using `LIKE` and `LIMIT`:
+像下面这样，使用 `LIKE` 和 `LIMIT`：
 
 ```edgeql
 SELECT Person {
@@ -32,31 +32,31 @@ SELECT Person {
 } FILTER .name LIKE '%a%' LIMIT 2;
 ```
 
-#### 3. How would you display all the `Person` types (and their names) that have never visited anywhere?
+#### 3. 请显示从未访问过任何地方的所有 `Person` 类型的对象（以及它们的 `name` 属性）。
 
-Just use `NOT EXISTS`:
+使用 `NOT EXISTS`：
 
 ```edgeql
 SELECT NPC {name} FILTER NOT EXISTS .places_visited;
 ```
 
-#### 4. How to display `{true}` if cal::local_time has a 9 and `{false}` otherwise?
+#### 4. 如何改为：结果有 9 则显示 {true}，否则显示 {false}？
 
-Take the original query:
+原始的查询语句是：
 
 ```edgeql
 SELECT has_nine_in_it := <cal::local_time>'09:09:09';
 ```
 
-and use `<str>` to cast the `cal::local_time` to a string, then add `LIKE '%9%' at the end, like so:
+使用 `<str>` 强制转换 `cal::local_time` 为一个字符串，然后在结尾添加 `LIKE '%9%'`，如下所示:
 
 ```edgeql
 SELECT has_nine_in_it := <str><cal::local_time>'09:09:09' LIKE '%9%';
 ```
 
-#### 5. Selecting while inserting and adding a property called `age_ten_years_later`
+#### 5. 你将如何在插入的同时，用 `SELECT` 来显示它的 `name`，`age` 和 `age_ten_years_later`？`age_ten_years_later` 是指 `age` 加 10。
 
-First take the original insert:
+原始的插入语句是：
 
 ```edgeql
 INSERT NPC {
@@ -65,7 +65,7 @@ INSERT NPC {
 };
 ```
 
-then wrap it in parentheses, add a SELECT and remove the `;`
+然后把它包装到小括号中，加上 `SELECT` 部分并去掉插入语句结尾的 `;`：
 
 ```edgeql
 SELECT (
@@ -76,7 +76,7 @@ SELECT (
 );
 ```
 
-Now just add the fields like in any other `SELECT`, then add `age_ten_years_later`:
+现在只需像在任何其他 `SELECT` 中的操作一样添加上字段，并添加上 `age_ten_years_later`：
 
 ```edgeql
 SELECT (
@@ -91,4 +91,4 @@ SELECT (
 };
 ```
 
-This gives us: `{Object {name: 'The Innkeeper\'s Son', age: 10, age_ten_years_later: 20}}`
+输出结果为：`{Object {name: 'The Innkeeper\'s Son', age: 10, age_ten_years_later: 20}}`
