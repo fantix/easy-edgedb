@@ -1,8 +1,8 @@
 # Chapter 6 Questions and Answers
 
-#### 1. This select is incomplete. How would you complete it so that it says "Pleased to meet you, I'm " and then the NPC's name?
+#### 1. 这个选择是不完整的。如何修改它从而使它能打印出“Pleased to meet you, I'm ”以及 NPC 的名字？
 
-You can do it with concatenation using `++`:
+使用操作符 `++` 进行连接:
 
 ```edgeql
 SELECT NPC {
@@ -11,9 +11,9 @@ SELECT NPC {
 };
 ```
 
-#### 2. How would you update Mina's `places_visited` to include Romania if she went to Castle Dracula for a visit?
+#### 2. 如果米娜要去德拉库拉城堡参观，你会如何更新米娜（Mina）的 `places_visited`，让它也包括罗马尼亚？
 
-Here is one way:
+下面是一种方法：
 
 ```edgeql
 UPDATE Person FILTER .name = 'Mina Murray'
@@ -22,9 +22,9 @@ SET {
 };
 ```
 
-You can of course go with `UPDATE NPC` and `SELECT Country` if you prefer.
+如果您喜欢，您当然也可以使用 `UPDATE NPC` 和 `SELECT Country`。
 
-Also, here is the same thing using `WITH`:
+此外，你也可以使用 `WITH` 达到同样的效果：
 
 ```edgeql
 WITH
@@ -36,9 +36,9 @@ SET {
 };
 ```
 
-#### 3. With the set `{'W', 'J', 'C'}`, how would you display all the `Person` types with a name that contains any of these capital letters?
+#### 3. 你将如何显示所有名称（name）中包含 `{'W', 'J', 'C'}` 里任何大写字母的 `Person` 类型的对象？
 
-It looks like this:
+像这样：
 
 ```edgeql
 WITH letters := {'W', 'J', 'C'}
@@ -47,7 +47,7 @@ SELECT Person {
 } FILTER .name LIKE '%' ++ letters ++ '%';
 ```
 
-And should display these characters we've inserted so far:
+应该会显示截止到现在我们插入过的以下角色：
 
 ```
 {
@@ -59,11 +59,11 @@ And should display these characters we've inserted so far:
 }
 ```
 
-The key is that `LIKE` takes a string, so you can concatenate `%` on the left and right with `++`.
+关键点是 `LIKE` 需要一个字符串，所以你可以用 `++` 将左右的 `%` 连接起来。
 
-#### 4. How would you display this same query as JSON?
+#### 4. 你将如何用 JSON 显示和上一题相同的查询？
 
-Getting JSON output is super easy by casting with `<json>`, but where does it go? You can't put it in front of `SELECT`, and `<json>Person` isn't an expression either, so this won't work:
+用 `<json>` 进行转换可以很容易得到 JSON 输出，但是应该放在哪里呢？你不能放在 `SELECT` 的前面，也不能用 `<json>Person`，因为它不是一个表达式，所以如下所做将无法工作：
 
 ```edgeql
 WITH letters := {'W', 'J', 'C'}
@@ -72,7 +72,7 @@ SELECT <json>Person {
 } FILTER .name LIKE '%' ++ letters ++ '%';
 ```
 
-You need to wrap the SELECT in brackets, cast with `<json>` and then SELECT that:
+你需要把 SELECT 包装到小括号里，然后用 `<json>` 进行转换，并 SELECT 它：
 
 ```edgeql
 WITH letters := {'W', 'J', 'C'}
@@ -83,11 +83,11 @@ SELECT <json>(
 );
 ```
 
-So you're selecting the casted-to-JSON version of the result of `SELECT Person`.
+如此，您正在选择 `SELECT Person` 被强制转换为 JSON 版本的结果。
 
-#### 5. How would you add ' the Great' to every Person type?
+#### 5. 你将如何将“ the Greate”添加到每个 Person 类型的对象中？
 
-Easy, just update without `FILTER`:
+很简单，只需在没有 `FILTER` 的情况下对类型进行更新：
 
 ```edgeql
 UPDATE Person
@@ -96,9 +96,9 @@ SET {
 };
 ```
 
-Now their names are 'Woman 1 the Great', 'Mina Murray the Great', and so on.
+现在她们的名字是：“Woman 1 the Great”, “Mina Murray the Great”等。
 
-**Bonus question**: to undo this, just set `name` to the same string minus the last 10 characters using `[0:-10]`:
+**额外问题**: 使用字符串索引来撤销上述操作的快速方法是用 `[0:-10]` 去掉 `name` 字符串后十位字符并再赋值给 `name`。
 
 ```edgeql
 UPDATE Person
