@@ -2,13 +2,13 @@
 tags: Filtering On Insert, Json
 ---
 
-# Chapter 6 - Still no escape
+# 第六章 - 乔纳森还是逃不掉
 
-> The women vampires are next to Jonathan and he can't move. Suddenly, Dracula runs into the room and tells the women to leave: "You can have him later, but not tonight!" The women listen to him. Jonathan wakes up in his bed and it feels like a bad dream...but he sees that somebody folded his clothes, and he knows it was not just a dream. The castle has some visitors from Slovakia the next day, so Jonathan has an idea. He writes two letters, one to Mina and one to his boss. He gives the visitors some money and asks them to send the letters. But Dracula finds the letters, and is angry. He burns them in front of Jonathan and tells him not to do that again. Jonathan is still stuck in the castle, and Dracula knows that Jonathan tried to trick him.
+> 女吸血鬼就在乔纳森的身边，且他无法动弹。突然，德拉库拉跑进房间，告诉女人们离开：“晚些时候你们可以拥有他，但今晚不行！”。女吸血鬼们听从了。乔纳森在他的床上醒来，感觉就像做了一场噩梦……但他看到他的衣服被叠好了，他知道这不会仅仅是一个梦。第二天会有一些来自斯洛伐克的游客造访城堡，所以乔纳森想到了个主意。他写了两封信，一封给米娜，一封给他的老板。他付了来访者一些钱，请求他们为他寄信。但是德拉库拉发现了这些信件，他很生气。他在乔纳森面前烧掉了它们，并告诉他不许再这样做了。乔纳森仍然被困在城堡里，德拉库拉知道乔纳森试图欺骗他从而逃跑。
 
-## Filtering on sets when doing an insert
+## 插入时过滤集合（Filtering on sets when doing an insert）
 
-There is not much new in this lesson when it comes to types, so let's look at improving our schema. Right now Jonathan Harker is still inserted like this:
+本章中没有太多关于类型的新内容，所以让我们来看看如何改进我们的架构（schema）。现在乔纳森·哈克（Jonathan Harker）的插入语句仍然是这样的：
 
 ```edgeql
 INSERT NPC {
@@ -17,7 +17,7 @@ INSERT NPC {
 };
 ```
 
-This was fine when we only had cities, but now we have the `Place` and `Country` types. First we'll insert two more `Country` types to have some more variety:
+当我们只有城市时，这是没问题的。但现在我们有了 `Place` 和 `Country` 两个类型。首先，我们先插入另外两个 `Country` 类型的对象以增加多样性：
 
 ```edgeql
 INSERT Country {
@@ -28,11 +28,11 @@ INSERT Country {
 };
 ```
 
-(In Chapter 9 we'll learn how to do this with just one `INSERT`!)
+（在第 9 章中，我们将学习如何只用一个 `INSERT` 来做到这一点！）
 
-Then we'll make a new type called `OtherPlace` for places that aren't cities or countries. That's easy: `type OtherPlace extending Place;` and it's done.
+然后我们为既不是城市也不是国家的地方创建一个名为 `OtherPlace` 的新类型。这很容易做到：`type OtherPlace extending Place;`。
 
-Then we'll insert our first `OtherPlace`:
+然后我们插入我们的第一个 `OtherPlace`：
 
 ```edgeql
 INSERT OtherPlace {
@@ -40,9 +40,9 @@ INSERT OtherPlace {
 };
 ```
 
-That gives us a good number of types from `Place` that aren't of the `City` type.
+这为我们提供了大量来自 `Place` 类型的对象，而不是 `City` 类型。
 
-So back to Jonathan: in our database, he's been to four cities, one country, and one `OtherPlace`...but he hasn't been to Slovakia or France, so we can't just insert him with `places_visited := SELECT Place`. Instead, we can filter on `Place` against a set with the names of the places he has visited. It looks like this:
+回到乔纳森：在我们的数据库中，他去过了四个城市、一个国家和一个 `OtherPlace`……但他没有去过斯洛伐克（Slovakia）或法国（France），所以我们不能直接用 `places_visited := SELECT Place` 对其进行插入。但我们可以根据他访问过的地方的名称对 `Place` 进行过滤。像这样：
 
 ```edgeql
 INSERT NPC {
@@ -51,9 +51,9 @@ INSERT NPC {
 };
 ```
 
-You'll notice that we just wrote the names in a set using `{}`, so we didn't need to use an array with `[]` to do it. (This is called a [set constructor](https://www.edgedb.com/docs/edgeql/expressions/overview/#set-constructor), by the way.)
+你会留意到我们只是使用 `{}` 在集合中写入了这些地方的名称，我们不需要使用带有 `[]` 的数组来执行此操作。（顺便说一下，这称为 [set 构造函数](https://www.edgedb.com/docs/edgeql/expressions/overview/#set-constructor)。）
 
-Now what if Jonathan ever escapes Castle Dracula and runs away to a new place? Let's pretend that he escapes and runs away to Slovakia. Of course, we can change his `INSERT` signature to include `'Slovakia'` in the set of names. But what do we do to make a quick update? For that we have the `UPDATE` and `SET` keywords. `UPDATE` selects the type to start the update, and `SET` is for the parts we want to change. It looks like this:
+现在如果乔纳森逃离德拉库拉城堡并到了一个新地方怎么办？让我们假装他逃跑了并逃到了斯洛伐克（Slovakia）。当然，我们修改他的 `INSERT`，在造访点的名字集合里加上 `'Slovakia'`。但是我们如何才能做一次快速的更新呢？对此，我们有关键字 `UPDATE` 和 `SET`。`UPDATE` 要更新的类型，`SET` 我们要更改的部分。像这样：
 
 ```edgeql
 UPDATE NPC
@@ -63,7 +63,7 @@ SET {
 };
 ```
 
-You'll know that it succeeded because EdgeDB will return the IDs of the objects that have been updated. In our case, it's just one:
+如果语句执行成功了，EdgeDB 将返回被成功更新对象的 ID 们。在上面的例子里，仅仅会返回一个 ID：
 
 ```
 {
@@ -71,12 +71,13 @@ You'll know that it succeeded because EdgeDB will return the IDs of the objects 
 }
 ```
 
-And if we had written something like `FILTER .name = 'SLLLovakia'` then it would return `{}`, letting us know that nothing matched. Or to be precise: the top-level object matched on `FILTER .name = 'Jonathan Harker'`, but `places_visited` doesn't get updated because nothing matched the `FILTER` there.
+如果我们写了类似 `FILTER .name = 'SLLLlovakia'` 的东西，那么 EdgeDB 会返回 `{}`，让我们知道没有任何可匹配的。或者更准确地说：顶级对象在 `FILTER .name = 'Jonathan Harker'` 上得到匹配，但 `places_visited` 并没有得到更新，因为 `FILTER` 里没有获得任何可匹配的。
 
-And since Jonathan hasn't visited Slovakia, we can use `-=` instead of `+=` with the same `UPDATE` syntax to remove it now.
+由于乔纳森（Jonathan）还没有访问过斯洛伐克（Slovakia），我们现在可以使用 `-=` 代替 `+=` 并使用相同的 `UPDATE` 语法来删除它。
 
-With that we now know [all three operators](https://www.edgedb.com/docs/edgeql/statements/update) used after `SET`: `:=`, `+=`, and `-=`.
+现在我们了解到了在`SET` 之后可以使用的 [所有三个运算符](https://www.edgedb.com/docs/edgeql/statements/update) ：`:=`、`+=` 和`-=`。 
 
+让我们来做另一个更新。还记得这个吗？
 Let's do another update. Remember this?
 
 ```edgeql
@@ -86,7 +87,7 @@ SELECT Person {
 } FILTER .name = 'Jonathan Harker';
 ```
 
-Mina Murray has Jonathan Harker as her `lover`, but Jonathan doesn't have her because we inserted him first. We can change that now:
+米娜·默里（Mina Murray）有乔纳森·哈克（Jonathan Harker）作为她的 `lover`，但因为我们先插入了乔纳森，所以乔纳森没有 `lover`。我们现在可以改变它：
 
 ```edgeql
 UPDATE Person FILTER .name = 'Jonathan Harker'
@@ -95,9 +96,9 @@ SET {
 };
 ```
 
-Now `link lover` for Jonathan finally shows Mina instead of an empty `{}`.
+现在 Jonathan 的 `link lover` 终于显示了 Mina 而不再是空的 `{}`。
 
-Of course, if you use `UPDATE` without `FILTER` it will do the same change on all the types. This update below for example would give every `Person` type every single `Place` in the database under `places_visited`:
+当然，如果你在没有 `FILTER` 的情况下使用了 `UPDATE`，它将对所有类型进行相同的更改。例如，下面的更新将在数据库中为每个 `Person` 类型的对象的 `places_visited` 存入所有每一个 `Place`：
 
 ```edgeql
 UPDATE Person
@@ -106,17 +107,17 @@ SET {
 };
 ```
 
-## Concatenation with ++
+## 用 ++ 连接（Concatenation with ++）
 
-One other operator is `++`, which does concatenation (joining together) instead of adding.
+另一种运算符是`++`，它执行连接（连接在一起）而不是做“相加”。
 
-You can do simple operations with it like: `SELECT 'My name is ' ++ 'Jonathan Harker';` which gives `{'My name is Jonathan Harker'}`. Or you can do more complicated concatenations as long as you continue to join strings to strings:
+你可以像这样：`SELECT 'My name is ' ++ 'Jonathan Harker';` 做简单的操作，得到结果 `{'My name is Jonathan Harker'}`。或者你可以做更复杂的连接，只要你继续将字符串连接到字符串：
 
 ```edgeql
 SELECT 'A character from the book: ' ++ (SELECT NPC.name) ++ ', who is not ' ++ (SELECT Vampire.name);
 ```
 
-This prints:
+这会打印出：
 
 ```
 {
@@ -126,9 +127,9 @@ This prints:
 }
 ```
 
-(The concatenation operator works on arrays too, putting them into a single array. So `SELECT ['I', 'am'] ++ ['Jonathan', 'Harker'];` gives `{['I', 'am', 'Jonathan', 'Harker']}`.)
+（这个连接运算符也适用于数组，会将它们合并放入到一个数组中。所以执行 `SELECT ['I', 'am'] ++ ['Jonathan', 'Harker'];` 的结果是 `{['I', 'am', 'Jonathan', 'Harker']}`。）
 
-Let's also change the `Vampire` type to link it to `MinorVampire` from that side instead. You'll remember that Count Dracula is the only real vampire, while the others are of type `MinorVampire`. That means we need a `multi link`:
+让我们也来更改一下 `Vampire` 类型，使其可以链接指向 `MinorVampire`。你应该记得德拉库拉伯爵是唯一一个真正的吸血鬼，而其他吸血鬼都是 `MinorVampire` 类型。这意味着我们需要一个 `multi link`：
 
 ```sdl
 type Vampire extending Person {
@@ -137,10 +138,10 @@ type Vampire extending Person {
 }
 ```
 
-Then we can `INSERT` the `MinorVampire` type at the same time as we insert the information for Count Dracula. But first let's remove `link master` from `MinorVampire`, because we don't want two objects linking to each other. There are two reasons for that:
+然后我们可以在插入德拉库拉伯爵（Count Dracula）的信息的同时 `INSERT` `MinorVampire` 类型的对象。但首先让我们先从 `MinorVampire` 中删除`link master`，因为我们不希望两个对象相互链接。原因有二：
 
-- When we declare a `Vampire` it has `slaves`, but if there are no `MinorVampire`s yet then it will be empty: {}. And if we declare the `MinorVampire` type first it has a `master`, but if we declare them first then their `master` (a `required link`) will not be there.
-- If both types link to each other, we won't be able to delete them if we need to. The error looks something like this:
+- 当我们声明一个 `Vampire` 时，它有 `slaves` 指向 `MinorVampire`，但如果还没有 `MinorVampire`，那么它将是空的：{}。如果我们首先声明`MinorVampire` 类型，它有一个 `master` 指向 `Vampire`，但还没有声明 `Vampire`，那么他们的 `master`（一个 `required link`）将不存在。
+- 如果这两种类型相互链接，我们将无法在需要时删除它们。会给出如下的错误：
 
 ```
 ERROR: ConstraintViolationError: deletion of default::Vampire (cc5ee436-fa23-11ea-85e0-e78b548f5a59) is prohibited by link target policy
@@ -148,14 +149,14 @@ ERROR: ConstraintViolationError: deletion of default::Vampire (cc5ee436-fa23-11e
 DETAILS: Object is still referenced in link master of default::MinorVampire (cc87c78e-fa23-11ea-85e0-8f5149329e3a).
 ```
 
-So first we simply change `MinorVampire` to a type extending `Person`:
+因此，首先我们简单地将 `MinorVampire` 更改为 `Person` 的扩展类型：
 
 ```sdl
 type MinorVampire extending Person {
 }
 ```
 
-and then we create them all together with Count Dracula like this:
+然后我们在创建德拉库拉伯爵时，也一同创建她们，如下所示：
 
 ```edgeql
 INSERT Vampire {
@@ -175,11 +176,11 @@ INSERT Vampire {
 };
 ```
 
-Note two things: we used `{}` after `slaves` to put everything into a set, and each `INSERT` is inside `()` brackets to capture the insert.
+请注意两件事：（1）我们在 `slaves` 后面使用了 `{}`，并把所有要插入的 `INSERT` 都放到了这个集合；（2）每一个 `INSERT` 都放在了小括号 `()` 里去捕捉插入。
 
-Now we don't have to insert the `MinorVampire` types first and then filter: we can just put them in together with Dracula.
+现在我们不必先插入 `MinorVampire` 类型然后再过滤并更新给 `Vampire`：我们可以将她们与德拉库拉（Dracula）放在一起插入。
 
-Then when we `select Vampire` like this:
+然后当我们像下面这样 `select Vampire` 时：
 
 ```edgeql
 SELECT Vampire {
@@ -188,7 +189,7 @@ SELECT Vampire {
 };
 ```
 
-We have a nice output that shows them all together:
+由此我们得到想要的输出结果，将德拉库拉（Dracula）和女吸血鬼们都显示了出来：
 
 ```
 Object {
@@ -274,4 +275,4 @@ The [documentation on JSON](https://www.edgedb.com/docs/datamodel/scalars/json) 
 
 <!-- quiz-end -->
 
-__Up next:__ _Jonathan climbs the castle wall to get into the Count's room._
+__下一章：__ _乔纳森爬上城墙进入伯爵的房间。_
