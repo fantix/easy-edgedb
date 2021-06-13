@@ -198,11 +198,11 @@ Object {
 },
 ```
 
-This might make you wonder: what if we do want two-way links? There's actually a very convenient way to do it (it's called a **backward link**), but we won't look at it until Chapters 14 and 15. If you're really curious you can skip to those chapters but there's a lot more to learn before then.
+这可能会使你好奇：如果我们就是想建立双向链接怎么办？实际上确实有一种非常方便的方法（称为**向后链接**），但我们要到第 14 章和第 15 章才会看它。如果你真的很好奇，你可以直接跳到那些章节，但在那之前我们还有很多东西要学。
 
-## Just type \<json> to generate json
+## 用 \<json> 生成 JSON（Just type \<json> to generate json）
 
-What do we do if we want the same output in json? It couldn't be easier: just cast using `<json>`. Any type in EdgeDB (except `bytes`) can be cast to json this easily:
+如果我们想要输出为 JSON 格式，我们该怎么做？再简单不过了：使用 `<json>` 进行转换即可。 EdgeDB 中的任何类型（`bytes` 除外）都可以轻松转换为 JSON：
 
 ```edgeql
 SELECT <json>Vampire {
@@ -212,7 +212,7 @@ SELECT <json>Vampire {
 };
 ```
 
-The output is:
+输出结果为:
 
 ```
 {
@@ -220,37 +220,37 @@ The output is:
 }
 ```
 
-## Converting back from JSON
+## 从 JSON 转换回来（Converting back from JSON）
 
-So what about the other way around, namely JSON to an EdgeDB type? You can do this too, but remember to think about the JSON type that you are giving to cast. The EdgeDB philosophy is that casts should be symmetrical: a type cast into JSON should only be cast back into that type. For example, here is the first date in the book Dracula as a string, then cast to JSON and then into a `cal::local_date`:
+那么反过来呢，就是把 JSON 转回成 EdgeDB 的类型？这也是可行的，但要当心 JSON 数据的类型，因为 EdgeDB 讲究转型的对称性：转成 JSON 前是什么类型，转回来还应该是什么类型。比如说，《德拉古拉》出现的第一个日期字符串，我们把它转换成 JSON 再转换回一个 `cal::local_date` 类型：
 
 ```edgeql
 SELECT <cal::local_date><json>'18870503';
 ```
 
-This is fine because `<json>` turns it into a JSON string, and `cal::local_date` can be created from a string. The result we get is `{<cal::local_date>'1887-05-03'}`. But if we try to turn the JSON value into an `int64`, it won't work:
+因为 `<json>` 将“18870503”转换为了 JSON 字符串，且 `cal::local_date` 可以接收字符串以进行创建，所以这句话可以正确执行。我们得到结果 `{<cal::local_date>'1887-05-03'}`。但是如果我们尝试将 JSON 值变为一个 `int64`，它将无法工作。
 
 ```edgeql
 SELECT <int64><json>'18870503';
 ```
 
-The problem is that it is a conversion from a JSON string to an EdgeDB `int64`. It gives this error: `ERROR: InvalidValueError: expected json number, null; got json string`. To keep things symmetrical, you need to cast a JSON string to an EdgeDB `str` and then cast into an `int64`:
+问题在于它是从 JSON 字符串到 EdgeDB `int64` 的转换。EdgeDB 会给出错误提示：`ERROR: InvalidValueError: expected json number, null; got json string`。为了保持对称，你需要先将 JSON 字符串转换为 EdgeDB `str`，然后再转换为 `int64`：
 
 ```edgeql
 SELECT <int64><str><json>'18870503';
 ```
 
-Now it works: we get `{18870503}` which began as an EdgeDB `str`, turned into a JSON string, then back into an EdgeDB `str`, and finally was cast into an `int64`.
+现在它可以工作了：我们得到 `{18870503}`，它开始是 EdgeDB `str`，变成了 JSON 字符串，然后又回到 EdgeDB `str`，最后被转换为 `int64`。
 
-The [documentation on JSON](https://www.edgedb.com/docs/datamodel/scalars/json) explains which JSON types turn into which EdgeDB types and is good to bookmark if you need to convert from JSON a lot. You can also see a list of JSON functions [here](https://www.edgedb.com/docs/edgeql/funcops/json).
+[关于 JSON 的文档](https://www.edgedb.com/docs/datamodel/scalars/json) 解释了哪些 JSON 类型可以转换为哪些 EdgeDB 类型，如果你需要对 JSON 进行大量转换，可以将其添加至书签，便于后续查阅。您还可以在 [此处](https://www.edgedb.com/docs/edgeql/funcops/json) 中查看到所有 JSON 的函数列表。
 
-[Here is all our code so far up to Chapter 6.](code.md)
+[这里是第六章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
-1. This select is incomplete. How would you complete it so that it says "Pleased to meet you, I'm " and then the NPC's name?
+1. 这个选择是不完整的。如何修改它从而使它能打印出“Pleased to meet you, I'm ”以及 NPC 的名字？
 
    ```edgeql
    SELECT NPC {
@@ -259,19 +259,19 @@ The [documentation on JSON](https://www.edgedb.com/docs/datamodel/scalars/json) 
    };
    ```
 
-2. How would you update Mina's `places_visited` to include Romania if she went to Castle Dracula for a visit?
+2. 如果米娜要去德拉库拉城堡参观，你会如何更新米娜（Mina）的 `places_visited`，让它也包括罗马尼亚？
 
-3. With the set `{'W', 'J', 'C'}`, how would you display all the `Person` types with a name that contains any of these capital letters?
+3. 你将如何显示所有名称（name）中包含 `{'W', 'J', 'C'}` 里任何大写字母的 `Person` 类型的对象？
 
-   Hint: it involves `WITH` and a bit of concatenation.
+   提示：使用 `WITH` 和一些连接（concatenation）操作。 
 
-4. How would you display this same query as JSON?
+4. 你将如何用 JSON 显示和上一题相同的查询？
 
-5. How would you add ' the Great' to every Person type?
+5. 你将如何将“ the Greate”添加到每个 Person 类型的对象中？
 
-   Bonus question: what's a quick way to undo this using string indexing?
+   额外问题：使用字符串索引来撤消此操作的快速方法是什么？
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
