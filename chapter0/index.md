@@ -6,9 +6,9 @@ leadImage: illustration_00.jpg
 
 感谢你阅读我们的新书《EdgeDB 易经》（《Easy EdgeDB》）来学习 EdgeDB！
 
-到如今本书出版，EdgeDB 已经走过了很长的路。它始于 2019 年春季 [EdgeDB Alpha 1] (https://www.edgedb.com/blog/edgedb-1-0-alpha-1) 的公开发布，首次展示了构建在 PostgreSQL 之上的开源数据库的可能性，并结合了 NoSQL 数据库的简单性与关系模型的强大的查询、严格性、一致性和性能。要了解从那时起发生了什么，请参阅 [我们的博客](https://www.edgedb.com/blog)，我们在其中宣布了 EdgeDB 生态系统的最新进展。
+到如今本书出版，EdgeDB 已经走过了很长的路。它始于 2019 年春季 [EdgeDB Alpha 1](https://www.edgedb.com/blog/edgedb-1-0-alpha-1) 的公开发布，首次展示了构建在 PostgreSQL 之上的开源数据库的可能性，并结合了 NoSQL 数据库的简单性与关系模型的强大的查询、严格性、一致性和性能。要了解从那时起发生了什么，请参阅 [我们的博客](https://www.edgedb.com/blog)，我们在其中宣布了 EdgeDB 生态系统的最新进展。
 
-我们的大部分学习材料都可以在 [交互式教程](https://tutorial.edgedb.com/)、[文档](https://edgedb.com/docs/) 和 [博客文章](https: //www.edgedb.com/blog/we-can-do-better-than-sql)中找到，但我们还是想把一些东西放在一起，让学习者能沉浸得更久，即一本完整的书。产物就是《Edge 易经》（《Easy EdgeDB》）：一本足够充实（也足够有趣），且可以让所有感兴趣的初学者最终成为一个自如的中级 EdgeDB 用户的书籍。
+我们的大部分学习材料都可以在 [交互式教程](https://tutorial.edgedb.com/)、[文档](https://edgedb.com/docs/) 和 [博客文章](https://www.edgedb.com/blog/we-can-do-better-than-sql) 中找到，但我们还是想把一些东西放在一起，让学习者能沉浸得更久，即一本完整的书。产物就是《Edge 易经》（《Easy EdgeDB》）：一本足够充实（也足够有趣），且可以让所有感兴趣的初学者最终成为一个自如的中级 EdgeDB 用户的书籍。
 
 可以说，《Edge 易经》是一本相当独特的教科书。以下是它与您可能对同类型的文本所期望的不同之处：
 
@@ -38,7 +38,7 @@ leadImage: illustration_00.jpg
 
 ## Beauty
 
-为了感受原作的美感（添加了蒸汽朋克风格的氛围已达到最佳效果），我们合作了 Damian Dideńko（[didiusz 在 Instagram 上](https://www.instagram.com/didiusz/)），一位来自波兰卡托维兹的 10 年插画师，他制作了一些精美的插画，将《德拉库拉（Dracula）》一书的氛围与每章最重要的架构和查询概念进行了结合。你很快就会看到他的插图，以下是他的描述以及他的灵感来源：
+为了感受原作的美感（添加了蒸汽朋克风格的氛围已达到最佳效果），我们合作了 Damian Dideńko（[didiusz 的 Instagram](https://www.instagram.com/didiusz/)），一位来自波兰卡托维兹的 10 年插画师，他制作了一些精美的插画，将《德拉库拉（Dracula）》一书的氛围与每章最重要的架构和查询概念进行了结合。你很快就会看到他的插图，以下是他的描述以及他的灵感来源：
 
 >我试图从我所接触过的所有事物中汲取灵感。在我的作品中，我喜欢构建略微超现实、低调/不为人知的故事，让观众有自己的解释空间。作品本身是一种松散的思想流，在创作时是有意义的，有时在最后，有时根本没有 —— 因为不是每件事都必须有意义。我的作品通常从一个小想法开始，然后发展成为一个更大的构图。我喜欢创作细节丰富的作品，有时我会在其中隐藏灵感。对于细心的观察者来说，它们有点像复活节小彩蛋。
 
