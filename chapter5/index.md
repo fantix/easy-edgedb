@@ -21,7 +21,7 @@ leadImage: illustration_05.jpg
 
 其中 `T` 只是一个分隔符，最后的 `Z` 代表“零时间线（zero timeline）”。这意味着它与 UTC 有 0° 的偏移：换句话说，它_就是_UTC。
 
-获取 `datetime` 的另一种方法是使用 `to_datetime()` 函数。[这里是它的函数签名](https://edgedb.com/docs/edgeql/funcops/datetime/#function::std::to_datetime), 里面有六种方法可以通过使用此函数生成 `datetime`，具体取决于你想要如何生成。EdgeDB 将根据你提供的输入得知你选择了六种中的哪一种。
+获取 `datetime` 的另一种方法是使用 `to_datetime()` 函数。[这里是它的函数签名](https://edgedb.com/docs/edgeql/funcops/datetime/#function::std::to_datetime)，里面有六种方法可以通过使用此函数生成 `datetime`，具体取决于你想要如何生成。EdgeDB 将根据你提供的输入得知你选择了六种中的哪一种。
 
 顺便说一下，你可能会留意到一个不太熟悉的、名为 [`decimal`](https://www.edgedb.com/docs/datamodel/scalars/numeric#type::std::decimal) 的类型。这是一个具有“任意精度”的浮点数，这意味着你可以根据需要在小数点后给出任意数量的数字。计算机上的浮点类型会由于舍入错误 [一段时间后会变得不精确](https://www.youtube.com/watch?v=-3c8G0JMM5Q)。比如下面的例子：
 
@@ -157,7 +157,7 @@ error: possibly more than one element returned by an expression for a computable
 
 `MinorVampire` 类型扩展自 `Person`，`Vampire` 也是如此。类型可以继续扩展其他类型，并且可以同时扩展多个类型。你这样做的次数越多，试图在脑海中将它们组合在一起就越困难。这正是 `DESCRIBE` 可以提供帮助的地方，它可以准确地显示出任何类型的组成内容。具体有以下三种方法：
 
-- `DESCRIBE TYPE MinorVampire` —— 这将给出类型的 [DDL（数据定义语言）](https://www.edgedb.com/docs/edgeql/ddl/index/) 描述。
+- `DESCRIBE TYPE MinorVampire` —— 这将给出类型的 [DDL（数据定义语言）](https://www.edgedb.com/docs/edgeql/ddl/index/)描述。
 DDL 是比 SDL（我们一直在使用的语言）更低级别的语言。它对 schema 不太方便，但更明确，可用于快速更改。我们不会在本课程中系统学习 DDL，但稍后你可能会发现它有时很有用。例如，使用它你可以快速创建函数而无需进行 _显式的（explicit）_ 迁移（migration，这里的 migration 指的是一次完整的、常规的 schema 变更）。
 
 (请注意上面提到的 _显式的（explicit）_ 一词：使用 DDL 仍会导致迁移，只是 _隐式的（implicit）_ 迁移。换句话说，迁移发生时并未将其称为迁移。这是一种快又脏的更改方式，但在大多数情况下，使用 SDL schema 的适当迁移工具是首选方式。）
