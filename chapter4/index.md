@@ -148,7 +148,7 @@ type Time {
 }
 ```
 
-`.date[0:2]` 是 ["切片（slicing）"](https://www.edgedb.com/docs/edgeql/funcops/array#operator::ARRAYSLICE) 的一个例子。[0:2] 表示从索引 0（第一个索引）开始，在索引 2_之前_ 停止，即索引 0 和 1。这也说明当你要将 `str` 转换为 `cal::local_time`时，您需要用两个数字来表示小时（例如 09 可以，但 9 不行）。
+`.date[0:2]` 是 ["slicing（切片）"](https://www.edgedb.com/docs/edgeql/funcops/array#operator::ARRAYSLICE)的一个例子。[0:2] 表示从索引 0（第一个索引）开始，在索引 2_之前_ 停止，即索引 0 和 1。这也说明当你要将 `str` 转换为 `cal::local_time`时，您需要用两个数字来表示小时（例如 09 可以，但 9 不行）。
 
 即如下语句是无法工作的：
 
