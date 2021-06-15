@@ -2,13 +2,13 @@
 tags: Constraint Delegation, $ Parameters
 ---
 
-# Chapter 7 - Jonathan finally "leaves" the castle
+# 第七章 - 乔纳森最终“离开”了城堡
 
-> Jonathan sneaks into Dracula's room during the day and sees him sleeping inside a coffin. Now he knows that he is a vampire. A few days later Count Dracula says that he will leave tomorrow. Jonathan thinks this is a chance, and asks to leave now. Dracula says, "Fine, if you wish..." and opens the door: but there are a lot of wolves outside, howling and making loud sounds. Dracula says, "You are free to leave! Goodbye!" But Jonathan knows that the wolves will kill him if he steps outside. He also knows that Dracula called the wolves, and asks him to please close the door. Dracula smiles and closes the door...he knows that Jonathan is trapped. Later, Jonathan hears Dracula tell the vampire women that they can have him tomorrow after he leaves. Dracula's friends take him away the next day (he is inside a coffin), and Jonathan is alone...and soon it will be night. All the doors are locked. He decides to climb out the window, because it is better to die by falling than to be alone with the vampire women. He writes "Good-bye, all! Mina!" in his journal and begins to climb the wall.
+> 乔纳森（Jonathan）白天偷偷溜进德拉库拉（Dracula）的房间，看到他睡在棺材里。现在他知道了德拉库拉是一个吸血鬼。几天后，德拉库拉伯爵说他明天就要走了。乔纳森认为这是一个好机会，并要求现在就离开。 德拉库拉打开门并回应道：“好吧，如你愿意……” 但是外面有很多狼，它们嚎叫着，发出很大的声音。德拉库拉又道：“你可以离开了，再见！” 乔森纳知道，如果他走出去，狼群将会杀掉他。他也知道是德拉库拉召唤的狼群，于是请他把门关上。德拉库拉微笑着关上了门……他知道乔纳森被困住了。之后，乔纳森听到德拉库拉告诉三个女吸血鬼，她们可以在他明天离开后享用他。第二天，德拉库拉的朋友把他带走了（他在棺材里），乔纳森独自一人留下……不久，夜幕降临。所有的门都锁上了。他决定从窗户爬出去，因为他宁愿摔死，也不愿意与女吸血鬼们单独在一起。他在日记中写道“再见了，各位！米娜！” ，然后开始爬墙。
 
-## More constraints
+## 更多限制（More constraints）
 
-While Jonathan climbs the wall, we can continue to work on our database schema. In our book, no character has the same name so there should only be one Mina Murray, one Count Dracula, and so on. This is a good time to put a [constraint](https://edgedb.com/docs/datamodel/constraints#ref-datamodel-constraints) on `name` in the `Person` type to make sure that we don't have duplicate inserts. A `constraint` is a limitation, which we saw already in `age` for humans that can only go up to 120. For `name` we can give it another one called `constraint exclusive` which prevents two objects of the same type from having the same name. You can put a `constraint` in a block after the property, like this:
+在乔纳森爬墙时，我们可以继续处理我们的数据库架构（schema）。在我们的书中，没有相同名字的角色，所以应该只有一个米娜·默里（Mina Murray），一个德拉库拉伯爵等等。这是在 `Person` 类型的 `name` 上放置 [constraint](https://edgedb.com/docs/datamodel/constraints#ref-datamodel-constraints) 的好时机，以确保我们不会有重复的插入。`constraint` 是一个限制，我们人类的在 `age` 中已经看到限制，即只能达到 120 岁。对于 `name`，我们可以给它增加一个名为 `constraint exclusive` 的限制，以防止两个相同类型的对象具有相同的名称。您可以在属性后的块中放置一个 `constraint`，如下所示：
 
 ```sdl
 abstract type Person {
@@ -20,7 +20,7 @@ abstract type Person {
 }
 ```
 
-Now we know that there will only be one `Jonathan Harker`, one `Mina Murray`, and so on. In real life this is often useful for email addresses, User IDs, and other properties that you always want to be unique. In our database we'll also add `constraint exclusive` to `name` inside `Place` because these places are also all unique:
+现在我们知道了将只有一个 `Jonathan Harker`，一个 `Mina Murray` 等等。在显示生活中，这对那些类似邮箱地址、用户 ID 等我们希望具有唯一性的属性十分有用。在我们的数据库里，我们也将给 `Place` 里的 `name` 添加 `constraint exclusive`，因为这些地方的名字也是唯一的：
 
 ```sdl
 abstract type Place {
@@ -32,11 +32,11 @@ abstract type Place {
 }
 ```
 
-## Passing constraints with delegated
+## 传递约束（Passing constraints with delegated）
 
-Now that our `Person` type has `constraint exclusive` for the property `name`, no type extending `Person` will be able to have the same name. That's fine for our game in this tutorial, because we already know all the character names in the book and won't be making any real `PC` types. But what if we later on wanted to make a `PC` named Jonathan Harker? Right now it wouldn't be allowed because we have an `NPC` with the same name, and `NPC` takes `name` from `Person`.
+现在，我们的 `Person` 类型的属性 `name` 具有 `constraint exclusive`，任何扩展自 `Person` 的类型都不可以拥有同样的名称。这对于本教程中的游戏来说很好了，因为我们已经知道书中的所有角色名称，并且不打算制作任何真正的 `PC` 类型的对象。但是如果我们稍后想创建一个名为 Jonathan Harker 的 `PC` 该怎么办？现在是不允许的，因为我们已经有了一个同名的 `NPC`，`NPC` 的 `name` 来自 `Person` 类型。
 
-Fortunately there's an easy way to get around this: the keyword `delegated` in front of `constraint`. That "delegates" (passes on) the constraint to the subtypes, so the check for exclusivity will be done individually for `PC`, `NPC`, `Vampire`, and so on. So the type is exactly the same except for this keyword:
+幸运的是这里有一个简单的办法绕过它：在 `constraint` 前面添加关键词 `delegated`。这将约束“委托（delegates）”（传递）给子类型，因此排他性检查将分别针对 `PC`、`NPC`、`Vampire` 等进行（而不在他们彼此之间进行检查）。即你只需要额外加上关键字 `delegated` 在之前的列子当中：
 
 ```sdl
 abstract type Person {
@@ -49,16 +49,16 @@ abstract type Person {
 }
 ```
 
-With that you can have up to one Jonathan Harker the `PC`, the `NPC`, the `Vampire`, and anything else that extends `Person`.
+有了它，你可以拥有最多一个叫 Jonathan Harker 的 `PC`对象、最多一个叫 Jonathan Harker 的 `NPC` 对象、最多一个叫 Jonathan Harker 的 `Vampire` 对象以及最多一个叫 Jonathan Harker 的任何扩展自 `Person` 类型的对象。
 
-## Using functions in queries
+## 在查询中使用函数（Using functions in queries）
 
-Let's also think about our game mechanics a bit. The book says that the doors inside the castle are too tough for Jonathan to open, but Dracula is strong enough to open them all. In a real game it will be more complicated but we can try something simple to mimic this:
+让我们也考虑一下我们的游戏机制。书里说城堡里的门对于乔纳森来说太难打开了，但是德拉库拉足够强壮可以打开所有。在真正的游戏中，它会更复杂，但我们可以尝试一些简单的方法来模仿这个事实：
 
-- Doors have a strength, and people have strength as well.
-- If a person has greater strength than the door, then he or she can open it.
+- 门有力量（strength），人也有力量。
+- 如果人的力量大于门，则他/她可以打开门。
 
-So we'll create a type `Castle` and give it some doors. For now we only want to give it some "strength" numbers, so we'll just make it an `array<int16>`:
+因此我们将创建一个 `Castle` 类型，并给它一些门（即设置属性 `doors`）。现在我们想给这些门设置一些表示“强度（strength）”的数字，所以我们将 `doors` 设为一个 `array<int16>`：
 
 ```sdl
 type Castle extending Place {
@@ -66,7 +66,7 @@ type Castle extending Place {
 }
 ```
 
-Then we'll imagine that there are three main doors to enter and leave Castle Dracula, so we `INSERT` them as follows:
+然后我们假设这里有三个主要的门用来出入德拉库拉城堡，所以我们按如下方式 `INSERT` 它们。
 
 ```edgeql
 INSERT Castle {
@@ -75,9 +75,9 @@ INSERT Castle {
 };
 ```
 
-Then we will also add a `property strength -> int16;` to our `Person` type. It won't be required because we don't know the strength of everybody in the book...though later on we could make it required if the game needs it.
+然后我们也将添加一个 `property strength -> int16;` 到 `Person` 类型。这个属性将不是必需的，因为我们并不知道本书中所有人的力量……尽管如果游戏需要我们可以在之后将其设置为 `required`。
 
-Now we'll give Jonathan a strength of 5. That's easy with `UPDATE` and `SET` like before:
+现在我们给乔纳森（Jonathan）一个等于 5 的力量值。像之前一样，我们很容易使用 `UPDATE` and `SET` 进行更新：
 
 ```edgeql
 UPDATE Person FILTER .name = 'Jonathan Harker'
@@ -86,9 +86,9 @@ SET {
 };
 ```
 
-Great. We know that Jonathan can't break out of the castle, but let's try to show it using a query. To do that, he needs to have a strength greater than that of a door. Or in other words, he needs a greater strength than the weakest door.
+好的。我们知道乔纳森无法冲出城堡，但让我们尝试使用一个查询语句来展示这个事实。要做到冲出城堡，他需要拥有比门还大的力量。或者换句话说，他需要比最弱的门拥有更大的力量。
 
-Fortunately, there is a function called `min()` that gives the minimum value of a set, so we can use that. If his strength is higher than the door with the smallest number, then he can escape. This query looks like it should work, but not quite:
+幸运的是，有一个叫做 `min()` 的函数可以给出一个集合中的最小值，所以我们可以利用它。如果乔纳森的力量大于拥有最小数值的门的力量，他则可以逃脱。下面的查询看起来应该可以工作，但并不完全是：
 
 ```edgeql
 WITH
@@ -97,23 +97,21 @@ WITH
 SELECT jonathan_strength > min(castle_doors);
 ```
 
-Here's the error:
+这里会报错：
 
 ```
 error: operator '>' cannot be applied to operands of type 'std::int16' and 'array<std::int16>'
 ```
 
-We can [look at the function signature](https://edgedb.com/docs/edgeql/funcops/set#function::std::min) to see the problem:
+我们可以【查看这个函数签名】(https://edgedb.com/docs/edgeql/funcops/set#function::std::min) 来发现问题：
 
 ```
 std::min(values: SET OF anytype) -> OPTIONAL anytype
 ```
 
-The important part is `SET OF`: it needs a set, so something in curly brackets. We can't just put curly brackets around the array, because then it becomes a set of one item (one array). So `SELECT min({[5, 6]});` just returns `{[5, 6]}`, not `{5}`, because `{[5, 6]}` is the minimum value of the arrays we gave it...because we only gave it one array to look at.
+重要的部分是 `SET OF`：它需要的是一个集合，所以我们用大括号括起来。但我们不能只在数组前后放置大括号，因为这样它就会变成一个项目（一个数组）的集合。所以 `SELECT min({[5, 6]});` 只返回 `{[5, 6]}`，而不是 `{5}`，因为 `{[5, 6]}` 里只有一个数组，所以 `{}` 里最小的数组只能是 `[5, 6]`。这也意味着 `SELECT min({[5, 6], [2, 4]});` 将会返回 `{[2, 4]}`（而不是 2）。这不是我们想要的。
 
-That also means that `SELECT min({[5, 6], [2, 4]});` will give us the output `{[2, 4]}` (instead of 2). That's not what we want.
-
-Instead, what we want to use is the [array_unpack()](https://edgedb.com/docs/edgeql/funcops/array#function::std::array_unpack) function which takes an array and unpacks it into a set. So we'll use that on `weakest_door`:
+因此，我们实际想要使用的是 [array_unpack()](https://edgedb.com/docs/edgeql/funcops/array#function::std::array_unpack) 函数，它接受一个数组并可以将其解包为一个集合。所以我们将对 `weakest_door` 使用该函数：
 
 ```edgeql
 WITH
@@ -122,15 +120,15 @@ WITH
 SELECT jonathan_strength > min(array_unpack(doors));
 ```
 
-That gives us `{false}`. Perfect! Now we have shown that Jonathan can't open any doors. He will have to climb out the window to escape.
+我们将得到 `{false}`。完美！现在我们成功展示了乔纳森不能打开任何门。他将不得不从窗户爬出逃跑。
 
-Along with `min()` there is of course `max()`. `len()` and `count()` are also useful: `len()` gives you the length of an object, and `count()` the number of them. Here is an example of `len()` to get the name length of all the `NPC` types:
+除了 `min()`，当然还有 `max()`。`len()` 和 `count()` 也都很有用：`len()` 可以给出一个对象的长度，`count()` 可以给出它们的数量。下面是一个使用 `len()` 获取所有 `NPC` 类型对象的名称长度的示例：
 
 ```edgeql
 SELECT (NPC.name, 'Name length is: ' ++ <str>len(NPC.name));
 ```
 
-Don't forget that we need to cast with `<str>` because `len()` returns an integer, and EdgeDB won't concatenate a string to an integer. This prints:
+别忘了我们需要做一个 `<str>` 的强制转换，因为 `len()` 返回的是一个整数，且 EdgeDB 无法连接一个字符串和一个整数。打印结果如下：
 
 ```
 {
@@ -140,19 +138,19 @@ Don't forget that we need to cast with `<str>` because `len()` returns an intege
 }
 ```
 
-The other example is with `count()`, which also has a cast to a `<str>`:
+另一个使用 `count()` 的例子也需要做 `<str>` 的强制转换：
 
 ```edgeql
 SELECT 'There are ' ++ <str>(SELECT count(Place) - count(Castle)) ++ ' more places than castles';
 ```
 
-It prints: `{'There are 6 more places than castles'}`.
+打印结果是：`{'There are 6 more places than castles'}`.
 
-In a few chapters we will learn how to create our own functions to make queries shorter.
+在之后的几章中，我们将学习如何创建自己的函数来缩短查询时间。
 
-## Using $ to set parameters
+## 使用 $ 设置参数（Using $ to set parameters）
 
-Imagine we need to look up `City` types all the time, with this sort of query:
+假设我们需要一直查找 `City` 类型，使用这种查询：
 
 ```edgeql
 SELECT City {
@@ -161,11 +159,11 @@ SELECT City {
 } FILTER .name ILIKE '%a%' AND len(.name) > 5 AND .population > 6000;
 ```
 
-This works fine, returning one city: `{Object {name: 'Buda-Pesth', population: 402706}}`.
+这将正常工作并返回一个城市：`{Object {name: 'Buda-Pesth', population: 402706}}`。
 
-But this last line with all the filters can be a little annoying to change: there's a lot of moving about to delete and retype before we can hit enter again.
+但是对最后一行包含的所有过滤器的更改可能有点烦人：在我们再次按 Enter 执行语句之前，会因为删除和重新输入需要很多的光标移动。
 
-This could be a good time to add parameters to a query by using `$`. With that we can give them a name, and EdgeDB will ask us for every query what value to give it. Let's start with something very simple:
+这正是使用 `$` 向查询添加参数的好时机。我们可以给参数一个名字，EdgeDB 会在每个查询中询问我们给它什么值。让我们从一些非常简单的事情开始：
 
 ```edgeql
 SELECT City {
@@ -173,7 +171,7 @@ SELECT City {
 } FILTER .name = 'London';
 ```
 
-Now let's change 'London' to `$name`. Note: this won't work yet. Try to guess why!
+现在让我们把 `'London'` 改为 `$name`。注意：这照样不会工作，猜猜为什么？
 
 ```edgeql
 SELECT City {
@@ -181,7 +179,7 @@ SELECT City {
 } FILTER .name = $name;
 ```
 
-The problem is that `$name` could be anything, and EdgeDB doesn't know what type it's going to be. The error tells us too: `error: missing a type cast before the parameter`. So because it's a string, we'll cast with `<str>`:
+这问题在于 `$name` 可以是任何，EdgeDB 不知道它将是什么类型。错误提示同样告诉我：`error: missing a type cast before the parameter`。所以因为它是一个字符串，我们将使用 `<str>` 进行转换：
 
 ```edgeql
 SELECT City {
@@ -189,9 +187,9 @@ SELECT City {
 } FILTER .name = <str>$name;
 ```
 
-When we do that, we get a prompt asking us to enter the value: `Parameter <str>$name:` Just type London, with no quotes because it already knows that it's a string. The result: `{Object {name: 'London'}}`
+当我们这样做时，我们会收到一个提示，要求我们输入值：`Parameter <str>$name:`。输入 London，不需要引号，因为 EdgeDB 已经知道它是一个字符串了。这结果是：`{Object {name: 'London'}}`。
 
-Now let's take that to make a much more complicated (and useful) query, using three parameters. We'll call them `$name`, `$population`, and `$length`. Don't forget to cast them all:
+现在让我们使用三个参数来创建一个更复杂（和有用）的查询。我们将它们称为 `$name`、`$population` 和 `$length`。不要忘记对它们进行类型转换：
 
 ```edgeql
 SELECT City {
@@ -205,7 +203,7 @@ SELECT City {
     <int64>len(.name) > <int64>$length;
 ```
 
-Since there are three of them, EdgeDB will ask us to input three values. Here's one example of what it looks like:
+由于有三个参数，EdgeDB 会要求我们输入三个值。下面是它的一个示例：
 
 ```
 Parameter <str>$name: u
@@ -213,7 +211,7 @@ Parameter <int64>$population: 2000
 Parameter <int64>$length: 5
 ```
 
-So that will give all `City` types with u in the name, population of more than 2000, and a name longer than 5 characters. The result:
+因此，这将给出所有名称中包含 u、人口超过 2000 且名称长度超过 5 个字符的 `City` 类型的对象。结果是：
 
 ```
 {
@@ -222,7 +220,7 @@ So that will give all `City` types with u in the name, population of more than 2
 }
 ```
 
-Parameters work just as well in inserts too. Here's a `Time` insert that prompts the user for the hour, minute, and second:
+参数在插入语句中也同样有效。这是一个 `Time` 插入，提示用户输入小时、分钟和秒：
 
 ```edgeql
 SELECT(
@@ -240,7 +238,7 @@ Parameter <str>$minute: 09
 Parameter <str>$second: 09
 ```
 
-Here's the output:
+输出结果是：
 
 ```
 {
@@ -253,9 +251,9 @@ Here's the output:
 }
 ```
 
-Note that the cast means you can just type 10, not '10'.
+请注意，强制转换意味着你只能输入 `10`，而不是 `'10'`。
 
-So what if you just want to have the _option_ of a parameter? No problem, just put `OPTIONAL` before the type name in the cast (inside the `<>` brackets). So the insert above would look like this if you wanted everything optional:
+那么，如果你只想拥有一个 _可选的_ 参数呢？没问题，只需将 `OPTIONAL` 放在类型名称之前（放在 `<>` 括号内）。因此，如果你希望所有内容都是可选的，则上面的插入内容将如下所示：
 
 ```edgeql
 SELECT(
@@ -270,30 +268,30 @@ SELECT(
 };
 ```
 
-Of course, the `Time` type needs the proper formatting for the `date` property so this is a bad idea. But that's how you would do it.
+当然，`Time` 类型的 `date` 属性需要正确的格式，所以上面的做法不是一个好主意。这里只是为了展示一下你可以如何做。
 
-The opposite of `OPTIONAL` is `REQUIRED`, but it's the default so you don't need to write it.
+`OPTIONAL` 的相反是 `REQUIRED`，但因为它是默认的，所以你不需要总是写上它。
 
-The `UPDATE` keyword that we learned last chapter can also take parameters, so that's four in total where you can use them: `SELECT`, `INSERT`, `UPDATE`, and `DELETE`.
+我们在之前章节里学到的关键字 `UPDATE` 也可以使用参数，所以总共有四个关键字我们可以使用参数：`SELECT`、`INSERT`、`UPDATE` 和 `DELETE`。
 
-[Here is all our code so far up to Chapter 7.](code.md)
+[这里是第七章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
-1. How would you select each City and the length of its name?
+1. 如何选择出每一个 City 及他们名字的长度？
 
-2. How would you select each City and the length of `name` minus the length of `modern_name` if `modern_name` exists, and 0 if `modern_name` does not exist?
+2. 如何选择出每一个 City 并展示其 `name` 长度减去 `modern_name` 长度的结果，如果 `modern_name` 不存在，则显示 0。 
 
-3. What if you wanted to write 'Modern name does not exist' instead of 0?
+3. 如果在上一题中想用 `'Modern name does not exist'` 替代 0，作为 `modern_name` 不存在时的结果显示，该如何做？
 
-4. How would you insert an NPC with the name 'NPC number 8' if for example there are already seven other NPCs?
+4. 如果已经有 7 个 NPC 存在，你将如何插入名为“NPC number 8”的 NPC？
 
-5. How would you select only the `Person` types that have the shortest names?
+5. 如何选择出名字最短的 `Person` 类型对象？
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Workers in the city of Varna load boxes into a ship. Dracula is inside one of them..._
+__接下来：__ _瓦尔纳市的工人将箱子装上了船，德拉库拉就在其中之一……_
