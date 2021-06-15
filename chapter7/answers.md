@@ -1,8 +1,8 @@
 # Chapter 7 Questions and Answers
 
-#### 1. How would you select each City and the length of its name?
+#### 1. 如何选择出每一个 City 及他们名字的长度？
 
-Easy, just use the `len()` function:
+很容易，使用函数 `len()`：
 
 ```edgeql
 SELECT City {
@@ -11,9 +11,9 @@ SELECT City {
 };
 ```
 
-#### 2. How would you select each City and the length of its `name` minus the length of `modern_name` if `modern_name` exists, and 0 if `modern_name` does not exist?
+#### 2. 如何选择出每一个 City 并展示其 `name` 长度减去 `modern_name` 长度的结果，如果 `modern_name` 不存在，则显示 0。 
 
-For this we use our old friends `IF EXISTS` and `ELSE`:
+为此，我们可以使用我们的老朋友 `IF EXISTS` 和 `ELSE`：
 
 ```edgeql
 SELECT City {
@@ -22,9 +22,9 @@ SELECT City {
 };
 ```
 
-#### 3. What if you wanted to write 'Modern name does not exist' instead of 0?
+#### 3. 如果在上一题中想用 `'Modern name does not exist'` 替代 0，作为 `modern_name` 不存在时的结果显示，该如何做？
 
-First of all, here's what we can't do:
+首先，这是我们不能做的：
 
 ```edgeql
 SELECT City {
@@ -33,13 +33,13 @@ SELECT City {
 };
 ```
 
-You can probably guess why: items inside `length_difference` could be an `int64` sometimes, and `str` at other times, which is unacceptable. Here's the error:
+你可能能猜到原因：`length_difference` 中的项目有时可能是 `int64`，而有时是 `str`，这是不可接受的。错误提示：
 
 ```
 error: operator 'std::IF' cannot be applied to operands of type 'std::int64', 'std::bool', 'std::str'
 ```
 
-Fortunately, we can just cast the results to a string:
+幸运的是，我们可以将结果转换为字符串：
 
 ```edgeql
 SELECT City {
@@ -48,7 +48,7 @@ SELECT City {
 };
 ```
 
-It should give this result:
+它应该会给出结果如下所示：
 
 ```
 {
@@ -59,9 +59,9 @@ It should give this result:
 }
 ```
 
-#### 4. How would you insert an NPC with the name 'NPC number 8' if for example there are already seven other NPCs?
+#### 4. 如果已经有 7 个 NPC 存在，你将如何插入名为“NPC number 8”的 NPC？
 
-It looks like this:
+如下所示：
 
 ```edgeql
 INSERT NPC {
@@ -69,11 +69,12 @@ INSERT NPC {
 };
 ```
 
-`SELECT count(NPC)` on its own gives the number, but we are inserting an `NPC` at the same time so we need `DETACHED` to select the `NPC` type in general.
+`SELECT count(NPC)` 给出了 NPC 数量，但我们同时插入了一个 `NPC`，所以我们需要 `DETACHED` 来选择泛指的 `NPC` 类型对象。
 
-#### 5. How would you select only the `Person` types that have the shortest names?
 
-First, here's how **not** to do it:
+#### 5. 如何选择出名字最短的 `Person` 类型对象？
+
+首先，下面这是错误的写法：
 
 ```edgeql
 SELECT Person {
@@ -81,9 +82,9 @@ SELECT Person {
 } FILTER len(.name) = min(len(Person.name));
 ```
 
-This seems like it might work, but `min(len(Person.name))` is the minimum length of `Person` that we are selecting - in other words, one `Person`. The result: every Person type and their names show up.
+这似乎可行，但 `min(len(Person.name))` 是我们当前选择的 `Person` 的最小长度。这结果将是：每一个 `Person` 类型对象及他们的名字都会出现。
 
-Adding `DETACHED` solves it:
+通过添加 `DETACHED` 来解决它：
 
 ```edgeql
 SELECT Person {
@@ -91,7 +92,7 @@ SELECT Person {
 } FILTER len(.name) = min(len(DETACHED Person.name));
 ```
 
-We could do the same with `WITH` as well, which is maybe a bit easier to read:
+我们也可以用 `WITH` 达到同样效果，可能会更加易读些：
 
 ```edgeql
 WITH minimum_length := min(len(DETACHED Person.name))
