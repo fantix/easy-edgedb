@@ -246,4 +246,4 @@ SELECT 1887#0503 is the first day of the book Dracula when...
 
 <!-- quiz-end -->
 
-__下一章__ _乔纳森坐上马车，前往寒冷的山脉。_
+__接下来：__ _乔纳森坐上马车，前往寒冷的山脉。_
