@@ -97,7 +97,7 @@ SELECT Vampire {
 
 ## 添加约束（Adding constraints）
 
-现在让我们再回过头关注一下 `age`。对于 `Vampire` 类型，这很容易，因为他们可以永生。但是现在我们也想给不可能永生的人类 `PC` 和 `NPC` 一个 `age`（我们不会期待他们能活 32767 年）。对于这一点，我们可以添加一个“约束（constrait）”（一个限制）。我们将给它们一个名为 `HumanAge` 的新类型，而不是 `age`。然后我们对其写下 `constraint` 并使用[其中一个函数](https://edgedb.com/docs/datamodel/constraints) 。我们将使用
+现在让我们再回过头关注一下 `age`。对于 `Vampire` 类型，这很容易，因为他们可以永生。但是现在我们也想给不可能永生的人类 `PC` 和 `NPC` 一个 `age`（我们不会期待他们能活 32767 年）。对于这一点，我们可以添加一个“约束（constrait）”（一个限制）。我们将给它们一个名为 `HumanAge` 的新类型，而不是 `age`。然后我们对其写下 `constraint` 并使用 [其中一个函数](https://edgedb.com/docs/datamodel/constraints) 。我们将使用
 `max_value()`。 
 
 下面是 `max_value()` 的签名：
@@ -177,7 +177,7 @@ SELECT (DELETE Country) {
 
 输出结果是：`{Object {name: 'Hungary'}}`，这说明我们删除了 Hungary。如果现在我们执行 `SELECT Country`，我们将得到一个空集 `{}`，这说明我们确实把它们都删了。
 
-（有趣的是：在 EdgeDB 里，`DELETE` 语句实际上是 `DELETE (SELECT ...)` 的[语法糖](https://www.edgedb.com/docs/edgeql/statements/delete/)。另外，在下一章中，你将通过 `SELECT` 学习关键字 `LIMIT`，当你学习使用它时，请记住你也同样可以将其应用到 `DELETE`。）
+（有趣的是：在 EdgeDB 里，`DELETE` 语句实际上是 `DELETE (SELECT ...)` 的 [语法糖](https://www.edgedb.com/docs/edgeql/statements/delete/)。另外，在下一章中，你将通过 `SELECT` 学习关键字 `LIMIT`，当你学习使用它时，请记住你也同样可以将其应用到 `DELETE`。）
 
 > 语法糖（英语：Syntactic sugar）是由英国计算机科学家彼得·兰丁发明的一个术语，指计算机语言中添加的某种语法，这种语法对语言的功能没有影响，但是更方便程序员使用。语法糖让程序更加简洁，有更高的可读性。
 
