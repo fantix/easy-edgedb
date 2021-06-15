@@ -6,9 +6,9 @@ tags: Constraint Delegation, $ Parameters
 
 > 乔纳森（Jonathan）白天偷偷溜进德拉库拉（Dracula）的房间，看到他睡在棺材里。现在他知道了德拉库拉是一个吸血鬼。几天后，德拉库拉伯爵说他明天就要走了。乔纳森认为这是一个好机会，并要求现在就离开。 德拉库拉打开门并回应道：“好吧，如你愿意……” 但是外面有很多狼，它们嚎叫着，发出很大的声音。德拉库拉又道：“你可以离开了，再见！” 乔森纳知道，如果他走出去，狼群将会杀掉他。他也知道是德拉库拉召唤的狼群，于是请他把门关上。德拉库拉微笑着关上了门……他知道乔纳森被困住了。之后，乔纳森听到德拉库拉告诉三个女吸血鬼，她们可以在他明天离开后享用他。第二天，德拉库拉的朋友把他带走了（他在棺材里），乔纳森独自一人留下……不久，夜幕降临。所有的门都锁上了。他决定从窗户爬出去，因为他宁愿摔死，也不愿意与女吸血鬼们单独在一起。他在日记中写道“再见了，各位！米娜！” ，然后开始爬墙。
 
-## 更多限制（More constraints）
+## 更多约束（More constraints）
 
-在乔纳森爬墙时，我们可以继续处理我们的数据库架构（schema）。在我们的书中，没有相同名字的角色，所以应该只有一个米娜·默里（Mina Murray），一个德拉库拉伯爵等等。这是在 `Person` 类型的 `name` 上放置 [constraint](https://edgedb.com/docs/datamodel/constraints#ref-datamodel-constraints) 的好时机，以确保我们不会有重复的插入。`constraint` 是一个限制，我们人类的在 `age` 中已经看到限制，即只能达到 120 岁。对于 `name`，我们可以给它增加一个名为 `constraint exclusive` 的限制，以防止两个相同类型的对象具有相同的名称。您可以在属性后的块中放置一个 `constraint`，如下所示：
+在乔纳森爬墙时，我们可以继续处理我们的数据库架构（schema）。在我们的书中，没有相同名字的角色，所以应该只有一个米娜·默里（Mina Murray），一个德拉库拉伯爵等等。这是在 `Person` 类型的 `name` 上放置 [constraint（约束）](https://edgedb.com/docs/datamodel/constraints#ref-datamodel-constraints)的好时机，以确保我们不会有重复的插入。`constraint` 是一个限制，我们人类的在 `age` 中已经看到限制，即只能达到 120 岁。对于 `name`，我们可以给它增加一个名为 `constraint exclusive` 的限制，以防止两个相同类型的对象具有相同的名称。您可以在属性后的块中放置一个 `constraint`，如下所示：
 
 ```sdl
 abstract type Person {
@@ -103,7 +103,7 @@ SELECT jonathan_strength > min(castle_doors);
 error: operator '>' cannot be applied to operands of type 'std::int16' and 'array<std::int16>'
 ```
 
-我们可以【查看这个函数签名】(https://edgedb.com/docs/edgeql/funcops/set#function::std::min) 来发现问题：
+我们可以 [查看这个函数签名](https://edgedb.com/docs/edgeql/funcops/set#function::std::min) 来发现问题：
 
 ```
 std::min(values: SET OF anytype) -> OPTIONAL anytype
