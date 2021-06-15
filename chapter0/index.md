@@ -2,46 +2,46 @@
 leadImage: illustration_00.jpg
 ---
 
-# Chapter 0 - EdgeDB and the book Easy EdgeDB
+# 序 - EdgeDB 和《EdgeDB 易经》
 
-Thanks for checking out our new book to learn Easy EdgeDB!
+感谢你阅读我们的新书《EdgeDB 易经》（《Easy EdgeDB》）来学习 EdgeDB！
 
-We've had quite the journey so far up to the release of this book. It began in spring 2019 with the public release of [EdgeDB Alpha 1](https://www.edgedb.com/blog/edgedb-1-0-alpha-1), showing for the first time the possibilities of an open source database built on top of PostgreSQL that combines the simplicity of a NoSQL database with relational model’s powerful querying, strictness, consistency, and performance. To see what's going on since then, see [our blog](https://www.edgedb.com/blog) where we announce the latest developments in the EdgeDB ecosystem.
+到如今本书出版，EdgeDB 已经走过了很长的路。它始于 2019 年春季 [EdgeDB Alpha 1] (https://www.edgedb.com/blog/edgedb-1-0-alpha-1) 的公开发布，首次展示了构建在 PostgreSQL 之上的开源数据库的可能性，并结合了 NoSQL 数据库的简单性与关系模型的强大的查询、严格性、一致性和性能。要了解从那时起发生了什么，请参阅 [我们的博客](https://www.edgedb.com/blog)，我们在其中宣布了 EdgeDB 生态系统的最新进展。
 
-Much of our learning material can be found in the [interactive tutorial](https://tutorial.edgedb.com/), [documentation](https://edgedb.com/docs/) and [blog posts](https://www.edgedb.com/blog/we-can-do-better-than-sql), but we also wanted to put something together that immerses the learner for longer - a full book. The result is Easy EdgeDB: a book large enough (and fun enough) to make any interested beginner into a comfortable intermediate EdgeDB user by the end.
+我们的大部分学习材料都可以在 [交互式教程](https://tutorial.edgedb.com/)、[文档](https://edgedb.com/docs/) 和 [博客文章](https: //www.edgedb.com/blog/we-can-do-better-than-sql)中找到，但我们还是想把一些东西放在一起，让学习者能沉浸得更久，即一本完整的书。产物就是《Edge 易经》（《Easy EdgeDB》）：一本足够充实（也足够有趣），且可以让所有感兴趣的初学者最终成为一个自如的中级 EdgeDB 用户的书籍。
 
-Easy EdgeDB is a fairly unique textbook, to say the least. Here's how it differs from what you might expect from text of its type:
+可以说，《Edge 易经》是一本相当独特的教科书。以下是它与您可能对同类型的文本所期望的不同之处：
 
-## A story to follow
+## 故事线贯穿
 
-The book is divided into 20 chapters in which we imagine that we are creating a database for a game. The setting for our imaginary game is the scenes and locations from the book Dracula by Bram Stoker, published in 1897. Our job is to think a little about how to represent items like characters, events, locations, and dates in the book in a database used by a role-playing game built separately. In other words, something like [Python](https://www.edgedb.com/docs/clients/00_python/index/)/[JavaScript](https://www.edgedb.com/docs/clients/01_js/index/)/[Go](https://github.com/edgedb/edgedb-go) on the frontend, and EdgeDB as the game's database. (Why Python, JavaScript and Go? Because EdgeDB has drivers for all three of those languages.)
+这本书分为 20 章，我们假设我们正在为一个游戏创建一个数据库。我们的虚构游戏的背景是拉姆·斯托克（Bram Stoker）于 1897 年出版的《德拉库拉（Dracula）》一书中的场景与地点。我们的工作是考虑如何为一个角色扮演游戏的搭建在数据库中表示出书中的人物、事件、地点和日期等内容。换句话说，类似 [Python](https://www.edgedb.com/docs/clients/00_python/index/)/[JavaScript](https://www.edgedb.com/docs/clients/01_js/index/)/[Go](https://github.com/edgedb/edgedb-go) 在前端，EdgeDB 作为游戏的数据库。（为什么是 Python、JavaScript 和 Go？因为 EdgeDB 具有这三种语言的驱动程序。）
 
-Bram Stoker's Dracula was the perfect choice for this textbook for a few reasons:
+拉姆·斯托克（Bram Stoker）笔下的德拉库拉（Dracula）是这本教科书的完美选择，原因如下：
 
-- It's a fun read. We're excited to see you give EdgeDB a try and hope to make the introduction as painless and immersive as possible. We think that anyone who has spent an hour or so with EdgeDB will walk away excited about its possibilities, but for that to happen it's our job to make the experience a pleasant one. Bram Stoker's novel has really helped out here.
-- It's a so-called *epistolary novel*: a novel written through the letters, diaries, and communications written by the main characters. That means that each entry has a date and an author, which makes it a great fit for a database.
-- It's copyright free. Our book only scratches the surface of what a real database for a game based on this book would be like, but who knows? Maybe some readers will like it enough to take the concept a bit farther and make it into the real thing. And if that's the case, then an open source database software based on a book completely free of copyright is the best way to start.
+- 这是一个有趣的读物。我们很高兴看到你尝试使用 EdgeDB，并希望使介绍尽可能轻松和身临其境。我们认为任何在 EdgeDB 上花了一个小时左右的人都会对它的可能性感到兴奋，但要实现这一点，我们的工作就是让体验变得愉快。拉姆·斯托克（Bram Stoker）的小说真的帮到了不少。
+- 它是所谓的**书信小说**：通过主要人物写的信件、日记和通信写成的小说。这意味着每个条目都有一个日期和一个作者，这使得它非常适合数据库设计与存储。
+- 它是无版权的。我们的书只是触及了基于本书的游戏的真实数据库的皮毛，但谁知道呢？也许会有读者会喜欢它，并进一步深入这个概念，让它变成了真实的东西。如果是这样，那么一个基于完全无版权的书籍的开源数据库软件是最好的开始方式。
 
-## Plain English
+## 简单的语言
 
-We want to give as many people as possible the opportunity to sit down and give EdgeDB a try, and so we've opted for a style of writing that's simple and straightforward. Not baby talk, just plain English. We have three types of people in mind here:
+我们希望让尽可能多的人有机会坐下来尝试 EdgeDB，因此我们选择了一种简单明了的写作风格。不是婴儿语，只是简单的英语。在这里，我们考虑了三种类型的人：
 
-- People unfamiliar with how to build a database but ready to understand how they work if the concepts are explained in a straightforward way,
-- People who *are* familiar with databases but maybe aren't in the mood to wade through dense verbiage for a product they've never seen before,
-- People with English as a second (or third, fourth...) language who would much prefer reading a book in plain English for the same reason.
+- 不熟悉如何构建数据库，但如果以直接的方式解释这些概念，已经准备好理解它们的工作原理的人们，
+- 熟悉数据库但可能没有心情为他们以前从未见过的产品费时费力的人，
+- 英语是第二（或第三、第四...）语言，更倾向阅读简单英文的人。
 
-## Interactivity and experimentation
+## 交互性和实验性
 
-Because the book uses the events in the book for the background, we need a database to tie everything together. It will need to show the connections between the characters, locations, dates, and more. It starts with a simple schema (structure) and builds up from there, changing it as we go. The idea is to simulate the mental process for someone new to EdgeDB that has been given the task of putting this all together. That includes sometimes modifying the schema, creating new types, deleting ones that aren't used, and all the tinkering you'd see in real life. 
+因为本教科书以小说中的事件为背景，我们需要一个数据库来将所有内容联系在一起。它需要显示人物、地点、日期等之间的联系。它从一个简单的架构（结构，schema）开始，然后从那里开始构建，随着故事的推演，我们会持续改变它。这个想法是模拟 EdgeDB 新人的心理过程，他的任务是将所有这些放在一起。这包括有时修改架构、创建新类型、删除未使用的类型以及你在现实生活中会看到的所有修修补补。
 
-Going through the book, we will learn how to use queries that are more and more complex. Each chapter contains the schema and inserted data that we've built up so far, and a REPL for you to experiment with. On top of that, each chapter has a number of questions for you to solve if you feel like a small challenge.
+通过本书，我们将学习如何使用越来越复杂的查询。每一章都包含我们截止到对应章节所建立的架构和插入的数据，以及一个供你实验的 REPL（读取-求值-输出循环，read-eval-print loop）。最重要的是，每个章节都有许多问题等你解决，如果你也觉得是个小挑战的话。
 
 ## Beauty
 
-We looked far and wide, and didn't see any rule that a text on database software has to be dry and image free. To give a feel for the beauty of the original work (with a steampunk-ish vibe added for good measure) we teamed up with Damian Dideńko ([didiusz on Instagram](https://www.instagram.com/didiusz/)), an illustrator of 10 years from Katowice, Poland, to put together some beautiful sketches that combine the atmosphere of the book Dracula with the most important schema and query concepts per chapter. You'll soon become familiar with his illustrations but here is how he describes them and what inspires him:
+为了感受原作的美感（添加了蒸汽朋克风格的氛围已达到最佳效果），我们合作了 Damian Dideńko（[didiusz 在 Instagram 上](https://www.instagram.com/didiusz/)），一位来自波兰卡托维兹的 10 年插画师，他制作了一些精美的插画，将《德拉库拉（Dracula）》一书的氛围与每章最重要的架构和查询概念进行了结合。你很快就会看到他的插图，以下是他的描述以及他的灵感来源：
 
->I try to take inspiration from everything that I have contact with. In my works, I like to build slightly surreal, understated/untold stories that leave the viewer room for their own interpretation. The works themselves are a loose stream of thoughts that make sense while creating, sometimes at the very end and sometimes not at all - because not everything has to make sense. My works often start with a small idea that grows into a much larger composition. I like to create works that are rich in detail, in which I sometimes hide what inspires me. They are a bit like little easter eggs for the watchful observer.
+>我试图从我所接触过的所有事物中汲取灵感。在我的作品中，我喜欢构建略微超现实、低调/不为人知的故事，让观众有自己的解释空间。作品本身是一种松散的思想流，在创作时是有意义的，有时在最后，有时根本没有 —— 因为不是每件事都必须有意义。我的作品通常从一个小想法开始，然后发展成为一个更大的构图。我喜欢创作细节丰富的作品，有时我会在其中隐藏灵感。对于细心的观察者来说，它们有点像复活节小彩蛋。
 
-We're pleased to have teamed up with Damian to put the final touch on a book that blends the old and the new in a form that we hope will keep you turning the page as you familiarize yourself with EdgeDB and discover what it has to offer you.
+我们很高兴与 Damian 合作完成了这本书的最后润色，该书以一种我们希望的形式融合了新旧事物，当你熟悉了 EdgeDB 并发现了它为你提供的内容时，你将会不会停止翻阅本书。
 
-[So let's get started - on to Chapter 1!](../chapter1/index.md)
+[那么让我们开始吧 —— 进入第一章！](../chapter1/index.md)
