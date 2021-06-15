@@ -58,7 +58,7 @@ type City {
 
 ## 迁移（Migration）
 
-我们尚未创建我们的数据库。 [在安装 EdgeDB 后](https://edgedb.com/download) 我们需要做两个步骤。第一步，我们需要用关键字 `CREATE DATABASE` 及我们要赋予其的名称来创建一个数据库：
+我们尚未创建我们的数据库。[在安装 EdgeDB 后](https://edgedb.com/download) 我们需要做两个步骤。第一步，我们需要用关键字 `CREATE DATABASE` 及我们要赋予其的名称来创建一个数据库：
 
 ```edgeql
 CREATE DATABASE dracula;
@@ -75,10 +75,10 @@ CREATE DATABASE dracula;
 
 当然，除此之外还有很多其他命令，尽管我们在本书中不需要它们。但你可以将下面的四个页面添加至书签以供今后使用：
 
-- [Admin commands](https://www.edgedb.com/docs/cheatsheet/admin): 创建用户角色，设置密码，配置端口等。
-- [CLI commands](https://www.edgedb.com/docs/cheatsheet/cli): 创建数据库，角色，为角色设置密码，链接数据库等。
-- [REPL commands](https://www.edgedb.com/docs/cheatsheet/repl): 主要介绍我们将在本书中使用的许多命令的快捷方式。
-- [Various commands](https://www.edgedb.com/docs/edgeql/statements/tx_rollback#rollback) 关于回滚事务、保存点声明等。
+- [Admin commands](https://www.edgedb.com/docs/cheatsheet/admin)：创建用户角色，设置密码，配置端口等。
+- [CLI commands](https://www.edgedb.com/docs/cheatsheet/cli)：创建数据库，角色，为角色设置密码，链接数据库等。
+- [REPL commands](https://www.edgedb.com/docs/cheatsheet/repl)：主要介绍我们将在本书中使用的许多命令的快捷方式。
+- [Various commands](https://www.edgedb.com/docs/edgeql/statements/tx_rollback#rollback)：关于回滚事务、保存点声明等。
 
 我们还提供了以下编辑器的语法高亮插件，如果你愿意，可以通过相应的链接进行下载：[Atom](https://atom.io/packages/edgedb)，[Visual Studio Code](https://marketplace.visualstudio.com/itemdetails?itemName=magicstack.edgedb)，[Sublime Text](https://packagecontrol.io/packages/EdgeDB)，[Vim](https://github.com/edgedb/edgedb-vim).
 
@@ -210,7 +210,7 @@ SELECT City;
 }
 ```
 
-这仅仅是告诉我有三个 `City` 类型的对象。查看它们的内部，我们可以给查询添加属性或链接名称。这被称为描述我们想要的数据的[形状](https://www.edgedb.com/docs/edgeql/expressions/shapes/#ref-eql-expr-shapes) 。我们选择所有 `City` 类型并通过下面这个查询显示他们的  `modern_name`：
+这仅仅是告诉我有三个 `City` 类型的对象。查看它们的内部，我们可以给查询添加属性或链接名称。这被称为描述我们想要的数据的 [形状](https://www.edgedb.com/docs/edgeql/expressions/shapes/#ref-eql-expr-shapes) 。我们选择所有 `City` 类型并通过下面这个查询显示他们的  `modern_name`：
 
 ```edgeql
 SELECT City {
