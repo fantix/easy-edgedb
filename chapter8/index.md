@@ -2,17 +2,17 @@
 tags: Multiple Inheritance, Polymorphism
 ---
 
-# Chapter 8 - Dracula takes the boat to England
+# 第八章 - 德古拉跨乘船前往英国
 
-We are finally away from Castle Dracula. Here is what happens in this chapter:
+本章我们终于离开了德古拉城堡。这是本章中发生的事情：
 
-> A boat leaves from the city of Varna in Bulgaria, sailing into the Black Sea. It has a **captain, first mate, second mate, cook**, and **five crew**. Inside is Dracula, but they don't know that he's there. Every night Dracula leaves his coffin, and every night one of the men disappears. They become afraid but don't know what is happening or what to do. One of them tells them he saw a strange man walking around the deck, but the others don't believe him. Finally it's the last day before the ship reaches the city of Whitby in England, but the captain is alone - all the others have disappeared. The captain knows the truth now. He ties his hands to the wheel so that the ship will go straight even if Dracula finds him. The next day the people in Whitby see a ship hit the beach, and a wolf jumps off and runs onto the shore - it's Dracula in his wolf form, but they don't know that. People find the dead captain tied to the wheel with a notebook in his hand and start to read the story.
+> 一艘船从保加利亚（Bulgaria）的瓦尔纳市（Varna）出发，驶入黑海。它有一个**船长（captain）、大副（first mate）、二副（second mate）、厨师（cook）** 和 **五名船员（five crew）**。德古拉也在床上，但没人知道他在。每天晚上德古拉都会离开他的棺材，且每天晚上都会有一个人消失。船上的人感到害怕，但不知道发生了什么或该做什么。其中一个人说他看到一个奇怪的人在甲板上走来走去，但其他人不相信他。终于是船抵达英国（England）惠特比市（Whitby）的最后一天了，只剩下船长一个人了 —— 其他所有人都消失了。船长现在知道真相了。他将双手绑在方向盘上，这样即使德古拉找到了他，船也能继续直行。第二天，惠特比（Whitby）的人们看到一艘船搁浅了，一只狼从上面跳下来并跑到了岸上 —— 这是德古拉的狼化身，但人们并不知道。人们发现死去的船长被绑在方向盘上，手里拿着一个笔记本，于是开始阅读里面的故事。
 
-> Meanwhile, Mina and her friend Lucy are in Whitby on vacation...
+> 与此同时，米娜（Mina）和她的朋友露西（Lucy）正在惠特比（Whitby）度假……
 
-## Multiple inheritance
+## 多重继承（Multiple inheritance）
 
-While Dracula arrives at Whitby, let's learn about multiple inheritance. We know that you can `extend` a type on another, and we have done this many times: `Person` on `NPC`, `Place` on `City`, etc. Multiple inheritance is doing this with more than one type at the same time. We'll try this with the ship's crew. The book doesn't give them any names, so we will give them numbers instead. Most `Person` types won't need a number, so we'll create an abstract type called `HasNumber` only for types that need a number:
+在德古拉到达惠特比（Whitby）时，让我们来学习多重继承（multiple inheritance）。我们知道你可以在一个类型上 `extend` 另一个类型，我们已经在之前如此做了很多次：`Person` 扩展出 `NPC`, `Place` 扩展出 `City`，等等。多重继承是同时对多个类型执行此操作。让我在船员身上做一下尝试。原著里没有给他们任何名字，所以我们用编号来表示他们。大多数 `Person` 类型不需要数字，因此我们将为需要数字的类型创建一个名为 `HasNumber` 的抽象类型：
 
 ```sdl
 abstract type HasNumber {
@@ -20,16 +20,16 @@ abstract type HasNumber {
 }
 ```
 
-We will also remove `required` from `name` for the `Person` type. Not every `Person` type will have a name now, and we trust ourselves enough to input a name if there is one. We will of course keep it `exclusive`.
+我们还要从 `Person` 类型的 `name` 中删除 `required`。因为现在不是每个 `Person` 类型的对象都会有一个名字，对于有名字的 `Person`，我们信任自己会输入对应的名字。当然，我们还会保留 `exclusive`。
 
-Now we can use multiple inheritance for the `Crewman` type. It's very simple: just add a comma between every type you want to extend.
+现在我们可以运用多重继承来创建 `Crewman` 类型。这很简单：只需在要扩展的每个类型之间添加一个逗号。
 
 ```sdl
 type Crewman extending HasNumber, Person {
 }
 ```
 
-Now that we have this type and don't need a name, it's super easy to insert our crewmen thanks to `count()`. We just do this five times:
+现在我们有了 `Crewman` 并且不需要名字，且 `count()`，是我们对船员的插入变得非常容易。我们只需要重复做五次：
 
 ```edgeql
 INSERT Crewman {
@@ -37,7 +37,7 @@ INSERT Crewman {
 };
 ```
 
-So if there are no `Crewman` types, he will get the number 1. The next will get 2, and so on. So after doing this five times, we can `SELECT Crewman {number};` to see the result. It gives us:
+因此，如果还没有 `Crewman` 类型的对象，新插入的船员将获得编号 1。下一个将获得编号 2，依此类推。所以这样做五次之后，我们可以 `SELECT Crewman {number};` 来查看结果了。我们将得到：
 
 ```
 {
@@ -49,13 +49,13 @@ So if there are no `Crewman` types, he will get the number 1. The next will get 
 }
 ```
 
-Next is the `Sailor` type. The sailors have ranks, so first we will make an enum for that:
+接下来是 `Sailor` 类型。水手是有等级的，所以首先我们先为此创建一个枚举：
 
 ```sdl
 scalar type Rank extending enum<Captain, FirstMate, SecondMate, Cook>;
 ```
 
-And then we will make a `Sailor` type that uses `Person` and this `Rank` enum:
+然后我们将创建一个使用了 `Person` 和这个 `Rank` 枚举的 `Sailor` 类型：
 
 ```sdl
 type Sailor extending Person {
@@ -63,7 +63,7 @@ type Sailor extending Person {
 }
 ```
 
-Then we will make a `Ship` type to hold them all.
+然后我们来制作一个 `Ship` 类型来承载它们：
 
 ```sdl
 type Ship {
@@ -73,7 +73,7 @@ type Ship {
 }
 ```
 
-Now to insert the sailors we just give them each a name and choose a rank from the enum:
+现在要插入水手，我们只需给他们一个名字并从枚举中选择一个等级：
 
 ```edgeql
 INSERT Sailor {
@@ -87,8 +87,8 @@ INSERT Sailor {
 };
 
 INSERT Sailor {
-  name := 'The First Mate',
-  rank := 'FirstMate'
+  name := 'The Second Mate',
+  rank := 'SecondMate'
 };
 
 INSERT Sailor {
@@ -97,7 +97,7 @@ INSERT Sailor {
 };
 ```
 
-Inserting the `Ship` is easy because right now every `Sailor` and every `Crewman` type is part of this ship - we don't need to `FILTER` anywhere.
+插入 `Ship` 很容易，因为现在的每个 `Sailor` 和每个 `Crewman` 都是这艘船的一部分 —— 我们不需要使用任何 `FILTER`。
 
 ```edgeql
 INSERT Ship {
@@ -107,7 +107,7 @@ INSERT Ship {
 };
 ```
 
-Then we can look up the `Ship` to make sure that the whole crew is there:
+然后我们可以查看 `Ship` 以确保全部船员都在里面：
 
 ```edgeql
 SELECT Ship {
@@ -145,9 +145,9 @@ The result is:
 }
 ```
 
-## The sequence type
+## 序列类型（The sequence type）
 
-On the subject of giving types a number, EdgeDB has a type called [sequence](https://www.edgedb.com/docs/datamodel/scalars/numeric/#type::std::sequence) that you may find useful. This type is defined as an "auto-incrementing sequence of int64", so an `int64` that starts at 1 and goes up every time you use it. Let's imagine a `Townsperson` type for a moment that uses it. Here's the wrong way to do it:
+关于给对象编号的情况，EdgeDB 有一个叫做 [sequence](https://www.edgedb.com/docs/datamodel/scalars/numeric/#type::std::sequence) 的类型，你可能会发现它很有用。这种类型被定义为“int64 的自动递增序列”，因此一个 `int64` 从 1 开始，每次使用时都会增加。让我们假设一个 `Townsperson` 类型，并对其使用 sequence。但下面这样做是错误的：
 
 ```sdl
 type Townsperson extending Person {
@@ -155,7 +155,7 @@ type Townsperson extending Person {
 }
 ```
 
-This won't work because each `sequence` keeps a record of the most recent number, and if every type just uses `sequence` then they would share it. So the right way to do it is to extend it to another type that you give a name to, and then that type will start from 1. So our `Townsperson` type would look like this instead:
+这是行不通的，因为每个 `sequence` 都会记录最新的数字，如果每种类型都使用 `sequence`，那么它们就会共享它。所以正确的做法是将其扩展为你命名的另一种类型，然后该类型将从 1 开始计数。所以我们的 `Townsperson` 类型看起来应该像这样：
 
 ```sdl
 scalar type TownspersonNumber extending sequence;
@@ -165,9 +165,9 @@ type Townsperson extending Person {
 }
 ```
 
-The number for a `sequence` type will continue to increase by 1 even if you delete other items. For example, if you inserted five `Townsperson` objects, they would have the numbers 1 to 5. Then if you deleted them all and then inserted one more `Townsperson`, this one would have the number 6 (not 1). So this is another possible option for our `Crewman` type. It's very convenient and there is no chance of duplication, but the number increments on its own every time you insert. Well, you _could_ create duplicate numbers using `UPDATE` and `SET` (EdgeDB won't stop you there) but even then it would still keep track of the next number when you do the next insert.
+即使你删除已经插入的项目，`sequence` 类型的数字也会继续增加 1。比如，如果您插入五个 `Townsperson` 对象，它们的数字将是从 1 到 5。然后，如果您将它们全部删除，然后有插入了一个 `Townsperson`，那么这个数字将会是 6（而不是 1）。所以对于我们的 `Crewman` 类型的创建，可能有另一种可能的选择。它非常方便，并且没有重复的可能，但是每次插入时数字都会自行增加 1。好吧，你 _可以_ 使用 `UPDATE` 和 `SET` 创建重复的数字（EdgeDB 不会阻止你），但即便如此，当你进行下一次插入时它仍然会跟踪下一个数字。
 
-## Using IS to query multiple types
+## 使用 IS 查询多类型（Using IS to query multiple types）
 
 So now we have quite a few types that extend the `Person` type, many with their own properties. The `Crewman` type has a property `number`, while the `NPC` type has a property called `age`.
 
@@ -239,7 +239,7 @@ Choosing the five objects from before from the output, it now looks like this:
 
 This is officially called a [polymorphic query](https://www.edgedb.com/docs/edgeql/overview/#ref-eql-polymorphic-queries), and is one of the best reasons to use abstract types in your schema.
 
-## Supertypes, subtypes, and generic types
+## 超类型、子类型和泛型类型（Supertypes, subtypes, and generic types）
 
 The official name for a type that gets extended by another type is a `supertype` (meaning 'above type'). The types that extend them are their `subtypes` ('below types'). Because inheriting a type gives you all of its features, `subtype IS supertype` will return `{true}`. And of course, `supertype IS subtype` returns `{false}` because supertypes do not inherit the features of their subtypes.
 
@@ -267,7 +267,7 @@ But fortunately these types all [extend from abstract types too](https://www.edg
 
 So with that you can change the above input to `SELECT 1887 IS anyint` and get `{true}`.
 
-## Multi in other places
+## Multi 的使用（Multi in other places）
 
 We've seen `multi link` quite a bit already, and you might be wondering if `multi` can appear in other places too. The answer is yes. A `multi property` is like any other property, except that it can have more than one value. For example, our `Castle` type has an `array<int16>` for the `doors` property:
 
@@ -338,11 +338,11 @@ The next question of course is which is best to use: `multi property`, `array`, 
 
 So hopefully that explanation should help. You can see that you have a lot of choice, so remembering the points above should help you make a decision. Most of the time, you'll probably have a sense for which one you want.
 
-[Here is all our code so far up to Chapter 8.](code.md)
+[这里是第八章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
 1. How would you select all the `Place` types and their names, plus the `door` property if it's a `Castle`?
 
@@ -362,8 +362,8 @@ So hopefully that explanation should help. You can see that you have a lot of ch
    };
    ```
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Time to meet Dr. Seward, Arthur Holmwood, and Quincey Morris...and the strange Renfield._
+__接下来：__ _是时候认识苏厄德博士、亚瑟霍姆伍德和昆西莫里斯了……还有奇怪的伦菲尔德。_
