@@ -2,11 +2,11 @@
 tags: Defaults, Overloading, For Loops
 ---
 
-# Chapter 9 - Strange events in England
+# Chapter 9 - 在英格兰发生的奇怪事
 
-For this chapter we've gone back in time a few weeks to when the ship left Varna and Mina and Lucy haven't left for Whitby yet. The introduction is also split into two parts. Here's the first:
+在本章中，我们回到了几周前，船刚刚离开瓦尔纳（Varna）而米娜（Mina）和露西（Lucy）还没有启程前往去惠特比（Whitby）的时候。故事情节也分为两部分介绍。这是第一个：
 
-> We still don't know where Jonathan is, and the ship The Demeter is on its way to England with Dracula inside. Meanwhile, Mina Harker is in London writing letters to her friend Lucy Westenra. Lucy has three boyfriends (named Dr. John Seward, Quincey Morris, and Arthur Holmwood), and they all want to marry her....
+> 我们仍然不知道乔纳森（Jonathan）在哪里，德米特号（The Demeter）船正在前往英格兰（England）的途中，德古拉（Dracula）也在船上。与此同时，米娜（Mina）正在伦敦给她的朋友 露西·韦斯特拉（Lucy Westenra）写信。露西有三个男朋友，分别是约翰·苏厄德博士（Dr. John Seward）、昆西·莫里斯（Quincey Morris）和亚瑟·霍姆伍德（Arthur Holmwood），他们都想娶她……
 
 ## Working with dates some more
 
@@ -289,9 +289,9 @@ type Vampire extending Person {
 
 You can see that a good usage of abstract types and the `overloaded` keyword lets you simplify your schema if you do it right.
 
-Okay, let's read the rest of the introduction for this chapter. It continues to explain what Lucy is up to:
+好的，接下来让我们阅读本章介绍的剩余部分。它继续解释了露西在做什么：
 
-> ...She chooses to marry Arthur Holmwood, and says sorry to the other two. The other two men are sad, but fortunately the three men become friends with each other. Dr. Seward is depressed and tries to concentrate on his work. He is a psychiatrist who works in an asylum close to a large mansion called Carfax not far outside London. Inside the asylum is a strange man named Renfield that Dr. Seward finds most interesting. Renfield is sometimes calm, sometimes completely crazy, and Dr. Seward doesn't know why he changes his mood so quickly. Also, Renfield seems to believe that he can get power from living things by eating them. He's not a vampire, but seems to act similar sometimes.
+> ……她选择嫁给亚瑟·霍姆伍德（Arthur Holmwood），并向另外两人道歉。另外两个男人很难过，好在他们成为了彼此的朋友。苏厄德博士（Dr. Seward）很沮丧，并试图专注于他的工作以摆脱情伤。他是一名精神病医生，在伦敦郊外不远处的一座名为 Carfax 的大宅邸附近的精神病院工作。疯人院里有个奇怪的人，名叫伦菲尔德（Renfield），苏厄德博士觉得他最有趣。雷菲尔德有时冷静，有时癫狂，苏厄德博士不知道为什么他的情绪变化如此之快。此外，伦菲尔德似乎相信他可以通过吃活物来获得力量。他不是吸血鬼，但有时看起来很相似。
 
 Oops! Looks like Lucy doesn't have three lovers anymore. Now we'll have to update her to only have Arthur:
 
