@@ -169,9 +169,9 @@ type Townsperson extending Person {
 
 ## 使用 IS 查询多类型（Using IS to query multiple types）
 
-So now we have quite a few types that extend the `Person` type, many with their own properties. The `Crewman` type has a property `number`, while the `NPC` type has a property called `age`.
+所以现在我们有相当多的类型扩展自 `Person` 类型，其中很多都有自己的属性。`Crewman` 类型有 `number` 属性，同时 `NPC` 类型有一个叫做 `age` 的属性。
 
-But this gives us a problem if we want to query them all at the same time. They all extend `Person`, but `Person` doesn't have all of their links and properties. So this query won't work:
+如果我们想同时查询它们，该怎么办呢？他们都扩展自 `Person`，但 `Person` 没有它们的所有链接和属性。所以下面这个查询并不起作用：
 
 ```edgeql
 SELECT Person {
@@ -181,15 +181,15 @@ SELECT Person {
 };
 ```
 
-The error is `ERROR: InvalidReferenceError: object type 'default::Person' has no link or property 'age'`.
+错误提示是：`ERROR: InvalidReferenceError: object type 'default::Person' has no link or property 'age'`。
 
-Luckily there is an easy fix for this: we can use `IS` inside square brackets to specify the type. Here's how it works:
+幸运的是，有一个简单的解决方法：我们可以在方括号内使用 `IS` 来指定类型。具体做法是：
 
-- `.name`: this stays the same, because `Person` has this property
-- `.age`: this belongs to the `NPC` type, so change it to `[IS NPC].age`
-- `.number`: this belongs to the `Crewman` type, so change it to `[IS Crewman].number`
+- `.name`：这个可以保持不变，因为 `Person` 有这个属性
+- `.age`：这属于 `NPC` 类型，所以将其更改为 `[IS NPC].age`
+- `.number`：这属于 `Crewman` 类型，因此将其更改为 `[IS Crewman].number`
 
-Now it will work:
+现在它可以工作了：
 
 ```edgeql
 SELECT Person {
@@ -199,7 +199,7 @@ SELECT Person {
 };
 ```
 
-The output is now quite large, so here's just a part of it. You'll notice that types that don't have a property or a link will return an empty set: `{}`.
+输出量相当大，所以这里只展示其中的一部分。你会注意到没有属性或链接的类型将返回一个空集：`{}`。
 
 ```
 {
@@ -212,7 +212,7 @@ The output is now quite large, so here's just a part of it. You'll notice that t
 }
 ```
 
-This is pretty good, but the output doesn't show us the type for each of them. To refer to an object's own type in a query in EdgeDB you can use `__type__`. Calling just `__type__` will just give a `uuid` though, so we need to add `{name}` to indicate that we want the name of the type. All types have this `name` field that you can access if you want to show the object type in a query.
+这很好，但输出并没有向我们显示它们每一个的类型。要在 EdgeDB 的查询中引用对象自己的类型，你可以使用 `__type__`。只调用 `__type__` 只会给出一个 `uuid`，所以我们需要添加 `{name}` 来表明我们想要类型的名称。如果你想在查询中显示对象的类型，你可以访问这个字段，因为所有类型都有这个 `name` 字段。
 
 ```edgeql
 SELECT Person {
@@ -225,7 +225,7 @@ SELECT Person {
 };
 ```
 
-Choosing the five objects from before from the output, it now looks like this:
+从输出中选择前五个对象展示，现在看起来像这样：
 
 ```
 {
@@ -237,15 +237,15 @@ Choosing the five objects from before from the output, it now looks like this:
 }
 ```
 
-This is officially called a [polymorphic query](https://www.edgedb.com/docs/edgeql/overview/#ref-eql-polymorphic-queries), and is one of the best reasons to use abstract types in your schema.
+这被称为 [多态查询（polymorphic query）](https://www.edgedb.com/docs/edgeql/overview/#ref-eql-polymorphic-queries)，并且是在你的架构中使用抽象类型的最佳理由之一.
 
 ## 超类型、子类型和泛型类型（Supertypes, subtypes, and generic types）
 
-The official name for a type that gets extended by another type is a `supertype` (meaning 'above type'). The types that extend them are their `subtypes` ('below types'). Because inheriting a type gives you all of its features, `subtype IS supertype` will return `{true}`. And of course, `supertype IS subtype` returns `{false}` because supertypes do not inherit the features of their subtypes.
+被其他类型扩展的类型的正式名称是 `supertype`（超类型）。扩展出的类型是它们的 `subtypes`（子类型）。因为继承一个类型会给你它的所有特性，所以`subtype IS supertype` 将返回 `{true}`。当然，`supertype IS subtype` 将返回 `{false}`，因为超类型不继承其子类型的特性。
 
-In our schema, that means that `SELECT PC IS Person` returns `{true}`, while `SELECT Person IS PC` will return `{true}` or `{false}` depending on whether the object is a `PC`.
+在我们的架构中，这意味着 `SELECT PC IS Person` 返回 `{true}`，而 `SELECT Person IS PC` 将返回 `{true}` 或 `{false}`，具体取决于所选对象是否是`PC` .
 
-To make a query that will show this, just add a shape query with the computable `Person IS PC` and EdgeDB will tell you:
+想要通过查询显示这个不确定，只需使用可计算的公式`Person IS PC`  添加一个形状查询（shape query），EdgeDB 则会告诉你：
 
 ```edgeql
 SELECT Person {
@@ -254,22 +254,22 @@ SELECT Person {
 };
 ```
 
-Now how about the simpler scalar types? We know that EdgeDB is very precise in having different types for integers, floats and so on, but what if you just want to know if a number is an integer for example? Of course this will work, but it's not very satisfying:
+那么对于更简单的标量类型会怎么样？我们知道 EdgeDB 在整数、浮点数等不同类型方面是非常精确的，但是如果你只是想知道一个数字是否是整数呢？当然这会奏效，但不是十分令人满意：
 
 ```edgeql
 WITH year := 1887,
 SELECT year IS int16 OR year IS int32 OR year IS int64;
 ```
 
-Output: `{true}`.
+结果是：`{true}`.
 
-But fortunately these types all [extend from abstract types too](https://www.edgedb.com/docs/datamodel/abstract), and we can use them. These abstract types all start with `any`, and are: `anytype`, `anyscalar`, `anyenum`, `anytuple`, `anyint`, `anyfloat`, `anyreal`. The only one that might make you pause is `anyreal`: this one means any real number, so both integers and floats, plus the `decimal` type.
+但幸运的是，这些类型 [也都是从抽象类型扩展的](https://www.edgedb.com/docs/datamodel/abstract)，我们可以使用它们。这些抽象类型都以 `any` 开头，分别是 `anytype`，`anyscalar`，`anyenum`，`anytuple`，`anyint`，`anyfloat`，`anyreal`。唯一可能让你不确定的是 `anyreal`：它意味着任何实数，所以整数和浮点数，以及 `decimal` 类型。
 
-So with that you can change the above input to `SELECT 1887 IS anyint` and get `{true}`.
+因此，你可以将上述输入更改为 `SELECT 1887 IS anyint` 并获得 `{true}`。
 
 ## Multi 的使用（Multi in other places）
 
-We've seen `multi link` quite a bit already, and you might be wondering if `multi` can appear in other places too. The answer is yes. A `multi property` is like any other property, except that it can have more than one value. For example, our `Castle` type has an `array<int16>` for the `doors` property:
+我们已经看到了很多次 `multi link`，你可能想知道 `multi` 是否也可以用在其他地方。答案是肯定的。比如 `multi property`，它与任何其他属性一样，但它可以有多个值。例如，我们的 `Castle` 类型有一个用于 `doors` 属性的 `array<int16>`：
 
 ```sdl
 type Castle extending Place {
@@ -277,7 +277,7 @@ type Castle extending Place {
 }
 ```
 
-But it could do something similar like this:
+像下面这样做可以达到同样效果：
 
 ```sdl
 type Castle extending Place {
@@ -285,7 +285,7 @@ type Castle extending Place {
 }
 ```
 
-With that, you would insert using `{}` instead of square brackets for an array:
+这样一来，你需要使用 `{}` 进行插入赋值，而不是方括号的数组：
 
 ```edgeql
 INSERT Castle {
@@ -294,21 +294,22 @@ INSERT Castle {
 };
 ```
 
-The next question of course is which is best to use: `multi property`, `array`, or an object type via a link. The answer is...it depends. But here are some good rules of thumb to help you decide which to choose.
+下一个问题当然是最好使用哪个：`multi property`、`array` 或通过链接的对象类型。答案是……视情况而定。但是这里有一些很好的经验法则可以帮助你决定选择哪个。
 
-- `multi property` vs. arrays:
+- `multi property` 
+- `multi property` 与数组
 
-  How large is the data you are working with? A `multi property` is more efficient when you have a lot of data, while arrays are slower. But if you have small sets, then arrays are faster than `multi property`.
+  取决于你正在处理的数据有多大？当你有大量数据时，`multi property` 更有效，而数组则较慢。但是如果你处理的集合较小，那么数组比 `multi property` 更快。
 
-  If you want to use indexes and constraints on individual elements, then you should use a `multi property`. We'll look at indexes in Chapter 16, but for now just know that they are a way of making lookups faster.
+  如果你想对单个元素使用索引和约束，那么你应该使用 `multi property`。我们将在第 16 章中学习索引，现在只需要知道它们是一种使查找更快的方法。
 
-  If order is important, than an array may be better. It's easier to keep the original order of items in an array.
+  如果顺序很重要，那么数组可能更好。因为更容易保持数组中项目的原始顺序。
 
-- `multi property` vs. objects
+- `multi property` 与对象
 
-  Here we'll start with two areas where `multi property` is better, and then two areas where objects are better.
+  在这里，我们先从 `multi property` 更好的两个方面开始，然后再说对象的好处。
 
-  First negative for objects: objects are always larger, and here's why. Remember `DESCRIBE TYPE as TEXT`? Let's look at one of our types with that again. Here's the `Castle` type:
+  对象的第一个负面问题是：对象总是很大。还记得 `DESCRIBE TYPE as TEXT` 吗？让我们用它来看看我们之前创建的一个类型，`Castle` 类型：
 
   ```
   {
@@ -326,17 +327,17 @@ The next question of course is which is best to use: `multi property`, `array`, 
   };
   ```
 
-  You'll remember seeing the `readonly := true` types, which are created for each object type you make. The `__type__` link and `id` property together always make up 32 bytes.
+  你一定记得看到过 `readonly := true` 的类型，你创建的每个对象类型都会有它们。`__type__` 链接和 `id` 属性分别都是 16 字节。
 
-  The second negative for objects is similar: underneath, they are more work for the computer. EdgeDB runs on top of PostgreSQL, and a `multi link` to an object needs an extra "join" (a link table + object table), but a multi property only has one. Also, a "backward link" or "reverse link" (you'll see those in Chapter 14) takes more work as well.
+  对象的第二个负面问题类似：对象更多是为计算机工作。EdgeDB 运行在 PostgreSQL 之上，指向对象的 `multi link` 需要额外的“连接（join）”（链接表 + 对象表），但 `multi property` 不需要。此外，“反向链接（backward link 或 reverse link）（将在第 14 章中看到）也需要更多的工作。
 
-  Okay, now here are two positives for objects in comparison.
+  好的，现在这里介绍一下经过比较后使用对象的两个好处。
 
-  Do you have a lot of duplication in property values? If so, then using `constraint exclusive` on an object type is the more efficient way to do it.
+  你是否有很多重复的属性值？如果是这样，那么在对象类型上使用 `constraint exclusive` 是更有效的方法。
 
-  Objects are easier to migrate if you need to have more than one value with each.
+  如果你需要每个对象具有多个值，则对象更容易迁移/变更（migrate）。
 
-So hopefully that explanation should help. You can see that you have a lot of choice, so remembering the points above should help you make a decision. Most of the time, you'll probably have a sense for which one you want.
+希望这些解释对你有所帮助。你可以看到你有很多选择，所以记住以上几点应该可以帮助你做出决定。大多数时候，你可能会知道自己想要哪个。
 
 [这里是第八章中到目前为止的所有代码。](code.md)
 
@@ -344,15 +345,15 @@ So hopefully that explanation should help. You can see that you have a lot of ch
 
 ## 章节小练习
 
-1. How would you select all the `Place` types and their names, plus the `door` property if it's a `Castle`?
+1. 如何选择出所有 `Place` 和他们的名字，以及当它是个 `Castle` 时的属性 `door`？
 
-2. How would you select `Place` types with `city_name` for `name` if it's a `City` and `country_name` for `name` if it's a `Country`?
+2. 如何选择出 `Place`，用 `city_name` 显示当它是个 `City` 时的 `name`，并用 `country_name` 显示当它是个 `Country` 时的 `country_name`？
 
-3. How would you do the same but only showing the results of `City` and `Country` types?
+3. 基于上一题，如何做可以只显示属于 `City` 或 `Country` 类型的结果？
 
-4. How would you display all the `Person` types that don't have `lover`s, with their names and their type names?
+4. 你将如何显示所有没有 `lover` 的 `Person` 对象及其名称和类型名称？
 
-5. What needs to be fixed in this query? Hint: two things definitely need to be fixed, while one more should probably be changed to make it more readable.
+5. 下面这个查询需要修复什么？提示：有两个地方是必须要修复的，还有一个地方可能应该更改以使其更具可读性。
 
    ```edgeql
    SELECT Place {
