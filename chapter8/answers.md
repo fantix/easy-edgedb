@@ -1,8 +1,8 @@
 # Chapter 8 Questions and Answers
 
-#### 1. How would you select all the `Place` types and their names, plus the `door` property if it's a `Castle`?
+#### 1. 如何选择出所有 `Place` 和他们的名字，以及当它是个 `Castle` 时的属性 `door`？
 
-Like this:
+答案如下：
 
 ```edgeql
 SELECT Place {
@@ -11,9 +11,9 @@ SELECT Place {
 };
 ```
 
-Without `[IS Castle]`, it will give an error.
+没有 `[IS Castle]`，将无法正常执行。
 
-#### 2. How would you select `Place` types with `city_name` for `name` if it's a `City` and `country_name` for `name` if it's a `Country`?
+#### 2. 如何选择出 `Place`，用 `city_name` 显示当它是个 `City` 时的 `name`，并用 `country_name` 显示当它是个 `Country` 时的 `country_name`？
 
 ```edgeql
 SELECT Place {
@@ -22,9 +22,9 @@ SELECT Place {
 };
 ```
 
-#### 3. How would you do the same but only showing the results of `City` and `Country` types?
+#### 3. 基于上一题，如何做可以只显示属于 `City` 或 `Country` 类型的结果？
 
-This question is because Question 2 gives this result:
+这个问题是基于问题 2 给出的这个结果：
 
 ```
 {
@@ -39,7 +39,7 @@ This question is because Question 2 gives this result:
 }
 ```
 
-The `Object {city_name: {}, country_name: {}},` lines are not useful to us to we'll filter them out with `EXISTS`:
+像 `Object {city_name: {}, country_name: {}},` 这样的结果对我们没有什么用，我们可以用 `EXISTS` 将它们过滤掉： 
 
 ```edgeql
 SELECT Place {
@@ -48,11 +48,11 @@ SELECT Place {
 } FILTER EXISTS .city_name OR EXISTS .country_name;
 ```
 
-One other way to filter is to use `FILTER Place IS City | Country`. You might be familiar with `|` in other programming languages. In EdgeDB this is called the type union operator, and you'll learn more about it in Chapter 13.
+另一种过滤方式是使用 `FILTER Place IS City | Country`。你可能熟悉其他编程语言中的 `|`。在 EdgeDB 中，这称为类型联合运算符（the type union operator），你将在第 13 章中了解有关它的更多信息。
 
-#### 4. How would you display all the `Person` types that don't have `lover`s, with their names and their type names?
+#### 4. 你将如何显示所有没有 `lover` 的 `Person` 对象及其名称和类型名称？
 
-To get all these single people, names and object types, just do this:
+要获得所有这些单身人士、姓名和对象类型，只需执行以下操作：
 
 ```edgeql
 SELECT Person {
@@ -65,9 +65,9 @@ SELECT Person {
 
 Don't forget `name` after type! It won't make an error but the type name will be something like this and not very helpful: `__type__: Object {id: 20ef52ae-1d97-11eb-8cb6-0de731b01cc9}`
 
-#### 5. What needs to be fixed in this query? Hint: two things definitely need to be fixed, while one more should probably be changed to make it more readable.
+#### 5. 下面这个查询需要修复什么？提示：有两个地方是必须要修复的，还有一个地方可能应该更改以使其更具可读性。
 
-The two parts that need to be fixed are: 1) a `,` after `name` and a `.` after `[IS Castle]`:
+需要修复的两个部分是：1) `name` 后面加上 `,`，2) `[IS Castle]` 后面加上 `.`：
 
 ```edgeql
 SELECT Place {
@@ -77,7 +77,7 @@ SELECT Place {
 };
 ```
 
-The part that _should_ be fixed: we should probably put `name` inside `__type__` so that it's readable to us (instead of `__type__: Object {id: e0a9ab38-1e6e-11eb-9497-5bb5357741af}`). It looks like this:
+_应该_ 修复的部分是：我们可能应该将 `name` 放在 `__type__` 中，以便我们可以读懂它（而不是 `__type__: Object {id: e0a9ab38-1e6e-11eb-9497-5bb5357741af}`）。 如下所示：
 
 ```edgeql
 SELECT Place {
