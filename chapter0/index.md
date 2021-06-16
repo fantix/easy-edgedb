@@ -14,9 +14,9 @@ leadImage: illustration_00.jpg
 
 ## 故事线贯穿
 
-这本书分为 20 章，我们假设我们正在为一个游戏创建一个数据库。我们的虚构游戏的背景是拉姆·斯托克（Bram Stoker）于 1897 年出版的《德拉库拉（Dracula）》一书中的场景与地点。我们的工作是考虑如何为一个角色扮演游戏的搭建在数据库中表示出书中的人物、事件、地点和日期等内容。换句话说，类似 [Python](https://www.edgedb.com/docs/clients/00_python/index/)/[JavaScript](https://www.edgedb.com/docs/clients/01_js/index/)/[Go](https://github.com/edgedb/edgedb-go) 在前端，EdgeDB 作为游戏的数据库。（为什么是 Python、JavaScript 和 Go？因为 EdgeDB 具有这三种语言的驱动程序。）
+这本书分为 20 章，我们假设我们正在为一个游戏创建一个数据库。我们的虚构游戏的背景是拉姆·斯托克（Bram Stoker）于 1897 年出版的《德古拉（Dracula）》一书中的场景与地点。我们的工作是考虑如何为一个角色扮演游戏的搭建在数据库中表示出书中的人物、事件、地点和日期等内容。换句话说，类似 [Python](https://www.edgedb.com/docs/clients/00_python/index/)/[JavaScript](https://www.edgedb.com/docs/clients/01_js/index/)/[Go](https://github.com/edgedb/edgedb-go) 在前端，EdgeDB 作为游戏的数据库。（为什么是 Python、JavaScript 和 Go？因为 EdgeDB 具有这三种语言的驱动程序。）
 
-拉姆·斯托克（Bram Stoker）笔下的德拉库拉（Dracula）是这本教科书的完美选择，原因如下：
+拉姆·斯托克（Bram Stoker）笔下的德古拉（Dracula）是这本教科书的完美选择，原因如下：
 
 - 这是一个有趣的读物。我们很高兴看到你尝试使用 EdgeDB，并希望使介绍尽可能轻松和身临其境。我们认为任何在 EdgeDB 上花了一个小时左右的人都会对它的可能性感到兴奋，但要实现这一点，我们的工作就是让体验变得愉快。拉姆·斯托克（Bram Stoker）的小说真的帮到了不少。
 - 它是所谓的**书信小说**：通过主要人物写的信件、日记和通信写成的小说。这意味着每个条目都有一个日期和一个作者，这使得它非常适合数据库设计与存储。
@@ -38,7 +38,7 @@ leadImage: illustration_00.jpg
 
 ## 艺术的结合
 
-为了感受原作的美感（添加了蒸汽朋克风格的氛围已达到最佳效果），我们合作了 Damian Dideńko（[didiusz 的 Instagram](https://www.instagram.com/didiusz/)），一位来自波兰卡托维兹的 10 年插画师，他制作了一些精美的插画，将《德拉库拉（Dracula）》一书的氛围与每章最重要的架构和查询概念进行了结合。你很快就会看到他的插图，以下是他的描述以及他的灵感来源：
+为了感受原作的美感（添加了蒸汽朋克风格的氛围已达到最佳效果），我们合作了 Damian Dideńko（[didiusz 的 Instagram](https://www.instagram.com/didiusz/)），一位来自波兰卡托维兹的 10 年插画师，他制作了一些精美的插画，将《德古拉（Dracula）》一书的氛围与每章最重要的架构和查询概念进行了结合。你很快就会看到他的插图，以下是他的描述以及他的灵感来源：
 
 > 我试图从我所接触过的所有事物中汲取灵感。在我的作品中，我喜欢构建略微超现实、低调/不为人知的故事，让观众有自己的解释空间。作品本身是一种松散的思想流，在创作时是有意义的，有时在最后，有时根本没有 —— 因为不是每件事都必须有意义。我的作品通常从一个小想法开始，然后发展成为一个更大的构图。我喜欢创作细节丰富的作品，有时我会在其中隐藏灵感。对于细心的观察者来说，它们有点像复活节小彩蛋。
 
