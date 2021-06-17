@@ -4,7 +4,7 @@ tags: Filtering On Insert, Json
 
 # 第六章 - 乔纳森还是逃不掉
 
-> 女吸血鬼就在乔纳森的身边，且他无法动弹。突然，德拉库拉跑进房间，告诉女人们离开：“晚些时候你们可以拥有他，但今晚不行！”。女吸血鬼们听从了。乔纳森在他的床上醒来，感觉就像做了一场噩梦……但他看到他的衣服被叠好了，他知道这不会仅仅是一个梦。第二天会有一些来自斯洛伐克的游客造访城堡，所以乔纳森想到了个主意。他写了两封信，一封给米娜，一封给他的老板。他付了来访者一些钱，请求他们为他寄信。但是德拉库拉发现了这些信件，他很生气。他在乔纳森面前烧掉了它们，并告诉他不许再这样做了。乔纳森仍然被困在城堡里，德拉库拉知道乔纳森试图欺骗他从而逃跑。
+> 女吸血鬼就在乔纳森的身边，且他无法动弹。突然，德古拉跑进房间，告诉女人们离开：“晚些时候你们可以拥有他，但今晚不行！”。女吸血鬼们听从了。乔纳森在他的床上醒来，感觉就像做了一场噩梦……但他看到他的衣服被叠好了，他知道这不会仅仅是一个梦。第二天会有一些来自斯洛伐克的游客造访城堡，所以乔纳森想到了个主意。他写了两封信，一封给米娜，一封给他的老板。他付了来访者一些钱，请求他们为他寄信。但是德古拉发现了这些信件，他很生气。他在乔纳森面前烧掉了它们，并告诉他不许再这样做了。乔纳森仍然被困在城堡里，德古拉知道乔纳森试图欺骗他从而逃跑。
 
 ## 插入时过滤集合（Filtering on sets when doing an insert）
 
@@ -53,7 +53,7 @@ INSERT NPC {
 
 你会留意到我们只是使用 `{}` 在集合中写入了这些地方的名称，我们不需要使用带有 `[]` 的数组来执行此操作。（顺便说一下，这称为 [set 构造函数](https://www.edgedb.com/docs/edgeql/expressions/overview/#set-constructor)。）
 
-现在如果乔纳森逃离德拉库拉城堡并到了一个新地方怎么办？让我们假装他逃跑了并逃到了斯洛伐克（Slovakia）。当然，我们修改他的 `INSERT`，在造访点的名字集合里加上 `'Slovakia'`。但是我们如何才能做一次快速的更新呢？对此，我们有关键字 `UPDATE` 和 `SET`。`UPDATE` 要更新的类型，`SET` 我们要更改的部分。像这样：
+现在如果乔纳森逃离德古拉城堡并到了一个新地方怎么办？让我们假装他逃跑了并逃到了斯洛伐克（Slovakia）。当然，我们修改他的 `INSERT`，在造访点的名字集合里加上 `'Slovakia'`。但是我们如何才能做一次快速的更新呢？对此，我们有关键字 `UPDATE` 和 `SET`。`UPDATE` 要更新的类型，`SET` 我们要更改的部分。像这样：
 
 ```edgeql
 UPDATE NPC
@@ -129,7 +129,7 @@ SELECT 'A character from the book: ' ++ (SELECT NPC.name) ++ ', who is not ' ++ 
 
 （这个连接运算符也适用于数组，会将它们合并放入到一个数组中。所以执行 `SELECT ['I', 'am'] ++ ['Jonathan', 'Harker'];` 的结果是 `{['I', 'am', 'Jonathan', 'Harker']}`。）
 
-让我们也来更改一下 `Vampire` 类型，使其可以链接指向 `MinorVampire`。你应该记得德拉库拉伯爵是唯一一个真正的吸血鬼，而其他吸血鬼都是 `MinorVampire` 类型。这意味着我们需要一个 `multi link`：
+让我们也来更改一下 `Vampire` 类型，使其可以链接指向 `MinorVampire`。你应该记得德古拉伯爵是唯一一个真正的吸血鬼，而其他吸血鬼都是 `MinorVampire` 类型。这意味着我们需要一个 `multi link`：
 
 ```sdl
 type Vampire extending Person {
@@ -138,7 +138,7 @@ type Vampire extending Person {
 }
 ```
 
-然后我们可以在插入德拉库拉伯爵（Count Dracula）的信息的同时 `INSERT` `MinorVampire` 类型的对象。但首先让我们先从 `MinorVampire` 中删除`link master`，因为我们不希望两个对象相互链接。原因有二：
+然后我们可以在插入德古拉伯爵（Count Dracula）的信息的同时 `INSERT` `MinorVampire` 类型的对象。但首先让我们先从 `MinorVampire` 中删除`link master`，因为我们不希望两个对象相互链接。原因有二：
 
 - 当我们声明一个 `Vampire` 时，它有 `slaves` 指向 `MinorVampire`，但如果还没有 `MinorVampire`，那么它将是空的：{}。如果我们首先声明`MinorVampire` 类型，它有一个 `master` 指向 `Vampire`，但还没有声明 `Vampire`，那么他们的 `master`（一个 `required link`）将不存在。
 - 如果这两种类型相互链接，我们将无法在需要时删除它们。会给出如下的错误：
@@ -156,7 +156,7 @@ type MinorVampire extending Person {
 }
 ```
 
-然后我们在创建德拉库拉伯爵时，也一同创建她们，如下所示：
+然后我们在创建德古拉伯爵时，也一同创建她们，如下所示：
 
 ```edgeql
 INSERT Vampire {
@@ -178,7 +178,7 @@ INSERT Vampire {
 
 请注意两件事：（1）我们在 `slaves` 后面使用了 `{}`，并把所有要插入的 `INSERT` 都放到了这个集合；（2）每一个 `INSERT` 都放在了小括号 `()` 里去捕捉插入。
 
-现在我们不必先插入 `MinorVampire` 类型然后再过滤并更新给 `Vampire`：我们可以将她们与德拉库拉（Dracula）放在一起插入。
+现在我们不必先插入 `MinorVampire` 类型然后再过滤并更新给 `Vampire`：我们可以将她们与德古拉（Dracula）放在一起插入。
 
 然后当我们像下面这样 `select Vampire` 时：
 
@@ -189,7 +189,7 @@ SELECT Vampire {
 };
 ```
 
-由此我们得到想要的输出结果，将德拉库拉（Dracula）和女吸血鬼们都显示了出来：
+由此我们得到想要的输出结果，将德古拉（Dracula）和女吸血鬼们都显示了出来：
 
 ```
 Object {
@@ -259,7 +259,7 @@ SELECT <int64><str><json>'18870503';
    };
    ```
 
-2. 如果米娜要去德拉库拉城堡参观，你会如何更新米娜（Mina）的 `places_visited`，让它也包括罗马尼亚？
+2. 如果米娜要去德古拉城堡参观，你会如何更新米娜（Mina）的 `places_visited`，让它也包括罗马尼亚？
 
 3. 你将如何显示所有名称（name）中包含 `{'W', 'J', 'C'}` 里任何大写字母的 `Person` 类型的对象？
 
