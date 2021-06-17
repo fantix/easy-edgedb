@@ -1,8 +1,8 @@
 # Chapter 9 Questions and Answers
 
-#### 1. Why doesn't this insert work and how can it be fixed?
+#### 1. 为什么下面这个插入不起作用，该如何修复？
 
-It needs to be a set instead of an array, so change the brackets to `{}` instead:
+它需要是一个集合而不是一个数组，所以将 `IN` 后面的括号改为 `{}`：
 
 ```edgeql
 FOR castle IN {'Windsor Castle', 'Neuschwanstein', 'Hohenzollern Castle'}
@@ -13,9 +13,9 @@ UNION (
 );
 ```
 
-#### 2. How would you do the same insert while displaying the castle's name at the same time?
+#### 2. 如何在显示城堡名称的同时进行与上题相同的插入？
 
-It looks like this:
+如下所示：
 
 ```edgeql
 SELECT (
@@ -28,9 +28,9 @@ SELECT (
 ) { name };
 ```
 
-#### 3. How would you change the `Vampire` type if all vampires needed a minimum strength of 10?
+#### 3. 如果所有的吸血鬼都需要一个最小为 10 的力量值，如何修改 `Vampire` 类型？
 
-Since `strength` comes from `abstract type Person`, you would need to overload it and give it a constraint. The `Vampire` type would then look like this:
+由于 `strength` 来自 `abstract type Person`，你需要重载（overload）它并给它一个约束。 `Vampire` 类型应被修改为：
 
 ```sdl
 type Vampire extending Person {
@@ -41,9 +41,9 @@ type Vampire extending Person {
 }
 ```
 
-#### 4. How would you update all the `Person` types to show that they died on September 11, 1887?
+#### 4. 如何更新所有的 `Person` 类型的对象，表明他们都死于 1887 年 9 月 11 日？
 
-You would give them each a `last_appearance` like this:
+如下所示，你将对每一个 `Person` 的 `last_appearance` 进行赋值：
 
 ```edgeql
 UPDATE Person
@@ -52,9 +52,9 @@ SET {
 };
 ```
 
-#### 5. All the `Person` characters that have an `e` or an `a` in their name have been brought back to life. How would you update to do this?
+#### 5. 所有名字中带有 `e` 或 `a` 的 `Person` 角色都被复活了。对此你将如何更新？
 
-You can just `UPDATE` by using `LIKE` on a set instead of a single letter:
+你可以通过在集合上使用 `LIKE` 而不是在单个字母上使用来进行 `UPDATE`：
 
 ```edgeql
 UPDATE Person FILTER .name LIKE {'%a%', '%e%'}
@@ -63,7 +63,7 @@ SET {
 };
 ```
 
-And if you wanted to display the results at the same time to make sure, it would look like this:
+如果为了确保成功你想同时显示执行结果，也可以这样写：
 
 ```edgeql
 SELECT (
