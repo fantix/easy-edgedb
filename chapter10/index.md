@@ -2,9 +2,9 @@
 tags: Tuples, Computables, Math
 ---
 
-# Chapter 10 - Terrible events in Whitby
+# 第十章 - 惠特比的可怕事件
 
-> Mina and Lucy are enjoying their time in Whitby. One night there is a huge storm and a ship arrives in the fog - it's the Demeter, carrying Dracula. Lucy later begins to sleepwalk at night and looks very pale, and always says strange things. Mina tries to stop her, but sometimes Lucy gets outside. One night Lucy watches the sun go down and says: "His red eyes again! They are just the same." Mina is worried and asks Dr. Seward for help. Dr. Seward does an examination on Lucy, who is pale and weak but he doesn't know why. Dr. Seward decides to call his old teacher Abraham Van Helsing, who comes from the Netherlands to help. Van Helsing examines Lucy and looks shocked. Then he turns to the others and says, "Listen. We can help this girl, but you are going to find the methods very strange. You are going to have to trust me..."
+> 米娜（Mina）和露西（Lucy）正在惠特比（Whitby）享受他们愉快的时光。一天晚一场大风暴来袭，一艘船在雾中靠岸 —— 正是德古拉所在的德米特号（the Demeter）。露西后来开始在晚上梦游，脸色苍白，一直说些奇怪的话。米娜试图阻止她，但有时露西会跑到外面去。一天晚上，露西看着太阳下山说：“他的眼睛又红了！他们一样。”米娜很担心，向苏厄德博士（Dr. Seward）寻求帮助。苏厄德博士对露西进行了检查，露西脸色苍白，身体虚弱，但他不知道为什么。苏厄德博士决定打电话给他来自荷兰的老师亚伯拉罕·范海辛 (Abraham Van Helsing) 寻求帮助。范海辛对露西进行了检查，他很震惊。然后他转向其他人说：“听着。我们可以帮助这个女孩，但你们会觉得方法很奇怪。你们必须相信我……”
 
 The city of Whitby is in the northeast of England. Right now our `City` type just extends `Place`, which only gives us the properties `name`, `modern_name` and `important_places`. This could be a good time to give it a `property population` which can help us draw the cities in our game. It will be an `int64` to give us the size we need:
 
