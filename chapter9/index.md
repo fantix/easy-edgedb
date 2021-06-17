@@ -294,7 +294,7 @@ type Vampire extending Person {
 
 > ……她选择嫁给亚瑟·霍姆伍德（Arthur Holmwood），并向另外两人道歉。另外两个男人很难过，好在他们成为了彼此的朋友。苏厄德博士（Dr. Seward）很沮丧，并试图专注于他的工作以摆脱情伤。他是一名精神病医生，在伦敦郊外不远处的一座名为 Carfax 的大宅邸附近的精神病院工作。疯人院里有个奇怪的人，名叫伦菲尔德（Renfield），苏厄德博士觉得他最有趣。雷菲尔德有时冷静，有时癫狂，苏厄德博士不知道为什么他的情绪变化如此之快。此外，伦菲尔德似乎相信他可以通过吃活物来获得力量。他不是吸血鬼，但有时看起来很相似。
 
-Oops! Looks like Lucy doesn't have three lovers anymore. Now we'll have to update her to only have Arthur:
+哎呀！看起来露西（Lucy）已经没有三个情人了。现在我们必须将她更新为只有亚瑟（Arthur）一个情人：
 
 ```edgeql
 UPDATE NPC FILTER .name = 'Lucy Westenra'
@@ -303,7 +303,7 @@ SET {
 };
 ```
 
-And then remove her from the other two. We'll just give them a sad empty set.
+然后将她从另外两个“备胎”中移除。我们只好给他们一个悲伤的空集了。
 
 ```edgeql
 UPDATE NPC FILTER .name in {'John Seward', 'Quincey Morris'}
@@ -312,7 +312,7 @@ SET {
 };
 ```
 
-Looks like we are mostly up to date now. The only thing left is to insert the mysterious Renfield. He is easy because he has no lover to `FILTER` for:
+现在看起来基本上都是最新了。就剩下插入神秘的伦菲尔德（Renfield）了。这很容易，因为他没有情人，不需要做 `FILTER`：
 
 ```edgeql
 INSERT NPC {
@@ -322,15 +322,15 @@ INSERT NPC {
 };
 ```
 
-But he has some sort of relationship to Dracula, similar to the `MinorVampire` type but different. He is also quite strong (as we will see later), so we gave him a `strength` of 10. Later on we'll learn more and more about him and his relationship with Dracula.
+但他与德古拉似乎有某种关系，类似于 `MinorVampire` 类型但又不同。他也很强壮（稍后我们会看到），所以我们给他的 `strength` 设置为 10。稍后我们将对他以及他与德古拉的关系有更进一步的了解。
 
-[Here is all our code so far up to Chapter 9.](code.md)
+[这里是第九章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
-1. Why doesn't this insert work and how can it be fixed?
+1. 为什么下面这个插入不起作用，该如何修复？
 
    ```edgeql
    FOR castle IN ['Windsor Castle', 'Neuschwanstein', 'Hohenzollern Castle']
@@ -341,11 +341,11 @@ But he has some sort of relationship to Dracula, similar to the `MinorVampire` t
    );
    ```
 
-2. How would you do the same insert while displaying the castle's name at the same time?
-3. How would you change the `Vampire` type if all vampires needed a minimum strength of 10?
-4. How would you update all the `Person` types to show that they died on September 11, 1887?
+2. 如何在显示城堡名称的同时进行与上题相同的插入？
+3. 如果所有的吸血鬼都需要一个最小为 10 的力量值，如何修改 `Vampire` 类型？
+4. 如何更新所有的 `Person` 类型的对象，表明他们都死于 1887 年 9 月 11 日？
 
-   Hint: here's the type again:
+   提示：这里是 `Person` 类型的定义：
 
    ```sdl
    abstract type Person {
@@ -361,12 +361,12 @@ But he has some sort of relationship to Dracula, similar to the `MinorVampire` t
    }
    ```
 
-5. All the `Person` characters that have an `e` or an `a` in their name have been brought back to life. How would you update to do this?
+5. 所有名字中带有 `e` 或 `a` 的 `Person` 角色都被复活了。对此你将如何更新？
 
-   Hint: "bringing back to life" means that `last_appearance` should return `{}`.
+   提示：“复活”意味着 `last_appearance` 应该返回 `{}`。
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Thick fog and a storm hit the city of Whitby._
+__接下来：__ _大雾和风暴袭击了惠特比市。_
