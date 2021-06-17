@@ -7,7 +7,7 @@ leadImage: illustration_02.jpg
 
 我们继续阅读这个故事，并思考哪些信息我们需要存入数据库。重要的信息以粗体显示：
 
-> 乔纳森·哈克（Jonathan Harker）在 **比斯特里茨（Bistritz）** 发现了一家酒店, 叫做 **金克朗酒店（Golden Krone Hotel）**。他在酒店里收到一封来自德拉库拉的欢迎信，信中说明德拉库拉正在 **城堡（castle）** 里等他。乔纳森·哈克（Jonathan Harker）明天必须搭乘 **马车（horse-driven carriage）** 才能到达那里。我们也看到乔纳森·哈克（Jonathan Harker）来自 **伦敦（London）**。金克朗酒店（Golden Krone Hotel）的老板似乎很害怕德古拉。他不想让乔纳森（Jonathan）离开并表明前往城堡会很危险，但乔纳森（Jonathan）并没有听进去。一位老太太给了乔纳森（Jonathan）一个金色的十字架，并说这会保护他。乔纳森（Jonathan）感到尴尬，但认为这可能是出于礼貌，他并不知道之后这会对他有多大的帮助。
+> 乔纳森·哈克（Jonathan Harker）在 **比斯特里茨（Bistritz）** 发现了一家酒店, 叫做 **金克朗酒店（Golden Krone Hotel）**。他在酒店里收到一封来自德古拉的欢迎信，信中说明德古拉正在 **城堡（castle）** 里等他。乔纳森·哈克（Jonathan Harker）明天必须搭乘 **马车（horse-driven carriage）** 才能到达那里。我们也看到乔纳森·哈克（Jonathan Harker）来自 **伦敦（London）**。金克朗酒店（Golden Krone Hotel）的老板似乎很害怕德古拉。他不想让乔纳森（Jonathan）离开并表明前往城堡会很危险，但乔纳森（Jonathan）并没有听进去。一位老太太给了乔纳森（Jonathan）一个金色的十字架，并说这会保护他。乔纳森（Jonathan）感到尴尬，但认为这可能是出于礼貌，他并不知道之后这会对他有多大的帮助。
 
 现在我们开始看一下关于这座城市的一些细节。通过阅读这个故事，我们看到我们可以添加另一个属性给 `City`，我们叫它 `important_places`。比如可以去像 **金克朗酒店（Golden Krone Hotel）** 这样的地方。我们尚不确定这些地方是否将拥有属于他们自己的类型，因此我们只是定义它为一个字符串数组，像这样：`property important_places -> array<str>;` 我们可以把这些重要地点的名字放进去，也许之后还会发展出更多的内容。现在它看起来像这样：
 
