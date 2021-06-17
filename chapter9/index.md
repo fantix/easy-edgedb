@@ -8,15 +8,15 @@ tags: Defaults, Overloading, For Loops
 
 > 我们仍然不知道乔纳森（Jonathan）在哪里，德米特号（The Demeter）船正在前往英格兰（England）的途中，德古拉（Dracula）也在船上。与此同时，米娜（Mina）正在伦敦给她的朋友 露西·韦斯特拉（Lucy Westenra）写信。露西有三个男朋友，分别是约翰·苏厄德博士（Dr. John Seward）、昆西·莫里斯（Quincey Morris）和亚瑟·霍姆伍德（Arthur Holmwood），他们都想娶她……
 
-## Working with dates some more
+## 关于日期的更多处理（Working with dates some more）
 
-It looks like we have some more people to insert. But first, let's think about the ship a little more. Everyone on the ship was killed by Dracula, but we don't want to delete the crew because they are still part of our game. The book tells us that the ship left on the 6th of July, and the last person (the captain) died on the 4th of August (in 1887).
+按照故事情节的发展，看起来我们还有更多人物需要插入。但首先，让我们再思考一下那艘船。船上所有人都被德古拉（Dracula）杀死了，但我们并不想删除船员，因为他们仍然是我们游戏的一部分。小说告诉我们，这艘船是在 7 月 6 日离开的，最后一个人（船长）死于 8 月 4 日（1887 年）。
 
-This is a good time to add two new properties to the `Person` type to indicate when a character is present. We'll call them `first_appearance` and `last_appearance`. The name `last_appearance` is a bit better than `death`, because for the game it doesn't matter: we just want to know when characters are there or not.
+这正是给 `Person` 类型添加两个新属性的好时机，以展示一个角色存在的时间。我们给它们命名为 `first_appearance` 和 `last_appearance`。`last_appearance` 比起 `death` 更为合适，因为对于游戏来说这无关紧要：我们只想知道角色何时在场。
 
-For these two properties we will just use `cal::local_date` for the sake of simplicity. There is also `cal::local_datetime` that includes time, but we should be fine with just the date. (And of course there is the `cal::local_time` type with just the time of day that we have in our `Date` type.)
+对于这两个属性，为了简单起见，我们将只使用 `cal::local_date`。还有包含了时间的 `cal::local_datetime` 类型，但我们应该只用得到日期。（当然还有 `cal::local_time` 类型，它只是我们在 `Date` 类型中拥有的一天中的时间。）
 
-Doing an insert for the `Crewman` objects with the properties `first_appearance` and `last_appearance` will now look something like this:
+对具有属性 `first_appearance` 和 `last_appearance` 的 `Crewman` 对象进行插入，如下所示：
 
 ```edgeql
 INSERT Crewman {
@@ -26,19 +26,19 @@ INSERT Crewman {
 };
 ```
 
-And since we have a lot of `Crewman` objects already inserted, we can easily use the `UPDATE` and `SET` syntax on all of them if we assume they all died at the same time (or if being super precise doesn't matter).
+由于我们已经插入了很多 `Crewman` 对象，如果我们假设他们都同时死亡（或者并不需要那么精确），我们可以轻松地对所有这些对象使用 `UPDATE` 和 `SET`。
 
-Since `cal::local_date` has a pretty simple YYYYMMDD format, the easiest way to use it in an insert would be just casting from a string:
+由于 `cal::local_date` 具有非常简单的 YYYYMMDD 格式，在插入中使用它的最简单方法就是从字符串进行转换：
 
 ```edgeql
 SELECT <cal::local_date>'1887-07-08';
 ```
 
-But we imagined before that we had a function that gives separate numbers to put into a function, so we will continue to use that method.
+但是我们之前使用过一个函数，可以将单独的数字输入到函数中，因此我们将继续使用该方法。
 
-Before we used the function `std::to_datetime` which took seven parameters; this time we'll use a similar but shorter [`cal::to_local_date`](https://www.edgedb.com/docs/edgeql/funcops/datetime#function::cal::to_local_date) function. It just takes three integers.
+之前我们使用的是带有七个参数的函数 `std::to_datetime` ；这次我们将使用类似但更短的 [`cal::to_local_date`](https://www.edgedb.com/docs/edgeql/funcops/datetime#function::cal::to_local_date) 函数。它只需要三个整数。
 
-Here are its signatures (we're using the third):
+这是它的签名（我们在使用第三个）：
 
 ```
 cal::to_local_date(s: str, fmt: OPTIONAL str = {}) -> local_date
@@ -46,7 +46,7 @@ cal::to_local_date(dt: datetime, zone: str) -> local_date
 cal::to_local_date(year: int64, month: int64, day: int64) -> local_date
 ```
 
-Now we update the `Crewman` objects and give them all the same date to keep things simple:
+现在我们更新 `Crewman` 对象并给它们相同的日期以保持简单：
 
 ```edgeql
 UPDATE Crewman
@@ -56,11 +56,11 @@ SET {
 };
 ```
 
-This will of course depend on our game. Can a `PC` actually visit the ship when it's sailing to England? Will there be missions to try to save the crew before Dracula kills them? If so, then we will need more precise dates. But we're fine with these approximate dates for now.
+当然这些日期取决于我们的游戏。一个 `PC` 实际上可以在这艘船航行到英格兰时登船访问它吗？在德古拉杀死船员之前，会有试图拯救船员的任务吗？如果是这样，那么我们将需要更精确的日期。但现在，这些大致日期足够了。
 
-## Adding defaults to a type, and the overloaded keyword
+## 为类型添加默认值以及重载关键字（Adding defaults to a type, and the overloaded keyword）
 
-Now let's get back to inserting the new characters. First we'll insert Lucy:
+现在让我们回到对新角色的插入。首先，我们将插入露西（Lucy）：
 
 ```edgeql
 INSERT NPC {
@@ -69,9 +69,9 @@ INSERT NPC {
 };
 ```
 
-Hmm, it looks like we're doing a lot of work to insert 'London' every time we add a character. We have three characters left and they will all be from London too. To save ourselves some work, we can make London the default for `places_visited` for `NPC`. To do this we will need two things: `default` to declare a default, and the keyword `overloaded`. The word `overloaded` indicates that we are using `placed_visited` in a different way than the `Person` type that we got it from.
+嗯，看起来每当我们添加一个角色，我们都要做很多工作来插入 'London'。我们还剩下三个角色，他们也都来自伦敦。为了节省一些工作，我们可以将伦敦设为 `NPC` 的 `places_visited` 的默认值。为此，我们需要两件事：用 `default` 声明默认值，以及使用关键字 `overloaded`。`overloaded` 这个词表明我们使用 `placed_visited` 的方式不同于我们扩展自的 `Person` 类型。
 
-With `default` and `overloaded` added, it now looks like this:
+添加了 `default` 和 `overloaded` 后，看起来像这样：
 
 ```sdl
 type NPC extending Person {
@@ -84,14 +84,14 @@ type NPC extending Person {
 
 ## datetime_current()
 
-One convenient function is [datetime_current()](https://www.edgedb.com/docs/edgeql/funcops/datetime/#function::std::datetime_current), which gives the datetime right now. Let's try it out:
+这有一个方便的函数是 [datetime_current()](https://www.edgedb.com/docs/edgeql/funcops/datetime/#function::std::datetime_current)，它可以给出了现在的日期时间。让我们试试看：
 
 ```edgeql-repl
 edgedb> SELECT datetime_current();
 {<datetime>'2020-11-17T06:13:24.418765000Z'}
 ```
 
-This can be useful if you want a post date when you insert an object. With this you can sort by date, delete the most recent item if you have a duplicate, and so on. Let's imagine how it would look if we put it inside the `Place` type. This is close, but not quite:
+如果在插入对象时你需要一个发布日期，这会很有用。有了这个，你可以按日期排序，如果有重复项，则删除最近插入的条目，等等。让我们想象一下如果我们把它放在 `Place` 类型中会是什么样子。如下，很接近，但不完全是：
 
 ```sdl
 abstract type Place {
@@ -104,7 +104,7 @@ abstract type Place {
 }
 ```
 
-This will actually generate the date when you *query* a `Place` object, not when you insert it. So to make a `Place` type that would have the date when you insert it, we can use `default` instead:
+这实际上会在你*查询* `Place` 对象时生成日期，而不是在你插入它时。因此，要创建一个带有插入日期的 `Place` 类型，我们可以使用 `default` 代替：
 
 ```sdl
 abstract type Place {
@@ -119,21 +119,22 @@ abstract type Place {
 }
 ```
 
-We don't need this in our schema so we won't change `Place`, but this is how you would do it.
+在我们的架构（schema）中我们并不需要这个日期，所以我们并不去真的改变 `Place`，这里只是为了展示你可以如何操作。
 
-## Using FOR and UNION
+## 使用 FOR 和 UNION（Using FOR and UNION）
 
-We're almost ready to insert our three new characters, and now we don't need to add `(SELECT City FILTER .name = 'London')` every time. But wouldn't it be nice if we could use a single insert instead of three?
+我们几乎准备好插入我们的新角色了，现在我们不需要每次都添加`(SELECT City FILTER .name = 'London')`。但是，如果我们可以使用单个插入而不是三个插入不是很好吗？
 
+要做到这一点，我们可以使用 `FOR` 循环，后跟关键字 `UNION`。首先，这是 `FOR` 部分：
 To do this, we can use a `FOR` loop, followed by the keyword `UNION`. First, here's the `FOR` part:
 
 ```edgeql
 FOR character_name IN {'John Seward', 'Quincey Morris', 'Arthur Holmwood'}
 ```
 
-In other words: take this set of three strings and do something to each one. `character_name` is the variable name we chose to call each string in this set.
+换句话说：获取这三个字符串组成的集合，并对每个字符串做一些事情。`character_name` 是我们选择调用这个集合中的每个字符串所用的变量名称。
 
-`UNION` comes next, because it is the keyword used to join sets together. For example, this query:
+`UNION` 紧随其后，因为它是用于将集合连接在一起的关键字。例如，这个查询：
 
 ```edgeql
 WITH city_names := (SELECT City.name),
@@ -141,9 +142,9 @@ WITH city_names := (SELECT City.name),
 SELECT city_names UNION castle_names;
 ```
 
-joins the names together to give us the output `{'Munich', 'Buda-Pesth', 'Bistritz', 'London', 'Castle Dracula'}`.
+将名称集合合并在一起，从而输出：`{'Munich', 'Buda-Pesth', 'Bistritz', 'London', 'Castle Dracula'}`。
 
-Now let's return to the `FOR` loop with the variable name `character_name`, which looks like this:
+现在让我们回到带有变量名 `character_name` 的 `FOR` 循环，它看起来像这样：
 
 ```edgeql
 FOR character_name IN {'John Seward', 'Quincey Morris', 'Arthur Holmwood'}
@@ -155,9 +156,9 @@ UNION (
 );
 ```
 
-We get three `uuid`s as a response to show that they were entered.
+我们会得到三个 `uuid` 作为响应，表示三个角色已被输入。
 
-Then we can check to make sure that it worked:
+然后让我们检查一下以确保它确实成功了：
 
 ```edgeql
 SELECT NPC {
@@ -171,7 +172,7 @@ SELECT NPC {
 } FILTER .name IN {'John Seward', 'Quincey Morris', 'Arthur Holmwood'};
 ```
 
-And as we hoped, they are all connected to Lucy now.
+正如我们所希望的那样，他们现在都与露西有关。
 
 ```
 {
@@ -193,7 +194,7 @@ And as we hoped, they are all connected to Lucy now.
 }
 ```
 
-By the way, now we could use this method to insert our five `Crewman` objects inside one `INSERT` instead of doing it five times. We can put their numbers inside a single set, and use the same `FOR` and `UNION` method to insert them. Of course, we already used `UPDATE` to change the inserts but from now on in our code their insert will look like this:
+顺便说一下，现在我们可以使用这个方法将我们的五个 `Crewman` 对象用一个 `INSERT` 完成插入，而不是 `INSERT` 五次。我们可以将船员的编号放在一个集合中，并使用 `FOR` 和 `UNION` 来插入他们。当然，在之前我们已经使用过 `UPDATE` 更改了插入，但从现在开始，在我们的代码中，船员的插入将如下所示：
 
 ```edgeql
 FOR n IN {1, 2, 3, 4, 5}
@@ -206,7 +207,7 @@ UNION (
 );
 ```
 
-It's a good idea to familiarize yourself with [the order to follow](https://www.edgedb.com/docs/edgeql/statements/for#for) when you use `FOR`:
+使用 `FOR` 时，最好熟悉 [要遵循的顺序](https://www.edgedb.com/docs/edgeql/statements/for#for)：
 
 ```edgeql-synopsis
 [ WITH with-item [, ...] ]
@@ -216,9 +217,9 @@ FOR variable IN "{" iterator-set [, ...]  "}"
 UNION output-expr ;
 ```
 
-The important part is the `{` and `}`, because `FOR` is used on a set. If you try with an array or other type it will generate an error.
+重要的部分是 `{` 和 `}`，因为 `FOR` 只用于集合。如果你尝试使用数组或其他类型，则会出现错误。
 
-Now it's time to update Lucy with three lovers. Lucy has already ruined our plans to have `lover` as just a `link` (which means `single link`). We'll set it to `multi link` instead so we can add all three of the men. Here is our update for her:
+现在是时候对露西（Lucy）更新三个情人了。露西已经破坏了我们将 `lover` 仅仅作为一个 `link`（这意味着 `single link`）的设定。我们要将其设置为 `multi link`，这样我们就可以添加所有三个人了。这里是我们对她的更新：
 
 ```edgeql
 UPDATE NPC FILTER .name = 'Lucy Westenra'
@@ -229,7 +230,7 @@ SET {
 };
 ```
 
-Now we'll select her to make sure it worked. Let's use `LIKE` this time for fun when doing the filter:
+现在我们查询她以验证更新有效。这次让我们在做过滤器的时候使用 `LIKE`：
 
 ```edgeql
 SELECT NPC {
@@ -240,7 +241,7 @@ SELECT NPC {
 } FILTER .name LIKE 'Lucy%';
 ```
 
-And this does indeed print her out with her three lovers.
+这确实把她和她的三个情人打印出来了。
 
 ```
 {
@@ -255,9 +256,9 @@ And this does indeed print her out with her three lovers.
 }
 ```
 
-## Overloading instead of making a new type
+## 用重载替代新类型的创建（Overloading instead of making a new type）
 
-So now that we know the keyword `overloaded`, we don't need the `HumanAge` type for `NPC` anymore. Right now it looks like this:
+所以现在我们知道关键字 `overloaded`，我们不再需要 `NPC` 中用到的 `HumanAge` 类型了。`HumanAge` 长这样：
 
 ```sdl
 scalar type HumanAge extending int16 {
@@ -265,7 +266,7 @@ scalar type HumanAge extending int16 {
 }
 ```
 
-You will remember that we made this type because vampires can live forever, but humans only live up to 120. But now we can simplify things. First we move the `age` property over to the `Person` type. Then (inside the `NPC` type) we use `overloaded` to add a constraint on it there. Now `NPC` uses `overloaded` twice:
+你应该还记得我们制作这个类型是因为吸血鬼可以永生，但人类只能活到 120 岁。但现在我们对其进行简化。首先，我们将 `age` 属性移到 `Person` 类型。然后（在 `NPC` 类型内）我们使用 `overloaded` 对 `age` 添加一个约束。现在 `NPC` 里使用了两个 `overloaded`：
 
 ```sdl
 type NPC extending Person {
@@ -278,7 +279,7 @@ type NPC extending Person {
 }
 ```
 
-This is convenient because we can delete `age` from `Vampire` too:
+这很方便，因为我们也可以从 `Vampire` 中删除 `age` 了：
 
 ```sdl
 type Vampire extending Person {
@@ -287,9 +288,9 @@ type Vampire extending Person {
 }
 ```
 
-You can see that a good usage of abstract types and the `overloaded` keyword lets you simplify your schema if you do it right.
+你可以看到，如果你可以正确使用抽象类型和关键字 `overloaded`，你的架构可以被简化。
 
-好的，接下来让我们阅读本章介绍的剩余部分。它继续解释了露西在做什么：
+好的，接下来让我们阅读本章介绍的剩余部分。它继续解释了露西（Lucy）在做什么：
 
 > ……她选择嫁给亚瑟·霍姆伍德（Arthur Holmwood），并向另外两人道歉。另外两个男人很难过，好在他们成为了彼此的朋友。苏厄德博士（Dr. Seward）很沮丧，并试图专注于他的工作以摆脱情伤。他是一名精神病医生，在伦敦郊外不远处的一座名为 Carfax 的大宅邸附近的精神病院工作。疯人院里有个奇怪的人，名叫伦菲尔德（Renfield），苏厄德博士觉得他最有趣。雷菲尔德有时冷静，有时癫狂，苏厄德博士不知道为什么他的情绪变化如此之快。此外，伦菲尔德似乎相信他可以通过吃活物来获得力量。他不是吸血鬼，但有时看起来很相似。
 
