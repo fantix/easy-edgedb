@@ -7,7 +7,7 @@ leadImage: illustration_05.jpg
 
 可怜的乔纳森（Jonathan）运气不佳，在这一章里他发生了什么？
 
-> 白天，乔纳森决定尝试探索这座城堡，但太多的门窗都被锁上了。他不知道怎么出去，希望至少能给米娜寄一封信。他假装没有问题，在夜里继续不停地和德拉库拉聊天。一天晚上，他看到德拉库拉爬出窗口，像一条蛇一样爬下城墙。他很害怕，知道了德拉库拉应该不是人类。几天后，他打破了一扇门，发现了城堡的另一部分。这个房间很奇怪，让他开始犯困。当他睁开眼睛时，他看到了三个吸血鬼女人在他的身边。他既被她们吸引又害怕她们。他想亲吻她们，但他知道如果他这样做了就会死。她们靠得更近了，但他无法动弹……
+> 白天，乔纳森决定尝试探索这座城堡，但太多的门窗都被锁上了。他不知道怎么出去，希望至少能给米娜寄一封信。他假装没有问题，在夜里继续不停地和德古拉聊天。一天晚上，他看到德古拉爬出窗口，像一条蛇一样爬下城墙。他很害怕，知道了德古拉应该不是人类。几天后，他打破了一扇门，发现了城堡的另一部分。这个房间很奇怪，让他开始犯困。当他睁开眼睛时，他看到了三个吸血鬼女人在他的身边。他既被她们吸引又害怕她们。他想亲吻她们，但他知道如果他这样做了就会死。她们靠得更近了，但他无法动弹……
 
 ## 日期时间（std::datetime）
 
@@ -70,7 +70,7 @@ std::to_datetime(epochseconds: int64) -> datetime
 
 如果你对 ISO 8601 不熟悉，或者你有一堆单独的数字要组成一个日期，那么最简单的方法可能是第三个。有了这个，我们可以对“时间”里的整数通过使用 `to_datetime()` 来获得其对应的正确的时间戳。
 
-假设现在是 5 月 12 日（May 12）10:35，在德拉库拉城堡中的一个晴朗的早上。太阳升起，德古拉在某处睡着，乔纳森正试图利用白天的时间逃出去给米娜寄一封信。在罗马尼亚，时区是“EEST”（东欧夏令时）。我们将使用 `to_datetime()` 来生成它。因为整个故事都发生在同一年，所以我们可以随便指定一个年份 —— 为了方便起见，我们将使用 2020 年。输入：
+假设现在是 5 月 12 日（May 12）10:35，在德古拉城堡中的一个晴朗的早上。太阳升起，德古拉在某处睡着，乔纳森正试图利用白天的时间逃出去给米娜寄一封信。在罗马尼亚，时区是“EEST”（东欧夏令时）。我们将使用 `to_datetime()` 来生成它。因为整个故事都发生在同一年，所以我们可以随便指定一个年份 —— 为了方便起见，我们将使用 2020 年。输入：
 
 `SELECT to_datetime(2020, 5, 12, 10, 35, 0, 'EEST');`
 
@@ -130,7 +130,7 @@ SELECT <duration>'1 hours, 8 minute ** 5 second ()()()( //// 6 milliseconds' -
 
 ## 必需链接（Required links）
 
-现在我们需要为三个女性吸血鬼创建一个类型。我们称它为 `MinorVampire`。它有一个 `required` 的、指向 `Vampire` 类型的链接。这是因为她们被德拉库拉控制着，她们只因为德拉库拉的存在而作为 `MinorVampire` （小鬼）存在。
+现在我们需要为三个女性吸血鬼创建一个类型。我们称它为 `MinorVampire`。它有一个 `required` 的、指向 `Vampire` 类型的链接。这是因为她们被德古拉控制着，她们只因为德古拉的存在而作为 `MinorVampire` （小鬼）存在。
 
 ```sdl
 type MinorVampire extending Person {
@@ -138,7 +138,7 @@ type MinorVampire extending Person {
 }
 ```
 
-现在 `master` 是必需的，我们不能插入一个只有名字的 `MinorVampire`。如果那样做，我们会得到错误：`ERROR: MissingRequiredError: missing value for required link default::MinorVampire.master`。因此让我们插入数据并将其连接到德拉库拉（Dracula）。
+现在 `master` 是必需的，我们不能插入一个只有名字的 `MinorVampire`。如果那样做，我们会得到错误：`ERROR: MissingRequiredError: missing value for required link default::MinorVampire.master`。因此让我们插入数据并将其连接到德古拉（Dracula）。
 
 ```edgeql
 INSERT MinorVampire {
@@ -147,7 +147,7 @@ INSERT MinorVampire {
 };
 ```
 
-上面之所以可以工作，是因为我们的数据库里只有一个名为德拉库拉公爵（Count Dracula）的 `Vampire`（请记住，`required link` 是 `required single link` 的缩写）。如果我们的数据里有不止一个 `Vampire`，我们则必须加上 `LIMIT 1`，否则我们会得到如下的报错：
+上面之所以可以工作，是因为我们的数据库里只有一个名为德古拉伯爵（Count Dracula）的 `Vampire`（请记住，`required link` 是 `required single link` 的缩写）。如果我们的数据里有不止一个 `Vampire`，我们则必须加上 `LIMIT 1`，否则我们会得到如下的报错：
 
 ```
 error: possibly more than one element returned by an expression for a computable link 'master' declared as 'single'
