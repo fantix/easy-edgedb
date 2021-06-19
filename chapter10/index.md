@@ -4,9 +4,9 @@ tags: Tuples, Computables, Math
 
 # 第十章 - 惠特比的可怕事件
 
-> 米娜（Mina）和露西（Lucy）正在惠特比（Whitby）享受他们愉快的时光。一天晚一场大风暴来袭，一艘船在雾中靠岸 —— 正是德古拉所在的德米特号（the Demeter）。露西后来开始在晚上梦游，脸色苍白，一直说些奇怪的话。米娜试图阻止她，但有时露西会跑到外面去。一天晚上，露西看着太阳下山说：“他的眼睛又红了！他们一样。”米娜很担心，向苏厄德博士（Dr. Seward）寻求帮助。苏厄德博士对露西进行了检查，露西脸色苍白，身体虚弱，但他不知道为什么。苏厄德博士决定打电话给他来自荷兰的老师亚伯拉罕·范海辛 (Abraham Van Helsing) 寻求帮助。范海辛对露西进行了检查，他很震惊。然后他转向其他人说：“听着。我们可以帮助这个女孩，但你们会觉得方法很奇怪。你们必须相信我……”
+> 米娜（Mina）和露西（Lucy）正在惠特比（Whitby）享受他们愉快的时光。一天晚一场大风暴来袭，一艘船在雾中靠岸 —— 正是德古拉所在的德米特号（the Demeter）。露西后来开始在晚上梦游，脸色苍白，一直说些奇怪的话。米娜试图阻止她，但有时露西会跑到外面去。一天晚上，露西看着太阳下山说：“他的眼睛又红了！他们一样。”米娜很担心，向苏厄德医生（Dr. Seward）寻求帮助。苏厄德医生对露西进行了检查，露西脸色苍白，身体虚弱，但他不知道为什么。苏厄德医生决定打电话给他来自荷兰的老师亚伯拉罕·范海辛 (Abraham Van Helsing) 寻求帮助。范海辛对露西进行了检查，他很震惊。然后他转向其他人说：“听着。我们可以帮助这个女孩，但你们会觉得方法很奇怪。你们必须相信我……”
 
-The city of Whitby is in the northeast of England. Right now our `City` type just extends `Place`, which only gives us the properties `name`, `modern_name` and `important_places`. This could be a good time to give it a `property population` which can help us draw the cities in our game. It will be an `int64` to give us the size we need:
+惠特比市（Whitby）位于英格兰（England）东北部。现在我们的 `City` 类型只是扩展了 `Place`，它只给了我们属性 `name`、`modern_name` 和 `important_places`。这可能是增加 `property population`（人口属性）的好时机，它可以帮助我们在游戏具象一个城市。我们将使用 `int64` 来表达它的大小：
 
 ```sdl
 type City extending Place {
@@ -14,7 +14,7 @@ type City extending Place {
 }
 ```
 
-By the way, here's the approximate population for our three cities at the time of the book. They are much smaller back in 1887:
+顺便说一下，这是本书出版时相关城市的大致人口。这些城市的人口在 1887 年时还很少：
 
 - Buda-Pesth (Budapest): 402706
 - London: 3500000
@@ -22,6 +22,7 @@ By the way, here's the approximate population for our three cities at the time o
 - Whitby: 14400
 - Bistritz (Bistrița): 9100
 
+插入惠特比市（Whitby）很容易：
 Inserting Whitby is easy enough:
 
 ```edgeql
@@ -31,27 +32,27 @@ INSERT City {
 };
 ```
 
-But for the rest of them it would be nice to update everything at the same time.
+但是对于其他几个城市来说，同时更新所有内容会很好。
 
-## Working with tuples and arrays
+## 元组和数组的使用（Working with tuples and arrays）
 
-If we have all the city data together, we can do a single insert with a `FOR` and `UNION` loop again. Let's imagine that we have some data inside a tuple, which seems similar to an array but is quite different. One big difference is that a tuple can hold different types, so this is okay:
+如果我们将所有城市数据放在一起，我们可以再次使用 `FOR` 和 `UNION` 循环进行一次单次插入（或更新）。假设我们在“元组（tuples）”中有一些数据，它看起来与数组（arrays）相似，但又完全不同。一个很大的区别是元组可以包含不同的类型，所以下面这样是可以的：
 
 `('Buda-Pesth', 402706), ('London', 3500000), ('Munich', 230023), ('Bistritz', 9100)`
 
-In this case, the type is called a `tuple<str, int64>`.
+在这种情况下，该类型称为 `tuple<str, int64>`。
 
-Before we start using these tuples, let's make sure that we understand the difference between the two. To start, let's look at slicing arrays and strings in a bit more detail.
+在我们开始使用这些元组之前，让我们确保我们了解了元组（tuples）与数组（arrays）之间的区别。首先，让我们更详细地了解切片数组（slicing arrays）和字符串（strings）。
 
-You'll remember that we use square brackets to access part of an array or a string. So `SELECT ['Mina Murray', 'Lucy Westenra'][1];` will give the output `{'Lucy Westenra'}` (that's index number 1).
+你一定记得我们使用方括号来访问数组或字符串的一部分。所以 `SELECT ['Mina Murray', 'Lucy Westenra'][1];` 将给出输出 `{'Lucy Westenra'}`（即索引 1 对应的数值）。
 
-You'll also remember that we can separate the starting and ending index with a colon, like in this example:
+你也应该还记得，我们可以用冒号分隔起始索引和结束索引，如下例所示：
 
 ```edgeql
 SELECT NPC.name[0:10];
 ```
 
-This prints the first ten letters of every NPC's name:
+这将打印每个 NPC 名字的前十个字母：
 
 ```
 {
@@ -65,13 +66,13 @@ This prints the first ten letters of every NPC's name:
 }
 ```
 
-But the same can be done with a negative number if you want to start from the index at the end. For example:
+如果你想从最后的索引开始，同样可以用负数来完成。例如：
 
 ```edgeql
 SELECT NPC.name[2:-2];
 ```
 
-This prints from index 2 up to 2 indexes away from the end (it'll cut off the first two letters on each side). Here's the output:
+这将从索引 2 打印到距离末尾 2 个索引（即切断每一侧的前两个字母）的所有字母。这是输出：
 
 ```
 {
@@ -85,15 +86,15 @@ This prints from index 2 up to 2 indexes away from the end (it'll cut off the fi
 }
 ```
 
-Tuples are quite different: they behave more like object types with properties that have numbers instead of names. This is why tuples can hold different types together: `string`s with `array`s, `int64`s with `float32`s, anything.
+元组完全不同：它们的行为更像是具有数字而不是名称的属性的对象类型。这就是元组可以将不同类型保存在一起的原因：`string` 和 `array`，`int64` 和 `float32`，等等。
 
-So this is completely fine:
+所以下面这个完全没问题：
 
 ```edgeql
 SELECT {('Bistritz', 9100, cal::to_local_date(1887, 5, 6)), ('Munich', 230023, cal::to_local_date(1887, 5, 8))};
 ```
 
-The output is:
+这是输出：
 
 ```
 {
@@ -102,12 +103,13 @@ The output is:
 }
 ```
 
-But now that the type is set (this one is type `tuple<str, int64, cal::local_date>`) you can't mix it up with other tuple types. So this is not allowed:
+但是现在类型已设置（上面输出的是类型 `tuple<str, int64, cal::local_date>`），你不能将它与其他元组类型混淆。像下面这样是不被允许的：
 
 ```edgeql
 SELECT {(1, 2, 3), (4, 5, '6')};
 ```
 
+EdgeDB 会报错，因为它不会尝试处理不同类型的元组。错误提示是：
 EdgeDB will give an error because it won't try to work with tuples that are of different types. It complains:
 
 ```
@@ -115,9 +117,9 @@ ERROR: QueryError: operator 'UNION' cannot be applied to operands of type 'tuple
   Hint: Consider using an explicit type cast or a conversion function.
 ```
 
-In the above example we could easily just cast the last string into an integer and EdgeDB will be happy again: `SELECT {(1, 2, 3), (4, 5, <int64>'6')};`.
+在上面的例子中，我们可以轻松地将第二个元祖中的最后一个字符串转换为整数，EdgeDB 则会再次工作：`SELECT {(1, 2, 3), (4, 5, <int64>'6')};`。
 
-To access the fields of a tuple you still start from the number 0, but you write the numbers after a `.` instead of inside a `[]`. Now that we know all this, we can update all our cities at the same time. It looks like this:
+要访问元组的字段，仍然从是数字 0 开始，但将数字写在 `.` 之后，而不是在 `[]` 内。现在我们已经了解了这一切，我们可以同时更新我们所有的城市了。它看起来像这样：
 
 ```edgeql
 FOR data in {('Buda-Pesth', 402706), ('London', 3500000), ('Munich', 230023), ('Bistritz', 9100)}
@@ -129,33 +131,33 @@ UNION (
 );
 ```
 
-So it sends each tuple into the `FOR` loop, filters by the string (which is `data.0`) and then updates with the population (which is `data.1`).
+因此，它将每个元组发送到 `FOR` 循环中，按名字的字符串（即 `data.0`）进行过滤，然后对人口（即 `data.1`）进行更新。
 
-Let's finish this section with a final note about casting. We know that we can cast into any scalar type, and this works for tuples of scalar types too. It uses the same format with `<>` except that you put it inside of `<tuple>`, like this:
+在这个部分的最后，我们再说一下关于类型转换。我们知道对于任何标量类型我们都可以做类型转换，这也同样适用于标量类型的元组。它使用相同的格式 `<>`，只是需要把它放在 `<tuple>` 里面，像这样：
 
 ```
 WITH london := ('London', 3500000),
 SELECT <tuple<json, int32>>london;
 ```
 
-That gives us this output:
+这是输出：
 
 ```
 {("\"London\"", 3500000)}
 ```
 
-Here's another example if we need to do some math with floats on London's population:
+这里是另一个例子，如果我们需要对伦敦人口进行一些浮点数的数学计算：
 
 ```
 WITH london := <tuple<json, float64>>('London', 3500000),
   SELECT (london.0, london.1 / 9);
 ```
 
-The output is `{("\"London\"", 388888.8888888889)}`.
+输出是：`{("\"London\"", 388888.8888888889)}`.
 
-## Ordering results and using math
+## 排序和数学（Ordering results and using math）
 
-Now that we have some numbers, we can start playing around with ordering and math. Ordering is quite simple: type `ORDER BY` and then indicate the property/link you want to order by. Here we order them by population:
+现在我们有了一些数字，我们可以开始玩排序和数学了。排序是非常简单的：输入 `ORDER BY`，然后指明你要排序的属性/链接。这里我们按人口排序：
 
 ```edgeql
 SELECT City {
@@ -164,7 +166,7 @@ SELECT City {
 } ORDER BY .population DESC;
 ```
 
-This returns:
+这是结果：
 
 ```
 {
@@ -176,9 +178,9 @@ This returns:
 }
 ```
 
-What's `DESC`? It means descending, so largest first and then going down. If we didn't write `DESC` then it would have assumed that we wanted to sort ascending. You can also write `ASC` (to make it clear to somebody reading the code for example), but you don't need to.
+什么是 `DESC`？它是指下降，所以先展示最大的然后逐步减小。如果我们不写 `DESC`，那么它会假设我们想要升序排序。你也可以写`ASC`（例如让阅读代码的人更加清楚），但你不必非要这么做。
 
-For some actual math, you can check out the functions in `std` [here](https://edgedb.com/docs/edgeql/funcops/set#function::std::sum) as well as the `math` module [here](https://edgedb.com/docs/edgeql/funcops/math#function::math::stddev). Instead of looking at each one, let's do a single big query to show some of them all together. To make the output nice, we will write it together with strings explaining the results and then cast them all to `<str>` so we can join them together using `++`.
+对于一些实用的数学函数，你可以查看 [`std` 中的函数](https://edgedb.com/docs/edgeql/funcops/set#function::std::sum) 以及 [`math` 模块](https://edgedb.com/docs/edgeql/funcops/math#function::math::stddev)。与其逐一查看，不如让我们做一个大查询，将其中的一些函数一并运用进来。为了使输出更友好，我们会将用于每个函数输出结果的解释字符串也编写进来，并将输出结果全部转换为 `<str>`，所以我们可以使用 `++` 将它们连接在一起。
 
 ```edgeql
 WITH cities := City.population
@@ -193,18 +195,18 @@ SELECT (
 );
 ```
 
-This used quite a few functions:
+这里使用了相当多的函数：
 
-- `count()` to count the number of items,
-- `all()` to return `{true}` if all items match and `{false}` otherwise,
-- `sum()` to add them all together,
-- `max()` to give the highest value,
-- `min()` to give the lowest one,
-- `math::mean()` to give the average,
-- `any()` to return `{true}` if any item matches and `{false}` otherwise, and
-- `math::stddev()` for the standard deviation.
+- `count()` 计算项目（item）的数量，
+- `all()` 如果所有项目都匹配，则返回 `{true}`，否则返回 `{false}`，
+- `sum()` 对所有项目进行相加，
+- `max()` 给出数值最大的项目，
+- `min()` 给出数值最小的项目，
+- `math::mean()` 给出所有项目的平均值，
+- `any()` 只要有一个项目匹配，则返回 `{true}`，否则返回 `{false}`，
+- `math::stddev()` 给出所有项目的标准差。
 
-The output also makes it clear how they work:
+输出结果也清楚地说明了它们是如何工作的：
 
 ```
 {
@@ -220,17 +222,17 @@ The output also makes it clear how they work:
 }
 ```
 
-`any()`, `all()` and `count()` are particularly useful in operations to give you an idea of your data.
+`any()`、`all()` 和 `count()` 在操作中特别有用，可以让你更了解你的数据。
 
-## Importing modules with WITH
+## 使用 WITH 导入模块（Importing modules with WITH）
 
-You can use the keyword `WITH` to import modules too. In the example above we used two functions from EdgeDB's `math` module: `math::mean()` and `math::stddev()`. Just writing `mean()` and `stddev()` would produce this error:
+你也可以使用关键字 `WITH` 来导入模块。在上面的例子中，我们使用了 EdgeDB 的 `math` 模块中的两个函数：`math::mean()` 和 `math::stddev()`。如果我们只写 `mean()` 和 `stddev()` 会报错：
 
 ```
 ERROR: InvalidReferenceError: function 'mean' does not exist
 ```
 
-If you don't want to write the module name every time you can just import the module after `WITH`. Let's slip that into the query we just used. See if you can see what's changed:
+如果你不想每次都写模块名 `math`，你可以在 `WITH` 后面导入模块。让我们把它放到我们刚刚使用的查询中。看你是否能看出发生了什么变化：
 
 ```edgeql
 WITH cities := City.population,
@@ -246,20 +248,20 @@ SELECT (
 );
 ```
 
-The output is the same, but we added an import of the `math` module, letting us just write `mean()` and `stddev()`.
+输出结果是一样的，但我们添加了一个 `math` 模块的导入，让我们在后面的语句中可以只写 `mean()` 和 `stddev()`。
 
-You can also use `AS` to rename a module (well, to _alias_ a module) in the same way that you can rename a type. So this will work too:
+与重命名类型相同，你还可以使用 `AS` 重命名模块（其实是为模块起个 _别名_）。所以像下面这样也可以工作：
 
 ```edgeql
 WITH M AS MODULE math,
 SELECT M::mean(City.population);
 ```
 
-That gives us the mean: `{831245.8}`.
+这给了我们平均值：`{831245.8}`。
 
-## Some more computables for names
+## 名称的更多可计算型（Some more computables for names）
 
-We saw in this chapter that Dr. Seward asked his old teacher Dr. Van Helsing to come and help Lucy. Here is how Dr. Van Helsing began his letter to say that he was coming:
+我们在本章中看到苏厄德医生（Dr. Seward）请他的老师范海辛医生 (Dr. Van Helsing) 来帮助露西（Lucy）。以下是范海辛医生在信中说他要来的开头：
 
 ```
 Letter, Abraham Van Helsing, M. D., D. Ph., D. Lit., etc., etc., to Dr. Seward.
@@ -270,15 +272,15 @@ Letter, Abraham Van Helsing, M. D., D. Ph., D. Lit., etc., etc., to Dr. Seward.
 “When I have received your letter I am already coming to you.
 ```
 
-The `Abraham Van Helsing, M. D., D. Ph., D. Lit., etc., etc.` part is interesting. This might be a good time to think about more about the `name` property inside our `Person` type. Right now our `name` property is just a single string, but we have people with different types of names, in this order:
+`Abraham Van Helsing, M. D., D. Ph., D. Lit., etc., etc.` 这部分很有趣。这可能是个不错的时机让我们进一步考虑我们的 `Person` 类型中的 `name` 属性。现在我们的 `name` 属性只是一个字符串，但是我们的角色会拥有不同类别的称呼，按以下顺序：
 
-Title | First name | Last name | Degree
+Title（头衔） | First name（名） | Last name（姓） | Degree（学位）
 
-So there is 'Count Dracula' (title and name), 'Dr. Seward' (title and name), 'Dr. Abraham Van Helsing, M.D, Ph. D. Lit.' (title + first name + last name + degrees), and so on.
+所以有 'Count Dracula'（德古拉伯爵，头衔和名字），'Dr. Seward'（医生西沃德，头衔和姓名），'Dr. Abraham Van Helsing, M.D, Ph. D. Lit.'（医生亚伯拉罕·范海辛医学博士、哲学博士、文学博士等，头衔+名字+姓氏+学位），依此类推。
 
-That would lead us to think that we should have titles like `first_name`, `last_name`, `title` etc. and then join them together using a computable. But then again, not every character has these exact four parts to their name. Some others that don't are 'Woman 1' and 'The Innkeeper', and our game would certainly have a lot more of these. So it's probably not a good idea to get rid of `name` or always build names from separate parts. But in our game we might have characters writing letters or talking to each other, and they will have to use things like titles and degrees.
+这会导致我们认为我们应该有类似 `first_name`、`last_name`、`title` 等称呼，然后使用可计算的公式将它们连接在一起。但话又说回来，并不是每个角色的名字都有这四个部分。像“女人 1（Woman 1）”和“旅店老板（The Innkeeper）”，我们的游戏肯定会有更多这样的命名。因此，直接去掉 `name` 或总是组合不同的部分构建名称可能不是一个好主意。但是在我们的游戏中，我们可能让角色写信或互相交谈，他们将不得不使用诸如头衔和学位之类的东西。
 
-We could try a middle of the road approach instead. We'll keep `name`, and add some properties to `Person`:
+我们可以尝试采用中间方法。保留 `name`，并为 `Person` 添加一些属性：
 
 ```sdl
 property title -> str;
@@ -287,9 +289,9 @@ property conversational_name := .title ++ ' ' ++ .name IF EXISTS .title ELSE .na
 property pen_name := .name ++ ', ' ++ .degrees IF EXISTS .degrees ELSE .name;
 ```
 
-We could try to do something fancier with `degrees` by making it an `array<str>` for each degree, but our game probably doesn't need that much precision. We are just using this for our conversation engine.
+我们可以尝试对 `degrees` 做一些更有趣的事情，比如将 `degrees` 设置为 `array<str>`，但我们的游戏可能不需要那么高的精度，我们只是在角色间的对话中会用到学位称号。
 
-Now it's time to insert Van Helsing:
+现在是插入范海辛 (Van Helsing）的时候了：
 
 ```edgeql
 INSERT NPC {
@@ -299,7 +301,7 @@ INSERT NPC {
 };
 ```
 
-Now we can make use of these properties to liven up our conversation engine in the game. For example:
+现在我们可以利用这些属性在游戏中模仿一些对话了。例如：
 
 ```edgeql
 WITH helsing := (SELECT NPC filter .name ILIKE '%helsing%')
@@ -310,9 +312,9 @@ SELECT (
 );
 ```
 
-By the way, the `\n` inside the string creates a new line, while `\t` moves it one tab to the right.
+顺便说一下，字符串中的 `\n` 创建了一个新行，而 `\t` 用于将文本向右移动一个制表符。
 
-This gives us:
+我们得到结果：
 
 ```
 {
@@ -325,13 +327,13 @@ This gives us:
 }
 ```
 
-In a standard database with users it's much simpler: get users to enter their first names, last names etc. and make each one a property.
+在有用户的标准数据库中，这要简单得多：让用户输入他们的名字、姓氏等，并使每个部分都成为一个属性。
 
-## Other escape characters and raw strings
+## 其他转义字符和原始字符串（Other escape characters and raw strings）
 
-Besides `\n` and `\t` there are quite a few other escape characters - you can see the complete list [here](https://www.edgedb.com/docs/edgeql/lexical/#strings). Some are rare but hexadecimal with `\x` is a good example of one that might be useful.
+除了 `\n` 和 `\t` 之外，还有很多其他转义字符 —— 你可以在 [此处](https://www.edgedb.com/docs/edgeql/lexical/#strings) 查看完整列表。有些很少见，但带有 `\x` 的十六进制是一个可能有用的例子。
 
-If you want to ignore escape characters, put an `r` in front of the quote. Let's try it with the example above. Only the last part has an `r`:
+如果你想忽略转义字符，请在引号前放置一个 `r`。让我们用上面的例子来试试，只有最后一部分有一个 `r`：
 
 ```edgeql
 WITH helsing := (SELECT NPC filter .name ILIKE '%helsing%')
@@ -342,7 +344,7 @@ SELECT (
 );
 ```
 
-Now we get:
+现在我们会得到：
 
 ```
 {
@@ -354,20 +356,21 @@ Now we get:
 }
 ```
 
-Finally, there is a raw string literal that uses `$$` on each side. Anything inside this will ignore any and all quotation marks, so you won't have to worry about the string ending in the middle. Here's one example with a bunch of single and double quotes inside:
+最后，如果你想保有字符串完全原始的模样，你可以在其两侧使用 `$$`。里面所有内容都将忽略所有的引号，因此你不必担心字符串会在中间断开。这是一个里面包含了一堆单引号和双引号的示例：
 
 ```edgeql
 SELECT $$ "Dr. Van Helsing would like to tell "them" about "vampires" and how to "kill" them, but he'd sound crazy." $$;
 ```
 
-Without the `$$` it will look like four separate strings with three unknown keywords between them, and will generate an error.
+如果没有 `$$`，看起来会是四个单独的字符串被三个未知的关键字所连接，并且会产生错误。
 
-## All the scalar types
+## 所有标量类型（All the scalar types）
 
-You now have an understanding of all the EdgeDB scalar types. Summed up, the are: `int16`, `int32`, `int64`, `float32`, `float64`, `bigint`, `decimal`, `sequence`, `str`, `bool`, `datetime`, `duration`, `cal::local_datetime`, `cal::local_date`, `cal::local_time`, `uuid`, `json`, and `enum`. You can see the documentation for them [here](https://www.edgedb.com/docs/datamodel/scalars/index).
+你现在已经了解了所有 EdgeDB 标量类型。总结起来有：`int16`、`int32`、`int64`、`float32`、`float64`、`bigint`、`decimal`、`sequence`、`str`、`bool`、`datetime`、 `duration`、`cal::local_datetime`、`cal::local_date`、`cal::local_time`、`uuid`、`json` 和`enum`。你可以在 [此处](https://www.edgedb.com/docs/datamodel/scalars/index) 中查看它们的文档。
 
-## UNLESS CONFLICT ON + ELSE + UPDATE
+## 关键词 UNLESS CONFLICT ON + ELSE + UPDATE
 
+我们在 `name` 上设置了一个 `exclusive constraint`，这样我们就不能有两个同名的角色。这个想法源于，有人可能会在书中看到一个角色并将其插入，然后其他人会尝试做同样的事情。现在我们来插入名为约翰尼（Johnny）的角色：
 We put an `exclusive constraint` on `name` so that we won't be able to have two characters with the same name. The idea is that someone might see a character in the book and insert it, and then someone else would try to do the same. So this character named Johnny will work:
 
 ```edgeql
@@ -376,11 +379,11 @@ INSERT NPC {
 };
 ```
 
-But if we try again we will get this error: `ERROR: ConstraintViolationError: name violates exclusivity constraint`
+如果我们再做一次上面的插入，我们会得到这个错误：`ERROR: ConstraintViolationError: name violates exclusivity constraint`
 
-But sometimes just generating an error isn't enough - maybe we want something else to happen instead of just giving up. This is where `UNLESS CONFLICT ON` comes in, followed by an `ELSE` to explain what to do. `UNLESS CONFLICT ON` is probably easier to explain through an example. Here's one that shows what we can do to either insert a `City` with its population, and to `UPDATE` the population if it already exists in the database.
+但有时仅仅生成错误提示是不够的 —— 也许我们希望会引发其他的事情而不是直接放弃。这是 `UNLESS CONFLICT ON` 发挥作用的时候了，在它的后面会跟着 `ELSE` 来解释要做什么。通过示例可能更容易解释 `UNLESS CONFLICT ON`。这里展示了当我们要创建带有人口的 `City` 时我们可以怎么做 —— 插入，如果该城市已经存在于数据库中，则做更新。
 
-Munich had a population of 230,023 in 1880, and five years later it was 261,023. So let's imagine we are updating the `City` data and some cities might exist, while others might not. The `INSERT` will look like this:
+1880 年慕尼黑（Munich）的人口为 230,023，五年后为 261,023。所以让我们假设我们正在更新 `City` 数据，且一些城市可能在数据库里已经存在，而另一些城市可能尚不存在。`INSERT` 将如下所示：
 
 ```edgeql
 INSERT City {
@@ -395,19 +398,19 @@ ELSE (
 );
 ```
 
-Let's look at it step by step:
+让我们一步一步地拆解：
 
-First a normal insert:
+首先是一个普通的插入：
 
 ```edgeql
-INSERT NPC {
+INSERT City {
   name := 'Munich'
 }
 ```
 
-But there might be a `City` there already so it might not work, so we add `UNLESS CONFLICT ON .name`. Then follow it with an `ELSE` to give instructions on what to do.
+但是数据库里可能已经有一个同名的 `City` 了，所以它可能不起作用，于是我们添加 `UNLESS CONFLICT ON .name`。然后在它后面加上 `ELSE`，给出指示明确要做什么。
 
-But here's the important part: we don't write `ELSE INSERT`, because we are already in the middle of an `INSERT`. What we write instead is `UPDATE` for the type we are inserting, so `UPDATE City`. We are basically taking the failed data from the insert and updating it to try again. So we'll do this instead:
+需要注意的是：这里我们不写 `ELSE INSERT`，因为我们已经在 `INSERT` 当中了。我们要为插入的类型做的是 `UPDATE`，所以是 `UPDATE City`。根本上讲，我们是从插入中取出失败的数据并更新它以重试。所以我们会这样做：
 
 ```edgeql
 ELSE (
@@ -418,33 +421,33 @@ ELSE (
 );
 ```
 
-With this, we are guaranteed to get a `City` object called Munich with a population of 261,023, whether it already exists in the database or not.
+这样做，我们可以保证得到一个名为慕尼黑（Munich）的 `City` 对象，且人口为 261,023，无论它是否已经存在于数据库中。
 
-[Here is all our code so far up to Chapter 10.](code.md)
+[这里是第十章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
-1. Try inserting two `NPC` types in one insert with the following `name`, `first_appearance` and `last_appearance` information.
+1. 尝试通过一个插入语句插入两个 `NPC` 类型的对象，其中包含 `name`, `first_appearance` 和 `last_appearance` 信息。
 
    `{('Jimmy the Bartender', '1887-09-10', '1887-09-11'), ('Some friend of Jonathan Harker', '1887-07-08', '1887-07-09')}`
 
-2. Here are two more `NPC`s to insert, except the last one has an empty set (she's not dead). What problem are we going to have?
+2. 这里还有两个要插入的 `NPC`，后面一个的最后有一个空集（因为她还没有死）。我们会遇到什么问题？
 
    `{('Dracula\'s Castle visitor', '1887-09-10', '1887-09-11'), ('Old lady from Bistritz', '1887-05-08', {})}`
 
-3. How would you order the `Person` types by last letter of their names?
+3. 你将如何按人物姓名的最后一个字母对 `Person` 类型进行排序？
 
-4. Try inserting an `NPC` with the name `''`. Now how would you do the same query in question 3?
+4. 尝试插入一个名为 `''` 的 `NPC`。现在，你将如何在问题 3 中执行相同的查询？
 
-   Hint: the length of `''` is 0, which may be a problem.
+   提示：`''` 的长度为 0，这可能会有问题。
 
-5. Dr. Van Helsing has a list of `MinorVampire`s with their names and strengths. We already have some `MinorVampire`s in the database. How would you `INSERT` them while making sure to `UPDATE` if the object is already there?
+5. 范海辛医生（Dr. Van Helsing ）有一份 `MinorVampire` 的名单，上面有他们的名字和力量。我们的数据库中已经有一些 `MinorVampire` 了。如果对象已经存在，你将如何在确保 `UPDATE` 的同时 `INSERT` 不存在的？ 
 
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Will they believe Van Helsing when he tells them the truth?_
+__接下来：__ _他们会相信范海辛所谓的真相吗？_
