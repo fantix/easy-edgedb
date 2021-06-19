@@ -109,7 +109,7 @@ SELECT jonathan_wants_to_escape - mina_has_tea;
 
 ## 强制转换为 duration（Casting to a duration）
 
-除了对两个 `datetime` 进行相减，你也可以直接转换出一个 `duration`。为此，只需写下数字及对应的单位：`microseconds`, `milliseconds`, `seconds`, `minutes`, 或 `hours`（“微秒”、“毫秒”、“秒”、“分钟”或“小时”）。它将返回一个秒数或更精确的单位。比如 `SELECT <duration>'2 hours'；` 将返回 `{7200s}`；`SELECT <duration>'2 microseconds';` 将返回 `{2µs}`。
+除了对两个 `datetime` 进行相减，你也可以直接转换出一个 `duration`。为此，只需写下数字及对应的单位：`microseconds`, `milliseconds`, `seconds`, `minutes`, 或 `hours`（“微秒”、“毫秒”、“秒”、“分钟”或“小时”）。它将返回一个秒数或更精确的单位。比如 `SELECT <duration>'2 hours';` 将返回 `{7200s}`；`SELECT <duration>'2 microseconds';` 将返回 `{2µs}`。
 
 你也可以包含多个单位。例如：
 
