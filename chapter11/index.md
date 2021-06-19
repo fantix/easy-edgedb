@@ -2,13 +2,13 @@
 tags: Writing Functions, Multiplication
 ---
 
-# Chapter 11 - What's wrong with Lucy?
+# 第十一章 - 露西怎么了？
 
-> Dr. Van Helsing thinks that Lucy is being visited by a vampire. He doesn't tell the others yet because they won't believe him, but says they should close the windows and put garlic everywhere. They are confused, but Dr. Seward tells them to listen: Dr. Van Helsing is the smartest person he knows. It works, and Lucy gets better. But one night Lucy's mother walks into the room and thinks: "This place smells terrible! I'll open the windows for some fresh air." The next day Lucy wakes up pale and sick again. Every time someone makes a mistake like this Dracula gets in her room, and every time the men give Lucy their blood to help her get better. Meanwhile, Renfield continues to try to eat living things and Dr. Seward can't understand him. Then one day he didn't want to talk, only saying: “I don’t want to talk to you: you don’t count now; the Master is at hand.”
+> 范海辛医生（Dr. Van Helsing）认为露西（Lucy）正在被吸血鬼纠缠。他还没有告诉其他人，因为他们不会相信他，他告诉大家应该关上窗户，并在各个地方都放上大蒜。大家很困惑，但苏厄德医生（Dr. Seward）让他们听从，因为范海辛医生是他认识的最聪明的人。见效了！露西好了起来。但一天晚上，露西的母亲走进房间，认为屋里闻起来很糟糕！于是她打开了窗户为了呼吸新鲜的空气。第二天，露西醒来，脸色苍白，再次病重。每次有人犯这样的错误，德古拉（Dracula）都会进她的房间，并且每次病重都需要男人们献血来帮露西好起来。与此同时，伦菲尔德（Renfield）继续尝试吃活物，苏厄德医生（Dr. Seward）无法理解他。后来有一天他不想多说话，只是一直在说：“我不想和你说话：你现在不算数；大师就在身边。” 
 
-We are starting to see more and more events in the book with various characters. Some events have the three men and Dr. Van Helsing together, others have just Lucy and Dracula. Previous events had Jonathan Harker and Dracula, Jonathan Harker and the three women, and so on. In our game, we could use a sort of `Event` type to group everything together: the people, the time, the place, and so on.
+我们开始在书中看到越来越多的多个角色都参与的事件。有些事件是三个男人和范海辛博士（Dr. Van Helsing）在一起，有些事件只有露西（Lucy）和德古拉（Dracula）。之前还有事件是乔纳森·哈克（Jonathan Harker）和德古拉（Dracula）在一起，还有乔纳森·哈克和三个女吸血鬼，等等。在我们的游戏中，我们可以使用 `Event` 类型将所有内容组合在一起，如：人物、时间、地点等等。
 
-This `Event` type is a bit long, but it would be the main type for our events in the game so it needs to be detailed. We can put it together like this:
+这个 `Event` 类型的定义有点长，但它会是我们游戏中事件的主要类型，所以需要详细说明。我们可以这样组合：
 
 ```sdl
 type Event {
@@ -23,17 +23,17 @@ type Event {
 }
 ```
 
-You can see that most of the properties are `required`, because an `Event` type is not useful if it doesn't have all the information we need. It will always need a description, a time, place, and people participating. The interesting part is the `url` property: it's a computable that gives us an exact url for the location if we want. This one is not `required` because not every event in the book is in a perfectly known location.
+你可以看到大多数属性都有 `required`，因为如果 `Event` 类型没有我们需要的所有信息，它就没有什么用处了。它总是需要描述、时间、地点和参与人员。有趣的部分是 `url` 属性：它是一个可计算的，如果我们需要，它可以为我们提供地图中指向该位置的确切 url。
 
-The url that we are generating needs to know whether a location is east or west of Greenwich, and also whether they are north or south. Here is the url for Bistritz, for example:
+我们生成的 url 需要知道这个位置是在格林威治（Greenwich）的东部还是西部，以及它们是北部还是南部。如下是 Bistritz 的 url：
 
 `https://geohack.toolforge.org/geohack.php?pagename=Bistri%C8%9Ba&params=47_8_N_24_30_E`
 
-Luckily for us, the events in the book all take place in the north part of the planet. So `N` is always going to be there. But sometimes they are east of Greenwich and sometimes west. To decide between east and west, we can use a simple `bool`. Then in the `url` property we put all the properties together to create a link, and finish it off with 'E' if `east` is `true`, and 'W' otherwise.
+对我们来说幸运的是，书中的事件都发生在地球的北部。所以 `N` 总是会在那里。但有时他们在格林威治东部，有时在西部。为了说明是东方还是西方，我们可以使用一个简单的 `bool`。然后在 `url` 属性中，我们将所有相关属性放在一起以创建链接，如果 `east` 为 `true`，则以 `'E'` 结束，否则以 `'W'` 结束。
 
-(Of course, if we were receiving longitudes as simple positive and negative numbers (+ for east, - for west) then `east` could be a computable: `property east := true if exact_location.0 > 0 else false`. But for this schema we'll imagine that we are getting numbers from somewhere with this sort of format: `[50.6, 70.1, true]`)
+（当然，如果我们接收的经度是简单的正负数（+ 表示东，- 表示西），那么 `east` 可以是一个可计算的表达：`property Eastern := true if exact_location.0 > 0 else false`。但是对于这个架构，我们会假设我们从某个地方以这种格式获取数字：`[50.6, 70.1, true]`）
 
-Let's insert one of the events in this chapter. It takes place on the night of September 11th when Dr. Van Helsing is trying to help Lucy. You can see that the `description` property is just a string that we write to make it easy to search later on. It can be as long or as short as we like, and we could even just paste in parts of the book.
+让我们插入本章中的一个事件。它发生在 9 月 11 日晚上，当时范海辛医生（Dr. Van Helsing）正试图帮助露西（Lucy）。你可以看到 `description` 属性只是我们编写的一个字符串，以便于稍后进行搜索。它可长可短，这取决于你，我们甚至可以把书中的某些部分粘贴进去。
 
 ```edgeql
 INSERT Event {
@@ -47,9 +47,9 @@ INSERT Event {
 };
 ```
 
-With all this information we can now find events by description, character, location, etc.
+有了所有这些信息，我们现在可以通过描述、角色、位置等来查询事件。
 
-Now let's do a query for all events with the word `garlic flowers` in them:
+现在让我们查询所有包含 `garlic flowers` 一词的事件：
 
 ```edgeql
 SELECT Event {
@@ -70,7 +70,7 @@ SELECT Event {
 } FILTER .description ILIKE '%garlic flowers%';
 ```
 
-It generates a nice output that shows us everything about the event:
+这生成了一个不错的输出，向我们展示了结果事件的一切： 
 
 ```
 {
@@ -90,36 +90,36 @@ It generates a nice output that shows us everything about the event:
 }
 ```
 
-The url works nicely too. Here it is: <https://geohack.toolforge.org/geohack.php?params=54.4858_N_0.6206_W> Clicking on it takes you directly to the city of Whitby.
+url 也是正确的。它是：<https://geohack.toolforge.org/geohack.php?params=54.4858_N_0.6206_W> 点击它可以直接查看到惠特比市。
 
-## Writing our own functions
+## 自定义函数（Writing our own functions）
 
-We saw that Renfield is quite strong: he has a strength of 10, compared to Jonathan's 5.
+基于之前的信息，我们可以看到伦菲尔德（Renfield）非常强壮：他的力量值是 10，而乔纳森（Jonathan）的力量是 5。
 
-We could use this to experiment with making functions now. Because EdgeQL is strongly typed, you have to indicate both the input type and the return type in the signature. A function that takes an int16 and gives a float64 for example would have this signature:
+我们现在可以用它来实践如何制作函数。由于 EdgeQL 是强类型的，你必须在签名中同时指明输入类型和返回类型。例如，输入 int16 类型并返回 float64 类型的函数签名如下所示：
 
 ```sdl
 function does_something(input: int16) -> float64
 ```
 
-The `->` skinny arrow is used to show the return value.
+`->` 细箭头用于显示返回值。
 
-For the body of the function we do the following:
+对于函数体，我们执行以下操作：
 
-- Write `using` and then follow it up with `()` brackets,
-- Write the function inside it,
-- Finish with a semicolon.
+- 写下 `using` 然后跟上一个 `()` 括号，
+- 在括号里写下函数定义，
+- 用分号结束定义（在 `)` 后面写分号）。 
 
-Here's a very simple function that takes a number and returns a string from it:
+下面这个是一个非常简单的函数，它接受一个数字并最终返回一个字符串：
 
 ```sdl
 function make_string(input: int64) -> str
   using (<str>input);
 ```
 
-That's all there is to it!
+就是这样！
 
-Now let's write a function where we have two characters fight. We will make it as simple as possible: the character with more strength wins, and if their strength is the same then the second player wins.
+现在让我们编写一个函数，让两个角色进行战斗。我们将使逻辑尽可能简单，即具有更多力量的角色获胜，如果他们的力量相同，则第二个玩家获胜。
 
 ```sdl
 function fight(one: Person, two: Person) -> str
@@ -128,7 +128,7 @@ function fight(one: Person, two: Person) -> str
   );
 ```
 
-So far only Jonathan and Renfield have the property `strength`, so let's put them up against each other:
+到目前为止，只有乔纳森（Jonathan）和伦菲尔德（Renfield）拥有 `strength` 属性，我们让他们较量一番：
 
 ```edgeql
 WITH
@@ -139,25 +139,25 @@ SELECT (
 );
 ```
 
-It prints what we wanted to see: `{'Renfield wins!'}`
+结果符合我们的预期：`{'Renfield wins!'}`
 
-It might also be a good idea to add `LIMIT 1` when doing a filter for this function. Because EdgeDB returns sets, if it gets multiple results then it will use the function against each one for each possible combination. The way EdgeDB handles this is through Cartesian multiplication, so let's learn about that now.
+当我们通过过滤器选择人物时，我们最好加上 `LIMIT 1`。因为 EdgeDB 返回的是集合，如果它得到多个结果，那么它将针对每个可能的组合对每个结果使用该函数。EdgeDB 处理这个的方式是通过笛卡尔乘法（Cartesian multiplication），现在让我们进一步了解一下。
 
-## Cartesian multiplication
+## 笛卡尔乘法（Cartesian multiplication）
 
-Cartesian multiplication sounds intimidating but it really just means "join every item in one set to every item in the other set". It's easiest to understand when viewed as an illustration, which fortunately Wikipedia has already made for us. When you multiply sets in EdgeDB you are given the Cartesian product, which looks like this:
+笛卡尔乘法（Cartesian multiplication）听起来很吓人，但实际上只是意味着“将一个集合中的每个项目分别连接到另一个集合中的每个项目”。通过图示会更加容易理解，幸运的是维基百科已经为我们制作了插图。当你在 EdgeDB 中将集合相乘时，你会得到笛卡尔乘积，如下所示：
 
 ![](cartesian_product.svg)
 
-Source: [user quartl on Wikipedia](https://en.wikipedia.org/wiki/Cartesian_product#/media/File:Cartesian_Product_qtl1.svg)
+来源：[维基百科的用户“quartl”](https://en.wikipedia.org/wiki/Cartesian_product#/media/File:Cartesian_Product_qtl1.svg)
 
-This means that if we do a `SELECT` on `Person` for our `fight()` function, it will run the function following this formula:
+意味着如果我们为我们的 `fight()` 函数对 `Person` 执行 `SELECT`，它将按照以下公式运行函数：
 
 - `{the number of items in the first set}` \* `{the number of items in the second set}`
 
-So if there are two in the first set, and three in the second, it will run the function six times.
+因此，如果第一个集合中有两个，第二个结合中有三个，该函数将被运行 6 次。
 
-To demonstrate, let's put three objects in for each side of our function. We'll also make the output a little more clear:
+为了演示，让我们给函数的两个输入里都放置三个对象。同时使用 `++` 在输出结果里添加更清晰的文字说明：
 
 ```edgeql
 WITH
@@ -168,7 +168,7 @@ SELECT (
 );
 ```
 
-Here is the output. It's a total of nine fights, where each person in Set 1 fights once against each person in Set 2.
+这是输出。总共有九场战斗，第 1 组中的每个人与第 2 组中的每个人分别战斗一次。
 
 ```
 {
@@ -184,34 +184,34 @@ Here is the output. It's a total of nine fights, where each person in Set 1 figh
 }
 ```
 
-And if you take out the filter and just write `SELECT Person` for the function, you will get well over 100 results. EdgeDB by default will only show the first 100, displaying this after showing you 100 results:
+如果你去掉过滤器，只用 `SELECT Person`，你会得到超过 100 个结果。EdgeDB 默认只显示前 100 个，在显示 100 个结果后会显示：
 
 `` ... (further results hidden `\set limit 100`)``
 
-[Here is all our code so far up to Chapter 11.](code.md)
+[这里是第十一章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
-1. How would you write a function called `lucy()` that just returns all the `NPC` types matching the name 'Lucy Westenra'?
+1. 如何编写一个名为 `lucy()` 的函数，它将只返回与名称“Lucy Westenra”匹配的所有 `NPC` 类型？
 
-2. How would you write a function that takes two strings and returns `Person` objects with names that match each string?
+2. 如何编写一个函数，其接受两个字符串并会返回名称与输入的两个字符串任意一个匹配的所有 Person 对象？
 
-   Hint: try using `SET OF Person` as the return type.
+   提示：尝试使用 `SET OF Person` 作为返回类型。
 
-3. What will the output of this be?
+3. 下面的语句将会输出什么？
 
    ```edgeql
    SELECT {'Jonathan', 'Arthur'} ++ {' loves '} ++ {'Mina', 'Lucy'} ++ {' but '} ++ {'Dracula', 'The inkeeper'} ++ {' doesn\'t love '} ++ {'Mina', 'Jonathan'};
    ```
 
-4. How would you make a function that tells you how many times larger one city is than another?
+4. 如何制作一个函数来计算一个城市比另一个城市大多少倍？
 
-5. Will `SELECT (City.population + City.population)` and `SELECT ((SELECT City.population) + (SELECT City.population))` produce different results?
+5. `SELECT (City.population + City.population)` 和 `SELECT ((SELECT City.population) + (SELECT City.population))` 会产生不同的结果吗？
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Lucy one night: "What's that flapping against the window? Sounds like a bat or something..."_
+__接下来：__ _一天晚上，露西：“是什么在拍打窗户？听起来像是蝙蝠什么的……"_
