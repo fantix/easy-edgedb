@@ -1,8 +1,8 @@
 # Chapter 10 Questions and Answers
 
-#### 1. Try inserting two `NPC` types in one insert.
+#### 1. 尝试通过一个插入语句插入两个 `NPC` 类型的对象，其中包含 `name`, `first_appearance` 和 `last_appearance` 信息。
 
-It would look like this:
+如下所示：
 
 ```edgeql
 FOR person IN {('Jimmy the Bartender', '1887-09-10', '1887-09-11'), ('Some friend of Jonathan Harker', '1887-07-08', '1887-07-09')}
@@ -15,18 +15,18 @@ UNION (
 );
 ```
 
-#### 2. Here are two more `NPC`s to insert, except the last one has an empty set (she's not dead). What problem are we going to have?
+#### 2. 这里还有两个要插入的 `NPC`，后面一个的最后有一个空集（因为她还没有死）。我们会遇到什么问题？
 
-The problem is that EdgeDB doesn't know what type the last `{}` is. You can see it by doing a quick `SELECT {('Dracula\'s Castle visitor', '1887-09-10', '1887-09-11'), ('Old lady from Bistritz', '1887-05-08', {})}`:
+问题是 EdgeDB 不知道最后一个 `{}` 是什么类型。你可以通过快速执行一下 `SELECT {('Dracula\'s Castlevisitor', '1887-09-10', '1887-09-11'), ('Old lady from Bistritz', '1887-05 -08', {})}`：
 
-The output is:
+结果是：
 
 ```
 ERROR: QueryError: operator 'UNION' cannot be applied to operands of type 'tuple<std::str, std::str, std::str>' and 'tuple<std::str, std::str, anytype>'
   Hint: Consider using an explicit type cast or a conversion function.
 ```
 
-A cast to `<str>{}` is an option, but we could do something more robust. First change the `{}` to an empty string, and then specify that `last_appearance` has to have a length of 10, and otherwise make it `<cal::local_date>{}`:
+类型转换为 `<str>{}` 是一种选择，但我们可以做一些更健壮的事情。首先将 `{}` 更改为空字符串，然后指定 `last_appearance` 的长度必须为 10，否则将其设为 `<cal::local_date>{}`：
 
 ```edgeql
 FOR person IN {('Draula\'s Castle visitor', '1887-09-10', '1887-09-11'), ('Old lady from Bistritz', '1887-05-08', '')}
@@ -39,9 +39,9 @@ UNION(
 );
 ```
 
-#### 3. How would you order the `Person` types by last letter of their names?
+#### 3. 你将如何按人物姓名的最后一个字母对 `Person` 类型进行排序？
 
-Just order by doing a slice of the final letter:
+只需通过切片得到最后一个字母并进行排序：
 
 ```edgeql
 SELECT Person {
@@ -49,23 +49,22 @@ SELECT Person {
 } ORDER BY .name[-1];
 ```
 
-#### 4. Try inserting an `NPC` with the name `''`. Now how would you do the same query in question 3?
+#### 4. 尝试插入一个名为 `''` 的 `NPC`。现在，你将如何在问题 3 中执行相同的查询？
 
-If we try to do the same query as above, we get the following error:
+如果我们尝试执行与上一题相同的查询，则会收到以下错误：
 
 ```
 ERROR: InvalidValueError: string index -1 is out of bounds
 ```
 
-No problem though. One way is to filter out anything with a length under 1:
+不过没问题。一种方法是过滤掉名字长度小于 1 的人物：
 
 ```edgeql
 SELECT Person {
   name
 } FILTER len(.name) > 1 ORDER BY .name[-1];
 ```
-
-Or if you don't want to filter it out, you could just add a dummy character for anything without a length of at least 1:
+或者，如果你并不想过滤掉它，你可以为长度不足 1 的名字添加一个虚拟字符：
 
 ```edgeql
 SELECT Person {
@@ -73,9 +72,9 @@ SELECT Person {
 } ORDER BY .name[-1];
 ```
 
-#### 5. Dr. Van Helsing has a list of MinorVampires with their names and strengths. We already have some MinorVampires in the database. How would you INSERT them while making sure to UPDATE if the object is already there?
+#### 5. 范海辛医生（Dr. Van Helsing ）有一份 `MinorVampire` 的名单，上面有他们的名字和力量。我们的数据库中已经有一些 `MinorVampire` 了。如果对象已经存在，你将如何在确保 `UPDATE` 的同时 `INSERT` 不存在的？ 
 
-You can do it with `UNLESS CONFLICT ON` and `ELSE`. An insert for one named Carmilla then would look like this:
+你可以用 `UNLESS CONFLICT ON` 和 `ELSE` 来做到这一点。一个名为 Carmilla 的插入将如下所示：
 
 ```edgeql
 INSERT MinorVampire {
@@ -91,7 +90,7 @@ ELSE (
 );
 ```
 
-Then even if his data has a conflicting name (like 'Woman 1'), it will still update with their correct strength instead of just giving up:
+然后即使他的数据有一个冲突的名字（比如 'Woman 1'，在我们的数据库里已经存在），它仍然会正确地更新“力度”，而不是仅仅放弃：
 
 ```edgeql
 INSERT MinorVampire {
