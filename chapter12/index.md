@@ -2,25 +2,25 @@
 tags: Overloading Functions, Coalescing
 ---
 
-# Chapter 12 - From bad to worse
+# 第十二章 - 越来越糟糕
 
-There is no good news for our heroes this chapter:
+这一章没有给我们的英雄们带来什么好消息。
 
-> Dracula continues to break into Lucy's room every time people don't listen to Van Helsing, and every time the men give their blood to save her. Dracula always turns into a cloud to sneak in, drinks her blood and sneaks away before morning. Lucy is getting so weak that it's a surprise that she's still alive. Meanwhile, Renfield breaks out of his cell and attacks Dr. Seward with a knife. He cuts him with it, and the moment he sees Dr. Seward's blood he stops and tries to drink it, repeating: “The blood is the life! The blood is the life!”. The asylum security men take Renfield away and Dr. Seward is left confused and trying to understand him. He thinks there is a connection between him and the other events. That night, a wolf controlled by Dracula breaks the windows of Lucy's room and Dracula is able to get in again...
+> 每次人们不听范海辛（Van Helsing）的话，德古拉（Dracula）就会再次闯入露西（Lucy）的房间，每次男同胞们都要献血去救她。德古拉总是化成一团云溜进来，喝露西的血，并在天亮之前溜走。露西变得十分虚弱，以至于她还活着都令人感到惊讶。与此同时，伦菲尔德（Renfield）冲出牢房，用刀袭击了苏厄德医生（Dr. Seward）。他用刀割伤了苏厄德医生，当他看到苏厄德医生的血时，他停了下来并尝试喝下它，嘴里重复着：“血就是生命！血就是命！”。收容所的安保带走了伦菲尔德，苏厄德营生感到十分困惑并试图找到原因。他认为这和其他事件之间存在联系。那天晚上，德古拉操控的一匹狼打破了露西房间的窗户，德古拉得以再次进入……
 
-But there is good news for us, because we are going to keep learning about Cartesian products, plus how to overload a function.
+但是对我们来说有个好消息，那就是我们将继续在本章学习笛卡尔乘积，以及如何重载一个函数。
 
-## Overloading functions
+## 重载函数（Overloading functions）
 
-Last chapter, we used the `fight()` function for some characters, but most only have `{}` for the `strength` property. That's why the Innkeeper defeated Dracula, which is obviously not what would really happen.
+上一章，我们对一些角色使用了 `fight()` 函数，但大多数角色的 `strength` 是 `{}`。这就是为什么客栈老板（the Innkeeper）打败了德古拉（Dracula），这显然不是真正会发生的事情。
 
-Jonathan Harker is just a human but is still quite strong. We'll give him a strength of 5. We'll treat that as the maximum strength for a human, except Renfield who is a bit unique. Every other human should have a strength between 1 and 5. EdgeDB has a random function called `std::rand()` that gives a `float64` in between 0.0 and 1.0. There is another function called [round()](https://www.edgedb.com/docs/edgeql/funcops/generic/#function::std::round) that rounds numbers, so we'll use that too, and finally cast it to an `<int16>`. Our input looks like this:
+乔纳森·哈克是一个人类，但他仍然是很强壮的。我们将他的力量值设为 5。我们将其视为人类的最大力量，除了有点独特的伦菲尔德（Renfield）。所有其他人的力量都应该在 1 到 5 之间。EdgeDB 有一个名为 `std::rand()` 的随机函数，它会给出一个介于 0.0 和 1.0 之间的 `float64`。还有一个叫做 [round()](https://www.edgedb.com/docs/edgeql/funcops/generic/#function::std::round) 的函数可以对数字进行四舍五入，我们也将使用它，最后将其转换为 `<int16>`。我们的输入如下所示：
 
 ```edgeql
 SELECT <int16>round(random() * 5);
 ```
 
-So now we'll use this to update our `Person` types and give them all a random strength.
+所以现在我们将使用它来更新所有 `strength` 尚为 `{}` 的 `Person`，并赋予它们一个随机的强度值。
 
 ```edgeql
 WITH random_5 := (SELECT <int16>round(random() * 5))
@@ -33,7 +33,7 @@ SET {
 };
 ```
 
-And we'll make sure Count Dracula gets 20 strength, because he's Dracula:
+我们将确保德古拉伯爵获得 20 点力量，因为他是德古拉呀：
 
 ```edgeql
 UPDATE Vampire
@@ -43,15 +43,15 @@ SET {
 };
 ```
 
-Now let's `SELECT Person.strength;` and see if it works:
+现在让我们来 `SELECT Person.strength;` 看看上面的操作是否有效：
 
 ```
 {3, 3, 3, 2, 3, 2, 2, 2, 3, 3, 3, 3, 4, 1, 5, 10, 4, 4, 20, 4, 4, 4, 4}
 ```
 
-Looks like it worked.
+看起来它奏效了！
 
-So now let's overload the `fight()` function. Right now it only works for one `Person` vs. another `Person`, but in the book all the characters get together to try to defeat Dracula. We'll need to overload the function so that more than one character can work together to fight. There are a lot of ways to do it, but we'll choose a simple one:
+所以现在让我们重载 `fight()` 函数。现在它只适用于一个 `Person` 对另一个 `Person`，但在书中所有角色将聚集在一起试图击败德古拉。我们需要重载该函数，以便支持多个角色可以一起战斗。有很多方法可以做到，但我们会选择一种简单的方法：
 
 ```sdl
 function fight(names: str, one: int16, two: Person) -> str
@@ -60,18 +60,18 @@ function fight(names: str, one: int16, two: Person) -> str
   );
 ```
 
-Note that overloading only works if the function signature is different. Here are the two signatures we have now for comparison:
+注意，重载只在函数签名不同的情况下有效。这是我们现在有的两个签名，可以比较一下
 
 ```sdl
 fight(one: Person, two: Person) -> str
 fight(names: str, one: int16, two: Person) -> str
 ```
 
-If we tried to overload it with an input of `(Person, Person)`, it wouldn't work because it's the same. That's because EdgeDB uses the input we give it to know which form of the function to use.
+如果我们试图用 `(Person, Person)` 的输入重载它，它并不会工作，因为两个签名是相同的。EdgeDB 是通过我们给它的输入来判断要使用哪种形式的函数的。
 
-So now it's the same function name, but we enter the names of the people together, their strength together, and then the `Person` they are fighting.
+所以现在是相同的函数名称，但我们的输入是一起战斗的人们的名字，及他们的力量和，然后是他们正在战斗试图对抗的 `Person`。
 
-Now Jonathan and Renfield are going to try to fight Dracula together. Good luck!
+现在乔纳森（Jonathan）和伦菲尔德（Renfield）将要尝试一起对抗德古拉（Dracula）。祝他们好运！
 
 ```edgeql
 WITH
@@ -85,13 +85,13 @@ WITH
 SELECT fight('Jon and Ren', jon_and_ren_strength, dracula);
 ```
 
-So did they...
+结果还是德古拉赢了：
 
 ```
 {'Count Dracula wins!'}
 ```
 
-No, they didn't win. How about four people?
+他们没能赢，那如果是四个人呢？
 
 ```edgeql
 WITH
@@ -108,19 +108,19 @@ WITH
   SELECT fight('The four people', four_people_strength, dracula);
 ```
 
-Much better:
+好多了：
 
 ```
 {'The four people win!'}
 ```
 
-So that's how function overloading works - you can create functions with the same name as long as the signature is different.
+这就是函数重载的工作原理 —— 只要签名不同，你就可以创建具有相同名称的函数。
 
-You see overloading in a lot of existing functions, such as [sum](https://www.edgedb.com/docs/edgeql/funcops/set#function::std::sum) which takes in all numeric types and returns the sum. [std::to_datetime](https://www.edgedb.com/docs/edgeql/funcops/datetime#function::std::to_datetime) has even more interesting overloading with all sorts of inputs to create a `datetime`.
+你会在许多现有函数中看到重载，例如 [sum](https://www.edgedb.com/docs/edgeql/funcops/set#function::std::sum) 可以接受所有数字类型并返回其总和。[std::to_datetime](https://www.edgedb.com/docs/edgeql/funcops/datetime#function::std::to_datetime) 有着更有趣的重载，支持各种输入来创建一个 `datetime`。
 
-`fight()` was pretty fun to make, but that sort of function is better done on the gaming side. So let's make a function that we might actually use. Since EdgeQL is a query language, the most useful functions are usually ones that make queries shorter.
+`fight()` 制作起来很有趣，但这种功能更适合在游戏中使用。因此，让我们创建一个我们可能实际会使用到的函数。由于 EdgeQL 是一种查询语言，所以最有用的函数通常是使查询变得更短的函数。
 
-Here is a simple one that tells us if a `Person` type has visited a `Place` or not:
+这是一个简单的方法，它告诉我们一个 `Person` 类型的对象是否造访了一个 `Place`：
 
 ```sdl
 function visited(person: str, city: str) -> bool
@@ -130,7 +130,7 @@ function visited(person: str, city: str) -> bool
   );
 ```
 
-Now our queries are much faster:
+现在我们的查询要方便得多：
 
 ```edgeql-repl
 edgedb> SELECT visited('Mina Murray', 'London');
@@ -139,7 +139,7 @@ edgedb> SELECT visited('Mina Murray', 'Bistritz');
 {false}
 ```
 
-Thanks to the function, even more complicated queries are still quite readable:
+多亏了这个函数，即使是更复杂的查询也仍然具有相当的可读性
 
 ```edgeql
 SELECT(
@@ -148,44 +148,44 @@ SELECT(
 );
 ```
 
-This prints `{('Did Mina visit Bistritz? false', 'What about Jonathan and Romania? true')}`.
+打印结果：`{('Did Mina visit Bistritz? false', 'What about Jonathan and Romania? true')}`。
 
-The documentation for creating functions [is here](https://www.edgedb.com/docs/edgeql/ddl/functions#create-function). You can see that you can create them with SDL or DDL but there is not much difference between the two. In fact, they are so similar that the only difference is the word `CREATE` that DDL needs. In other words, just add `CREATE` to make a function without needing to do an explicit migration. For example, here's a function that just says hi:
+创建函数的文档 [在这里](https://www.edgedb.com/docs/edgeql/ddl/functions#create-function)。你可以看到我们可以使用 SDL 或 DDL 来创建它们，且两者之间没有太大区别。事实上，它们十分相似，唯一的区别是 DDL 需要使用 `CREATE`。换句话说，只需添加 `CREATE` 即可创建函数，而无需进行显式迁移（migration）。例如，这里有一个只是打招呼的函数：
 
 ```sdl
 function say_hi() -> str
   using ('hi');
 ```
 
-If you want to create it right now, just do this:
+如果你想立即创建它，只需执行以下操作：
 
 ```edgeql
 CREATE FUNCTION say_hi() -> str
   USING ('hi');
 ```
 
-(or with lowercase letters, it doesn't matter)
+（关键字或用小写字母，没关系的）
 
-You'll see more or less the same thing when you ask to `DESCRIBE FUNCTION say_hi`:
+当你询问 `DESCRIBE FUNCTION say_hi` 时，你或多或少会看到相同的内容：
 
 ```
 {'CREATE FUNCTION default::say_hi() ->  std::str USING (\'hi\');'}
 ```
 
-## Deleting (dropping) functions
+## 删除函数（Deleting (dropping) functions）
 
-You can delete a function with the `DROP` keyword and the function signature. You only have to specify the input though, because the input is all that EdgeDB looks at when identifying a function. So in the case of our two `fight()` functions:
+你可以使用关键字 `DROP` 和函数签名来删除函数。不过，你只需指定输入，因为 EdgeDB 在识别一个函数时只查看输入。所以在我们的两个 `fight()` 函数的例子中：
 
 ```sdl
 fight(one: Person, two: Person) -> str
 fight(names: str, one: int16, two: Person) -> str
 ```
 
-You would delete them with `DROP fight(one: Person, two: Person)` and `DROP fight(names: str, one: int16, two: Person)`. The `-> str` part isn't needed.
+你可以用 `DROP Fight(one: Person, two: Person)` 和 `DROP Fight(names: str, one: int16, two: Person)` 来删除它们。并不需要`-> str` 部分。
 
-## More about Cartesian products - the coalescing operator
+## 合并运算符（More about Cartesian products - the coalescing operator）
 
-Now let's learn more about Cartesian products in EdgeDB. You might be surprised to see that even a single `{}` input always results in an output of `{}`, but this is the way that Cartesian products work. Remember, a `{}` has a length of 0 and anything multiplied by 0 is also 0. For example, let's try to add the names of places that start with b and those that start with f.
+现在让我们来更多地了解 EdgeDB 中的笛卡尔乘积。你可能会惊讶地发现，即使是单个 `{}` 输入也总是会导致输出 `{}`，但这就是笛卡尔乘积的工作方式。请记住，`{}` 的长度为 0，任何乘以 0 的值也是 0。例如，让我们尝试将以 b 开头的地名和以 f 开头的地名加在一起。
 
 ```edgeql
 WITH b_places := (SELECT Place FILTER Place.name ILIKE 'b%'),
@@ -193,19 +193,19 @@ WITH b_places := (SELECT Place FILTER Place.name ILIKE 'b%'),
 SELECT b_places.name ++ ' ' ++ f_places.name;
 ```
 
-The output is....maybe unexpected if you didn't read the previous paragraph.
+输出是……，如果你没有阅读上一段，结果这可能会令你感到出乎意料。
 
 ```
 {}
 ```
 
-!! It's an empty set. But a search for places that start with b gives us `{'Buda-Pesth', 'Bistritz'}`. Let's see if the same works when we concatenate with `++` as well.
+！是一个空集。但是搜索以 b 开头的地方，我们明明会得到 `{'Buda-Pesth', 'Bistritz'}`。我们并没有以 f 开头的地方，那么让我们直接用 `++` 连接 `{'Buda-Pesth', 'Bistritz'}` 和 `{}`，看看是否会是同样的效果。
 
 ```edgeql
 SELECT {'Buda-Pesth', 'Bistritz'} ++ {};
 ```
 
-So that should give a `{}`. The output is...
+你可能以为会同样得到 `{}`。但实际上结果是……
 
 ```
 error: operator '++' cannot be applied to operands of type 'std::str' and 'anytype'
@@ -215,37 +215,38 @@ error: operator '++' cannot be applied to operands of type 'std::str' and 'anyty
   │        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using an explicit type cast or a conversion function.
 ```
 
-Another surprise! This is an important point though: EdgeDB requires a cast for an empty set, because it won't try to guess at what type it is. There's no way to guess the type of an empty set if all we give it is `{}`, so EdgeDB won't try. You can probably guess that the same is true for array constructors too, so `SELECT [];` returns an error: `QueryError: expression returns value of indeterminate type`.
+另一个惊喜！不过这很重要：EdgeDB 需要对空集进行强制转换，因为它不会尝试猜测这个空集是什么类型。如果我们给出的只是 `{}`，则无法猜测出其类型，因此 EdgeDB 不会尝试猜测。你可能会猜到数组构造器也是如此，因此 `SELECT [];` 会返回错误：`QueryError: expression returns value of indeterminate type`。
 
-Okay, one more time, this time making sure that the `{}` empty set is of type `str`:
+
+好的，再来一次，这次确保 `{}` 空集是 `str` 类型：
 
 ```edgeql-repl
 edgedb> SELECT {'Buda-Pesth', 'Bistritz'} ++ <str>{};
 {}
 ```
 
-Good, so we have manually confirmed that using `{}` with another set always returns `{}`. But what if we want to:
+很好，所以我们已经亲自动手确认了将 `{}` 与另一个集合一起使用（进行连接/相连）总是返回 `{}`。但是如果我们想要以下两点，该怎么做？
 
-- Concatenate the two strings if they exist, and
-- Return what we have if one is an empty set?
+- 如果两个字符串均存在则相邻，
+- 如果有一个是空集，则返回我拥有的。
 
-In other words, how to add `{'Buda-Peth', 'Bistritz'}` to another set and return the original `{'Buda-Peth', 'Bistritz'}` if the second is empty?
+换言之，将 `{'Buda-Peth', 'Bistritz'}` 与另一个集合相加时，如何在另一个集合是空时返回原本的 `{'Buda-Peth', 'Bistritz'}`。
 
-To do that we can use the so-called [coalescing operator](https://www.edgedb.com/docs/edgeql/funcops/set#operator::COALESCE), which is written `??`. The explanation for the operator is nice and simple:
+为此，我们可以使用 [coalescing operator（合并操作符）](https://www.edgedb.com/docs/edgeql/funcops/set#operator::COALESCE)，写为 `??`。所以对于 `A ?? B` 可以很好地、简单地解释为：
 
 `Evaluate to A for non-empty A, otherwise evaluate to B.`
 
-So if the item on the left is not empty it will return that, and otherwise it will return the one on the right.
+即如果左侧的项目不为空，它将返回该项目，否则将返回右侧的项目。
 
-Here is a quick example:
+这是一个快速示例：
 
 ```edgeql-repl
 edgedb> SELECT <str>{} ?? 'Count Dracula is now in Whitby';
 ```
 
-Because we used `??` instead of `++`, the result is `{'Count Dracula is now in Whitby'}` and not `{}`.
+因为我们使用了 `??` 而不是 `++`，所以结果是 `{'Count Dracula 现在在 Whitby'}` 而不是 `{}`。
 
-So let's get back to our original query, this time with the coalescing operator:
+让我们回到最初的查询，这次使用合并运算符（coalescing operator）：
 
 ```edgeql
 WITH b_places := (SELECT Place FILTER .name ILIKE 'b%'),
@@ -255,14 +256,15 @@ SELECT b_places.name ++ ' ' ++ f_places.name
   ELSE b_places.name ?? f_places.name;
 ```
 
-This returns:
+得到返回：
 
 ```
 {'Buda-Pesth', 'Bistritz'}
 ```
 
-That's better.
+变得更好了。
 
+但现在回到笛卡尔乘积。请记住，当我们相加或连接集合时，我们要分别处理 _每个集合中的每个项目_。因此，如果我们更改查询为搜索以 b（Buda-Pesth 和 Bistritz）和 m（慕尼黑）开头的地方：
 But now back to Cartesian products. Remember, when we add or concatenate sets we are working with _every item in each set_ separately. So if we change the query to search for places that start with b (Buda-Pesth and Bistritz) and m (Munich):
 
 ```edgeql
@@ -273,18 +275,20 @@ SELECT b_places.name ++ ' ' ++ m_places.name
   ELSE b_places.name ?? m_places.name;
 ```
 
-Then we'll get this result:
+然后我们会得到这样的结果：
 
 ```
 {'Buda-Pesth Munich', 'Bistritz Munich'}
 ```
 
-instead of something like 'Buda-Peth, Bistritz, Munich'.
+而不是 `{'Buda-Peth, Bistritz, Munich'}`。
 
-Let's experiment some more while introducing two new functions, called `array_agg` and `array_join`. Here's what they do:
+让我们在引入 `array_agg` 和 `array_join` 两个新函数的同时进行更多实验。以下是他们的功能：
 
-- [array_agg](https://www.edgedb.com/docs/edgeql/funcops/array#function::std::array_agg), turns sets into arrays (it 'aggregates' them).
-- [array_join](https://www.edgedb.com/docs/edgeql/funcops/array#function::std::array_join) turns arrays into a single string. So let's give that a try:
+- [array_agg](https://www.edgedb.com/docs/edgeql/funcops/array#function::std::array_agg)，将集合转换为数组（“聚合”它们）。
+- [array_join](https://www.edgedb.com/docs/edgeql/funcops/array#function::std::array_join) 将数组转换为单个字符串。
+
+现在来让我们试一下：
 
 ```edgeql
 WITH b_places := (SELECT Place FILTER .name ILIKE 'b%'),
@@ -295,14 +299,14 @@ SELECT array_join(array_agg(b_places.name), ', ') ++ ', ' ++
   ELSE b_places.name ?? m_places.name;
 ```
 
-This looks not too bad: the output is `{'Buda-Pesth, Bistritz, Munich'}`. But there's a small problem:
+看起来还不错：输出是 `{'Buda-Pesth, Bistritz, Munich'}`。但是有一个小问题：
 
-- if both sets are not empty we get a single string with commas,
-- otherwise we get a set of strings.
+- 如果两个集合都不为空，我们会得到一个带逗号的字符串，
+- 否则我们得到一个字符串的集合。
 
-So that's not very robust. Plus the query is kind of hard to read now. 
+所以这不是很健壮。此外，现在的查询有点难以阅读。
 
-The best way is actually the easiest: just `UNION` the sets.
+最好的方法实际上是最简单的：只需要 `UNION` 集合。
 
 ```edgeql
 WITH b_places := (SELECT Place FILTER .name ILIKE 'b%'),
@@ -311,9 +315,9 @@ WITH b_places := (SELECT Place FILTER .name ILIKE 'b%'),
 SELECT both_places.name;
 ```
 
-Finally! The output is `{'Buda-Pesth', 'Bistritz', 'Munich'}`
+最终，输出是：`{'Buda-Pesth', 'Bistritz', 'Munich'}`
 
-Now with this more robust query we can use it on anything and don't need to worry about getting {} if we choose a letter like x. Let's look at every place that contains k or e:
+现在有了这个更强大的查询，我们就可以在任何情况下使用它了，而不需要担心如果我们选了一个像 x 这样的字母作为城市开头字母的过滤条件会得到 {}。让我们看看所有包含 k 或 e 的地方：
 
 ```edgeql
 WITH has_k := (SELECT Place FILTER .name ILIKE '%k%'),
@@ -322,13 +326,13 @@ WITH has_k := (SELECT Place FILTER .name ILIKE '%k%'),
 SELECT has_both.name;
 ```
 
-This gives us the result:
+输出结果是:
 
 ```
 {'Slovakia', 'Buda-Pesth', 'Castle Dracula'}
 ```
 
-Similarly, you can use `?=` instead of `=` and `?!=` instead of `!=` when doing comparisons if you think one side might be an empty set. So then you can write a query like this:
+类似地，如果你认为比较的其中一侧可能是空集，则在进行比较时可以使用 `?=` 代替 `=` 以及使用 `?!=` 代替 `!=`。因此你可以写一个这样的查询：
 
 ```edgeql
 WITH cities1 := {'Slovakia', 'Buda-Pesth', 'Castle Dracula'},
@@ -336,7 +340,7 @@ WITH cities1 := {'Slovakia', 'Buda-Pesth', 'Castle Dracula'},
 SELECT cities1 ?= cities2;
 ```
 
-and get the output
+输出结果是：
 
 ```
 {
@@ -346,60 +350,60 @@ and get the output
 }
 ```
 
-instead of `{}` for the whole thing. Also, two empty sets are treated as equal if you use `?=`. So this query:
+而不是 `{}` 。此外，如果你使用`?=`，则两个空集被视为相等。所以这个查询：
 
 ```edgeql
 SELECT Vampire.lover.name ?= Crewman.name;
 ```
 
-will return `{true}`. (Because Dracula has no lover and the Crewmen have no names so both sides return empty sets of type `str`.)
+将返回 `{true}`。（因为德古拉没有情人，船员也没有名字，所以双方返回的都是类型为 `str` 的空集。）
 
-[Here is all our code so far up to Chapter 12.](code.md)
+[这里是第十二章中到目前为止的所有代码。](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 章节小练习
 
-1. Consider these two functions. Will EdgeDB accept the second one?
+1. 考虑下面这两个函数。EdgeDB 会接受第二个吗？
 
-   First function:
+   第一个函数：
 
    ```sdl
    function gives_number(input: int64) -> int64
      using(input);
    ```
 
-   Second function:
+   第二个函数：
 
    ```sdl
    function gives_number(input: int64) -> int32
      using(<int32>input);
    ```
 
-2. How about these two functions? Will EdgeDB accept the second one?
+2. 那么下面两个函数呢？EdgeDB 会接受第二个吗？
 
-   First function:
+   第一个函数：
 
    ```sdl
    function make64(input: int16) -> int64
      using(input);
    ```
 
-   Second function:
+   第二个函数：
 
    ```sdl
    function make64(input: int32) -> int64
      using(input);
    ```
 
-3. Will `SELECT {} ?? {3, 4} ?? {5, 6};` work?
+3. `SELECT {} ?? {3, 4} ?? {5, 6};` 能工作吗？
 
-4. Will `SELECT <int64>{} ?? <int64>{} ?? {1, 2}` work?
+4. `SELECT <int64>{} ?? <int64>{} ?? {1, 2}` 能工作吗
 
-5. Trying to make a single string of everyone's name with `SELECT array_join(array_agg(Person.name));` isn't working. What's the problem?
+5. `SELECT array_join(array_agg(Person.name));` 在尝试获得一个含有所有人姓名的字符串，但它不能工作，问题出在哪里？
 
-[See the answers here.](answers.md)
+[可以在这里查看答案。](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _One of the men gives his blood to try to save Lucy. Will it be enough?_
+__接下来：__ _其中一名男子献血给露西试图拯救她。就够了吗？_
