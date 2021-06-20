@@ -2,9 +2,9 @@
 tags: Introspection, Type Union Operator
 ---
 
-# Chapter 13 - Meet the new Lucy
+# 第十三章 - 认识新的露西
 
-> This time it was too late to save Lucy, and she is dying. Suddenly she opens her eyes - they look very strange. She looks at Arthur and says “Arthur! Oh, my love, I am so glad you have come! Kiss me!” He tries to kiss her, but Van Helsing grabs him and says "Don't you dare!" It was not Lucy, but the vampire inside that was talking. She dies, and Van Helsing puts a golden crucifix on her lips to stop her from moving (crucifixes have that power over vampires). Unfortunately, the nurse steals it to sell when nobody is looking. A few days later there is news about a lady who is stealing and biting children - it's Vampire Lucy. The newspaper calls it the "Bloofer Lady", because the young children try to call her the "Beautiful Lady" but can't pronounce _beautiful_ right. Now Van Helsing tells the other people the truth about vampires, but Arthur doesn't believe him and becomes angry that he would say crazy things about his wife. Van Helsing says, "Fine, you don't believe me. Let's go to the graveyard together tonight and see what happens. Maybe then you will."
+> 这次救露西（Lucy）已经来不及了，她快要死了。突然她睁开了眼睛 —— 看起来很奇怪。她看着亚瑟（Arthur）说：“亚瑟！亲爱的，我很高兴你来了！请吻我！” 他正要去吻她，但范海辛（Van Helsing）抓住他说：“你敢！” 说话的不是露西，而是她身体里面的吸血鬼。她已经死了，范海辛把一个金色的十字架放在她的嘴唇上以阻止她移动（十字架对吸血鬼有这种力量）。不幸的是，护士趁没人看见时候偷了十字架去卖。几天后，有消息称一个女性正在偷窃和咬孩子 —— 是吸血鬼露西。报纸称它为“Bloofer Lady”，因为年幼的孩子们试图称她为“Beautiful Lady”（美丽的女士），但不能正确发音 _beautiful_。现在范海辛把吸血鬼的真相告诉了其他人，但亚瑟不相信他，并且非常生气他用如此疯狂的事情诋毁自己的妻子。范海辛说：“好吧，你不相信我。那让我们今晚一起去墓地看看会发生什么。也许到时候你就相信了。” 
 
 Looks like Lucy, an `NPC`, has become a `MinorVampire`. How should we show this in the database? Let's look at the types again first.
 
