@@ -115,7 +115,7 @@ SELECT <str><int64><str><int32>50 is str;
 
 ## 过滤（Filter）
 
-最后，在我们结束第二章内前，让我们一起来学习一下如何使用 `FILTER`。你可以在 `SELECT` 中的花括号后面使用 `FILTER` 来控制只显示某些结果。让我们用 `FILTER` 来仅显示名为“Emil Sinclair”的 `Person` 类型：
+最后，在我们结束第 2 章前，让我们一起来学习一下如何使用 `FILTER`。你可以在 `SELECT` 中的花括号后面使用 `FILTER` 来控制只显示某些结果。让我们用 `FILTER` 来仅显示名为“Emil Sinclair”的 `Person` 类型：
 
 ```edgeql
 SELECT Person {
@@ -215,11 +215,11 @@ SELECT 1887#0503 is the first day of the book Dracula when...
 
 只是会返回 `{1887}`.
 
-[这里是第二章中到目前为止的所有代码。](code.md)
+[→ 点击这里查看第 2 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## 章节小练习
+## 小测验
 
 1. 使用类型转换修改语句 `SELECT '99' + '1'`，使其输出结果为 `{100}`；
 2. 选择出所有以“Mu”开头的 `City` 类型（需要区分大小写）；
@@ -242,7 +242,7 @@ SELECT 1887#0503 is the first day of the book Dracula when...
    };
    ```
 
-[可以在这里查看答案。](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
