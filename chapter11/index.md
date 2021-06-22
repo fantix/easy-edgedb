@@ -188,11 +188,11 @@ SELECT (
 
 `` ... (further results hidden `\set limit 100`)``
 
-[这里是第十一章中到目前为止的所有代码。](code.md)
+[→ 点击这里查看第 11 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## 章节小练习
+## 小测试
 
 1. 如何编写一个名为 `lucy()` 的函数，它将只返回与名称“Lucy Westenra”匹配的所有 `NPC` 类型？
 
@@ -210,7 +210,7 @@ SELECT (
 
 5. `SELECT (City.population + City.population)` 和 `SELECT ((SELECT City.population) + (SELECT City.population))` 会产生不同的结果吗？
 
-[可以在这里查看答案。](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
