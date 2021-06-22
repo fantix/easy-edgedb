@@ -294,10 +294,10 @@ SELECT (INTROSPECT Ship) {
 所以这将给出：
 
 1. `Ship` 的类型名称，
-2. 属性及其名称。But we also use `target`, which is what a property points to (the part after the `->`). For example, the target of `property name -> str` is `std::str`. And we want the target name too; without it we'll get an output like `target: schema::ScalarType {id: 00000000-0000-0000-0000-000000000100}`.
-3. The links and their names, and the targets to the links...and the names of _their_ targets too.
+2. 属性及其名称。但是我们也用了 `target`，这是属性指向的内容（`->` 之后的部分）。例如，`property name -> str` 的目标是`std::str`。我们也想要目标名称；没有它，我们将得到类似 `target: schema::ScalarType {id: 00000000-0000-0000-0000-000000000100}` 的输出。
+3. 链接及其名称，以及链接的目标……以及目标的名称。
 
-With all that together, we get something readable and useful. The output looks like this:
+所有这些结合在一起，我们得到了一些可读和有用的东西。输出如下所示：
 
 ```
 {
@@ -316,9 +316,9 @@ With all that together, we get something readable and useful. The output looks l
 }
 ```
 
-This type of query seems complex but it is just built on top of adding things like {name} every time you get output that only a machine can understand.
+这种类型的查询 _看起来_ 很复杂，但它只是建立在每次得到只有机器才能理解的输出时添加 {name} 之类的东西的基础上。
 
-Plus, if the query isn't too complex (like ours), you might find it easier to read without so many new lines and indentation. Here's the same query written that way, which looks much simpler now:
+另外，如果查询本事不是太复杂（比如上面的），你可能会发现没有这么多新行和缩进更容易阅读。下面是同样的查询，现在看起来简单多了
 
 ```edgeql
 SELECT (INTROSPECT Ship) {
@@ -334,9 +334,9 @@ SELECT (INTROSPECT Ship) {
 
 ## 小测验
 
-1. How would you insert an `NPC` named 'Mr. Swales' who has visited the `City` called 'York', the `Country` called 'England', and the `OtherPlace` called 'Whitby Abbey'? Try it in a single insert.
+1. 尝试用一个单独的插入语句插入一个名为“Mr. Swales”的 `NPC`，他曾到访过名为“York”的 `City`，名为“England”的  `Country` 以及名为“Whitby Abbey”的 `OtherPlace`。
 
-2. How readable is this introspect query?
+2. 这个内省查询的可读性如何？
 
    ```edgeql
    SELECT (INTROSPECT Ship) {
@@ -346,13 +346,13 @@ SELECT (INTROSPECT Ship) {
    };
    ```
 
-3. What would be the shortest way to see what links from the `Vampire` type?
+3. 查看 `Vampire` 类型有哪些链接的最简短的方法是什么？
 
-4. What do you think the output of `SELECT DISTINCT {1, 2} + {1, 2};` will be?
+4. 你认为 `SELECT DISTINCT {1, 2} + {1, 2};` 的输出会是什么？
 
-   Hint: don't forget the Cartesian multiplication.
+   提示：不要忘记笛卡尔乘法。
 
-5. What do you think the output of `SELECT DISTINCT {2, 2} + {2, 2};` will be?
+5. 你认为 `SELECT DISTINCT {2, 2} + {2, 2};` 的输出会是什么？
 
 [点击这里查看答案](answers.md)
 
