@@ -6,18 +6,18 @@ tags: Introspection, Type Union Operator
 
 > 这次救露西（Lucy）已经来不及了，她快要死了。突然她睁开了眼睛 —— 看起来很奇怪。她看着亚瑟（Arthur）说：“亚瑟！亲爱的，我很高兴你来了！请吻我！” 他正要去吻她，但范海辛（Van Helsing）抓住他说：“你敢！” 说话的不是露西，而是她身体里面的吸血鬼。她已经死了，范海辛把一个金色的十字架放在她的嘴唇上以阻止她移动（十字架对吸血鬼有这种力量）。不幸的是，护士趁没人看见时候偷了十字架去卖。几天后，有消息称一个女性正在偷窃和咬孩子 —— 是吸血鬼露西。报纸称它为“Bloofer Lady”，因为年幼的孩子们试图称她为“Beautiful Lady”（美丽的女士），但不能正确发音 _beautiful_。现在范海辛把吸血鬼的真相告诉了其他人，但亚瑟不相信他，并且非常生气他用如此疯狂的事情诋毁自己的妻子。范海辛说：“好吧，你不相信我。那让我们今晚一起去墓地看看会发生什么。也许到时候你就相信了。” 
 
-Looks like Lucy, an `NPC`, has become a `MinorVampire`. How should we show this in the database? Let's look at the types again first.
+看起来原本是 `NPC` 的露西已经变成 `MinorVampire`（小吸血鬼）了。我们该如何在数据库里展示这一点呢？让我们先再过一遍这些类型。
 
-Right now `MinorVampire` is nothing special, just a type that extends `Person`:
+现在的 `MinorVampire` 并没什么特别的，只是一个扩展自 `Person` 的类型：
 
 ```sdl
 type MinorVampire extending Person {
 }
 ```
 
-Fortunately, according to the book she is a new "type" of person. The old Lucy is gone, and this new Lucy is now one of the `slaves` linked to the `Vampire` named Count Dracula.
+现在，根据书中的描述，露西给人类带来了一个新“类型”。旧的露西已经消失了，新的露西现在是一个名为德古拉伯爵的 `Vampire`（吸血鬼）的 `slaves`（奴隶）。
 
-So instead of trying to change the `NPC` type, we can just give `MinorVampire` an optional link to `Person`:
+因此，与其尝试更改 `NPC` 类型，我们只需给 `MinorVampire` 一个指向 `Person` 的可选链接：
 
 ```sdl
 type MinorVampire extending Person {
@@ -25,9 +25,9 @@ type MinorVampire extending Person {
 }
 ```
 
-It's optional because we don't always know anything people before they were made into vampires. For example, we don't know anything about the three vampire women before Dracula found them so we can't make an `NPC` type for them.
+之所以设置为可选的，是因为我们并不一定知道他们成为吸血鬼之前是谁。例如，我对德古拉控制的那三个女吸血鬼之前的身世一无所知，因此我们无法为她们制作 `NPC` 类型来尝试链接到属性 `former_self`。
 
-Another way to (informally) link them is to give the same date to `last_appearance` for an `NPC` and `first_appearance` for a `MinorVampire`. First we will update Lucy with her `last_appearance`:
+另一种（非正式地）链接它们的方法是给 `NPC` 的 `last_appearance` 和 `MinorVampire` 的 `first_appearance` 设置相同的日期。首先，我们先更新 `NPC` 露西的 `last_appearance`：
 
 ```edgeql
 UPDATE Person filter .name = 'Lucy Westenra'
@@ -36,11 +36,11 @@ SET {
 };
 ```
 
-Then we can add Lucy to the `INSERT` for Dracula. (If you are following along, just `DELETE Vampire;` and `DELETE Minorvampire;` first so we can practice doing this longer `INSERT`.)
+然后我们可以将露西（Lucy）添加到德古拉（Dracula）的 `INSERT` 中。（如果前面章节里的操作你都有执行，那么现在只需先 `DELETE Vampire;` 和 `DELETE Minorvampire;`，然后我们就可以再一次练习 `INSERT` 了。）
 
-Note the first line where we create a variable called `lucy`. We then use that to bring in all the data to make her a `MinorVampire`, which is much more efficient than manually inserting all the information. It also includes her strength: we add 5 to that, because vampires are stronger.
+注意第一行，我们创建了一个名为 `lucy` 的变量。然后我们使用它来引入所有数据，创建她成为 `MinorVampire`，这比手动插入所有信息要高效得多。这里还需要包括露西的力量：我们给它额外加 5，因为吸血鬼更加强壮些。
 
-Here's the insert:
+这里是具体插入：
 
 ```edgeql
 WITH lucy := (SELECT Person filter .name = 'Lucy Westenra' LIMIT 1)
@@ -68,7 +68,7 @@ INSERT Vampire {
 };
 ```
 
-And thanks to the `former_self` link, it's easy to find all the minor vampires that come from `Person` objects. Just filter by `EXISTS former_self`:
+多亏了 `former_self` 链接，我们很容易找到所有来自 `Person` 对象的小吸血鬼。只需用 `EXISTS previous_self` 进行过滤：
 
 ```edgeql
 SELECT MinorVampire {
@@ -78,7 +78,7 @@ SELECT MinorVampire {
 } FILTER EXISTS .former_self;
 ```
 
-This gives us:
+输出结果：
 
 ```
 {
@@ -90,19 +90,19 @@ This gives us:
 }
 ```
 
-Other filters such as `FILTER .name IN Person.name AND .first_appearance IN Person.last_appearance;` are possible too but checking if the link `EXISTS` is easiest. We could also switch to `cal::local_datetime` instead of `cal::local_date` to get the exact time down to the minute. But we won't need to get that precise just yet.
+使用其他的过滤方式也可以，比如 `FILTER .name IN Person.name AND .first_appearance IN Person.last_appearance;` 也是可以的，但检查链接是否 `EXISTS`（存在）最简单。我们也可以把涉及时间的类型转换为 `cal::local_datetime`，而不是 `cal::local_date`，以获得精确到分钟的准确时间。但是我们现在还不需要那么精确。
 
-## The type union operator: |
+## 类型联合运算符（The type union operator: |）
 
-Another operator related to types is `|`, which is used to combine them (similar to writing `OR`). This query for example pulling up all `Person` types will return true:
+另一个与类型相关的运算符是 `|`，用于组合类型（类似于 `OR`）。例如，此查询拉出了所有 `Person` 类型用以判断露西所属类型是否在其中，并返回“真”：
 
 ```
 SELECT (SELECT Person FILTER .name = 'Lucy Westenra') IS NPC | MinorVampire | Vampire;
 ```
 
-It returns true if the `Person` type selected is of type `NPC`, `MinorVampire`, or `Vampire`. Since both Lucy the `Person` and Lucy the `MinorVampire` match any of the three types, the return value is `{true, true}`.
+意思是如果选择的 `Person` 类型是 `NPC` 或 `MinorVampire` 或 `Vampire` 其中的一个类型，则返回“真”。由于露西的 `NPC` 身份和露西的 `MinorVampire` 身份可以分别匹配到这三种类型中的一种，所以返回值是 `{true, true}`。
 
-One cool thing about the type union operator is that you can also add it to links in your schema. Let's say for example there are other `Vampire` objects in the game, and one `Vampire` that is extremely powerful can control the other. Right now though `Vampire`s can only control `MinorVampire`s:
+你还可以在你的架构（schema）里将类型联合运算符添加到链接中，这非常酷。例如，让我们假设游戏中还有其他 `Vampire` 对象，其中一个 `Vampire` 非常强大，可以控制另一个。但我们当前的架构里 `Vampire` 只能控制 `MinorVampire`，不能控制 `Vampire`：
 
 ```
 type Vampire extending Person {
@@ -110,7 +110,7 @@ type Vampire extending Person {
 }
 ```
 
-So to represent this change, you could just use `|` and add another type:
+因此，为了展现此更改，你可以使用 `|` 并添加另一种类型：
 
 ```
 type Vampire extending Person {
@@ -118,15 +118,15 @@ type Vampire extending Person {
 }
 ```
 
-We only have Count Dracula in our database as the main `Vampire` type so we won't change our schema in this way, but keep this `|` operator in mind in case you need it.
+目前，我们的数据库中只有德古拉伯爵（Count Dracula）作为 `Vampire`，因此我们并不打算真的以上面这种方式更改我们的架构，但请记住这个 `|` 运算符，也许有天你会需要它。
 
-## On target delete
+## 当目标被删除（On target delete）
 
-We've decided to keep the old `NPC` type for Lucy, because that Lucy will be in the game until September 1887. Maybe later `PC` types will interact with her, for example. But this might make you wonder about deleting links. What if we had chosen to delete the old type when she became a `MinorVampire`? Or more realistically, what if all `MinorVampire` types connected to a `Vampire` should be deleted when the vampire dies? We won't do that for our game, but you can do it with `on target delete`. `on target delete` means "when the target is deleted", and it goes inside `{}` after the link declaration. For this we have [four options](https://www.edgedb.com/docs/datamodel/links#ref-datamodel-links):
+我们在这里决定为露西保留旧的 `NPC` 对象，因为露西将在游戏中待到 1887 年 9 月，也许之后会有 `PC` 类型的对象与她互动。但这可能会让你想到关于链接的删除。即如果我们在她成为 `MinorVampire` 时想删除旧类型对象，会怎样？或者更现实地说，如果吸血鬼死了，所有连接到 `Vampire` 的 `MinorVampire` 都应该被删除，该怎么办？我们不会在我们的游戏中真的这样做，但你确实可以使用 `on target delete` 来实现。`on target delete` 的意思是“当目标被删除时”，执行链接声明后 `{}`里的内容。为此，我们有 [四个选项](https://www.edgedb.com/docs/datamodel/links#deletion)：
 
-- `restrict`: forbids you from deleting the target object.
+- `restrict`：禁止你删除目标对象。
 
-So if you declared `MinorVampire` like this:
+所以如果你像这样声明 `MinorVampire`：
 
 ```sdl
 type MinorVampire extending Person {
@@ -136,33 +136,33 @@ type MinorVampire extending Person {
 }
 ```
 
-then you wouldn't be able to delete Lucy the `NPC` once she was connected to Lucy the `MinorVampire`.
+那么一旦 `NPC` 露西连接到 `MinorVampire` 露西，你就无法删除她（`NPC` 露西）。
 
-- `delete source`: in this case, deleting Lucy the `Person` (the target of the link) will automatically delete Lucy the `MinorVampire` (the source of the link).
+- `delete source`：在这种情况下，删除 `Person` 露西（链接的目标）将自动删除 `MinorVampire` 露西（链接的来源）。
 
-- `allow`: this one simply lets you delete the target (this is the default setting).
+- `allow`：这个只是简单地允许你删除目标（这是默认设置）。
 
-- `deferred restrict` - forbids you from deleting the target object, unless it is no longer a target object by the end of a transaction. So this option is like `restrict` but with a bit more flexibility.
+- `deferred restrict`：禁止你删除目标对象，除非它在事务（transaction）结束时不再是目标对象。因此，这个选项类似于 `restrict`，但具有更大的灵活性。
 
-So if you wanted to have all the `MinorVampire` types automatically deleted when their `Vampire` dies, you would add a link from `MinorVampire` to the `Vampire` type. Then you would add `on target delete delete source` to this: `Vampire` is the target of the link, and `MinorVampire` is the source that gets deleted.
+所以如果你想让所有的 `MinorVampire` 对象在它们的 `Vampire` 死亡时自动被删除，你可以给 `MinorVampire` 添加一个指向 `Vampire` 类型的链接。然后你可以使用 `on target delete delete source`：`Vampire` 是链接的目标，`MinorVampire` 是被删除的源。
 
-Now let's look at some tips for making queries.
+现在让我们看一些查询的技巧。
 
-## Using DISTINCT
+## 使用 DISTINCT（Using DISTINCT）
 
-`DISTINCT` is easy: just change `SELECT` to `SELECT DISTINCT` to get only unique results. We can see that right now there are quite a few duplicates in our `Person` objects if we `SELECT Person.strength;`. It looks something like this:
+`DISTINCT` 很简单：只需将 `SELECT` 更改为 `SELECT DISTINCT` 即可获得去重的结果。我们现在可以看到，如果我们执行 `SELECT Person.strength;`，那么对于我们的 `Person` 对象们，会得到相当多的重复项。它看起来会是这样：
 
 ```
 {5, 4, 4, 4, 4, 4, 10, 2, 2, 2, 2, 2, 2, 2, 7, 5}
 ```
 
-Change it to `SELECT DISTINCT Person.strength;` and the output will now be `{2, 4, 5, 7, 10}`.
+将其更改为 `SELECT DISTINCT Person.strength;`，输出将为 `{2, 4, 5, 7, 10}`。
 
-`DISTINCT` works by item and doesn't unpack, so `SELECT DISTINCT {[7, 8], [7, 8], [9]};` will return `{[7, 8], [9]}` and not `{7, 8, 9}`.
+`DISTINCT` 按项目（item）工作，不做解包，因此 `SELECT DISTINCT {[7, 8], [7, 8], [9]};` 返回的是 `{[7, 8], [9]}` 而不是 `{7, 8, 9}`。
 
-## Getting `__type__` all the time
+## 使用 `__type__`（Getting `__type__` all the time）
 
-We saw that we can use `__type__` to get object types in a query, and that `__type__` always has `.name` that shows us the type's name (otherwise we will only get the `uuid`). In the same way that we can get all the names with `SELECT Person.name`, we can get all the type names like this:
+我们之前已经看到，我们可以使用 `__type__` 来获取查询中的对象类型，并且 `__type__` 总是有 `.name` 来显示类型的名称（否则我们只会得到 `uuid`）。就像我们可以通过 `SELECT Person.name` 获得所有名字一样，我们可以像这样获得所有类型名：
 
 ```edgeql
 SELECT Person.__type__ {
@@ -170,7 +170,7 @@ SELECT Person.__type__ {
 };
 ```
 
-It shows us all the types attached to `Person` so far:
+它向我们展示了至今为止扩展自 `Person` 的所有类型：
 
 ```
 {
@@ -184,7 +184,7 @@ It shows us all the types attached to `Person` so far:
 }
 ```
 
-Or we can use it in a regular query to return the types as well. Let's see what types there are that have the name `Lucy Westenra`:
+或者我们也可以在常规查询中使用它来返回类型。让我们看看有哪些类型下有名为 `Lucy Westenra` 的对象：
 
 ```edgeql
 SELECT Person {
@@ -195,7 +195,7 @@ SELECT Person {
 } FILTER .name = 'Lucy Westenra';
 ```
 
-This shows us the objects that match, and of course they are `NPC` and `MinorVampire`.
+这向我们展示了匹配的对象，当然它们是 `NPC` 和 `MinorVampire`。
 
 ```
 {
@@ -204,7 +204,7 @@ This shows us the objects that match, and of course they are `NPC` and `MinorVam
 }
 ```
 
-But there is a setting you can use to always see the type when you make a query: just type `\set introspect-types on`. Once you do that, you'll always see the type name instead of just `Object`. Now even a simple search like this will give us the type:
+这里有一个设置可以用来在查询时始终查看类型：只需键入 `\set introspect-types on`。一旦你这样做了，你将始终看到类型名称，而不仅仅是 `Object`。现在，即使是像这样的简单搜索也会为我们提供类型：
 
 ```edgeql
 SELECT Person {
@@ -212,17 +212,17 @@ SELECT Person {
 } FILTER .name = 'Lucy Westenra';
 ```
 
-Here's the output:
+这是输出：
 
 ```
 {default::NPC {name: 'Lucy Westenra'}, default::MinorVampire {name: 'Lucy Westenra'}}
 ```
 
-Because it's so convenient, from now on this book will show results as given with `\set introspect-types on`.
+因为它非常方便，所以从现在开始，本书将展示使用了 `\set introspect-types on` 给出的结果。
 
-## Being introspective
+## 内省（Being introspective）
 
-The word `introspect` we just used in `\set introspect-types on` is also its own keyword: `INTROSPECT`. Every type has the following fields that we can access: `name`, `properties`, `links` and `target`, and `INTROSPECT` lets us see them. Let's give that a try and see what we get. We'll start with this on our `Ship` type, which is fairly small but has all four. Here are the properties and links of `Ship` again so we don't forget:
+我们刚刚在 `\set introspect-types on` 中使用的 `introspect` 这个词，也是它自己的关键字：`INTROSPECT`。每种类型都有我们可以访问的以下字段：`name`、`properties`、`links` 和 `target`，并且 `INTROSPECT` 可以让我们看到它们。让我们试一下，看看会得到了什么。我们将从我们的 `Ship` 类型开始，它很小，但包含前面提到的四个字段。为了避免我们已经忘了，这里再次列出 `Ship` 的属性和链接：
 
 ```sdl
 type Ship {
@@ -232,15 +232,15 @@ type Ship {
 }
 ```
 
-First, here is the simplest `INTROSPECT` query:
+首先，这是最简单的 `INTROSPECT` 查询：
 
 ```edgeql
 SELECT (INTROSPECT Ship);
 ```
 
-This query isn't very useful to us but it does show how it works: it returns `{'default::Ship'}`. Note that `INTROSPECT` and the type go inside brackets; it's sort of a `SELECT` expression for types that you then select again to capture.
+这个查询对我们来说不是很有用，但它确实展示了它是如何工作的：它返回了 `{'default::Ship'}`。请注意，`INTROSPECT` 和类型放在括号内；它是之后你要捕捉的类型的 `SELECT` 表达式。
 
-Now let's put `name`, `properties` and `links` inside the introspection:
+现在让我们将 `name`、`properties` 和 `links` 放入自省（introspection）：
 
 ```edgeql
 SELECT (INTROSPECT Ship) {
@@ -250,7 +250,7 @@ SELECT (INTROSPECT Ship) {
 };
 ```
 
-This gives us:
+结果是：
 
 ```
 {
@@ -269,9 +269,9 @@ This gives us:
 }
 ```
 
-Just like using `SELECT` on a type, if the output contains another type, property etc. we will just get an id. We will have to specify what we want there as well.
+就像在类型上使用 `SELECT` 一样，如果输出包含另一种类型、属性等，我们只会得到一个 id。我们还是要指定我们想要什么。
 
-So let's add some more to the query to get the information we want:
+因此，让我们在查询中添加更多内容以获取我们想要的信息：
 
 ```edgeql
 SELECT (INTROSPECT Ship) {
@@ -291,10 +291,10 @@ SELECT (INTROSPECT Ship) {
 };
 ```
 
-So what this will give is:
+所以这将给出：
 
-1. The type name for `Ship`,
-2. The properties, and their names. But we also use `target`, which is what a property points to (the part after the `->`). For example, the target of `property name -> str` is `std::str`. And we want the target name too; without it we'll get an output like `target: schema::ScalarType {id: 00000000-0000-0000-0000-000000000100}`.
+1. `Ship` 的类型名称，
+2. 属性及其名称。But we also use `target`, which is what a property points to (the part after the `->`). For example, the target of `property name -> str` is `std::str`. And we want the target name too; without it we'll get an output like `target: schema::ScalarType {id: 00000000-0000-0000-0000-000000000100}`.
 3. The links and their names, and the targets to the links...and the names of _their_ targets too.
 
 With all that together, we get something readable and useful. The output looks like this:
@@ -328,11 +328,11 @@ SELECT (INTROSPECT Ship) {
 };
 ```
 
-[Here is all our code so far up to Chapter 13.](code.md)
+[→ 点击这里查看第 13 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 小测验
 
 1. How would you insert an `NPC` named 'Mr. Swales' who has visited the `City` called 'York', the `Country` called 'England', and the `OtherPlace` called 'Whitby Abbey'? Try it in a single insert.
 
@@ -354,8 +354,8 @@ SELECT (INTROSPECT Ship) {
 
 5. What do you think the output of `SELECT DISTINCT {2, 2} + {2, 2};` will be?
 
-[See the answers here.](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _An old friend returns._
+__接下来：__ _一位老朋友回来了。_
