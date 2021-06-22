@@ -137,24 +137,24 @@ SELECT (INTROSPECT OtherPlace) {
 
 ## 更多关于日期（Even more working with dates）
 
-A lot of characters are starting to die now, so let's think about that. We could come up with a method to see who is alive and who is dead, depending on a `cal::local_date`. First let's take a look at the `People` objects we have so far. We can easily count them with `SELECT count(Person)`, which gives `{23}`.
+现在有很多角色陆续死去了，所以让我们来考虑一下这个问题。我们可以运用 `cal::local_date` 来判断谁还活着，谁已经死了。首先让我们看看到目前为止我们拥有多少个 `People` 对象。我们可以使用 `SELECT count(Person)` 轻松算出，结果是 `{23}`。
 
-There is also a function called [`enumerate()`](https://www.edgedb.com/docs/edgeql/funcops/set#function::std::enumerate) that gives tuples of the index and the set that we give it. We'll use this to compare to our `count()` function to make sure that our number is right.
+还有一个名为 [`enumerate()`](https://www.edgedb.com/docs/edgeql/funcops/set#function::std::enumerate) 的函数，它会给出由索引与输入集合组成的元组。我们将用它与我们的 `count()` 函数的结果进行比较，以确保我们得到的数字是正确的。
 
-First a simple example of how to use `enumerate()`:
+首先是一个如何使用 `enumerate()` 的简单示例：
 
 ```edgeql
 WITH three_things := {'first', 'second', 'third'},
 SELECT enumerate(three_things);
 ```
 
-The output is:
+输出是：
 
 ```
 {(0, 'first'), (1, 'second'), (2, 'third')}
 ```
 
-So now let's use it with `SELECT enumerate(Person.name);` to make sure that we have 23 results. The last index should be 22:
+所以现在让我们在 `SELECT enumerate(Person.name);` 里使用它，以确保我们有 23 个结果。最后一个索引应该是 22：
 
 ```
 {
@@ -169,18 +169,18 @@ So now let's use it with `SELECT enumerate(Person.name);` to make sure that we h
 }
 ```
 
-There are only 18? Oh, that's right: the `Crewman` objects don't have a name so they don't show up. How can we get them in the query? We could of course try something fancy like this:
+只有 18 个？哦，没错：因为 `Crewman` 对象没有名称，所以它们不会出现。那我们如何在查询中获取它们？我们当然可以像下面这样做：
 
 ```edgeql
 WITH
   a := array_agg((SELECT enumerate(Person.name))),
-  b:= array_agg((SELECT enumerate(Crewman.number))),
+  b := array_agg((SELECT enumerate(Crewman.number))),
 SELECT (a, b);
 ```
 
-(`array_agg()` is to avoid multiplying sets by sets, as we saw in Chapter 12)
+（`array_agg()` 是为了避免发生集合乘以集合，正如我们在第 12 章中看到的那样）
 
-But the result is less than satisfying:
+但结果并不令人满意：
 
 ```
 {
@@ -200,7 +200,7 @@ But the result is less than satisfying:
 }
 ```
 
-The `Crewman` types are now just numbers, which doesn't look good. Let's give up on fancy queries and just update them with names based on the numbers instead. This will be easy:
+`Crewman` 类型现在只是数字，看起来不太好。让我们放弃像上面一样花哨的查询，用基于数字的名称来更新它们。这很简单：
 
 ```edgeql
 UPDATE Crewman
@@ -209,7 +209,7 @@ SET {
 };
 ```
 
-By the way, we don't have any more `Crewman` types to add but if we did, then we could just change the schema to this to avoid needing `UPDATE`:
+顺便说一下，我们没有更多的 `Crewman` 类型要添加，但如果我们有，那么我们可以将添加时的结构改为下面这样，以避免之后需要 `UPDATE`:
 
 ```
 type Crewman extending HasNumber, Person {
@@ -217,7 +217,7 @@ type Crewman extending HasNumber, Person {
 }
 ```
 
-So now that everyone has a name, let's use that to see if they are dead or not. The logic is simple: we input a `cal::local_date`, and if it's greater than the date for `last_appearance` then the character is dead.
+现在每个人都有名字了，让我们用它来看看他们是否还在世。逻辑很简单：我们输入一个 `cal::local_date`，如果它大于 `last_appearance` 的日期，那么表明这个角色已经死了。
 
 ```edgeql
 WITH p := (SELECT Person),
@@ -225,7 +225,7 @@ WITH p := (SELECT Person),
 SELECT(p.name, p.last_appearance, 'Dead on ' ++ <str>date ++ '? ' ++ <str>(date > p.last_appearance));
 ```
 
-Here is the output:
+这是输出：
 
 ```
 {
@@ -238,13 +238,13 @@ Here is the output:
 }
 ```
 
-We could of course turn this into a function if we use it enough.
+如果我们用得足够多的话，我们当然可以把它变成一个函数。
 
-## Reverse links
+## 反向链接（Reverse links）
 
-Finally, let's look at how to follow links in reverse direction, one of EdgeDB's most powerful and useful features. Learning to use it can take a bit of effort, but it's well worth it.
+最后，让我们看看如何反向跟踪链接，这是 EdgeDB 最强大和最有用的功能之一。学习使用它可能需要一些努力，但非常值得。
 
-We know how to get Count Dracula's `slaves` by name with something like this:
+我们知道如何通过名称获取德古拉伯爵的 `slaves`，如下所示：
 
 ```edgeql
 SELECT Vampire {
@@ -255,7 +255,7 @@ SELECT Vampire {
 };
 ```
 
-That shows us the following:
+输出结果如下所示：
 
 ```
 {
@@ -271,7 +271,7 @@ That shows us the following:
 }
 ```
 
-But what if we are doing the opposite? Namely, starting from `SELECT MinorVampire` and wanting to access the `Vampire` type connected to it. Because right now, we can only bring up the properties that belong to the `MinorVampire` and `Person` type. Consider the following:
+但是如果我们想做相反的事情呢？即，从 `SELECT MinorVampire` 开始，并希望访问与其链接的 `Vampire` 对象。因为现在，我们只能调出属于 `MinorVampire` 和 `Person` 类型的属性。让我们考虑一下：
 
 ```edgeql
 SELECT MinorVampire {
@@ -281,11 +281,11 @@ SELECT MinorVampire {
 }
 ```
 
-Since there's no `link master -> Vampire`, how do we go backwards to see the `Vampire` type that links to it?
+既然没有 `link master -> Vampire`，我们如何倒退查看链接到它的 `Vampire` 类型？
 
-This is where reverse links come in, where we use `.<` instead of `.` and specify the type we are looking for: `[IS Vampire]`.
+这就要靠反向链接了，我们使用 `.<` 代替 `.` 并指定我们要查找的类型：`[IS Vampire]`。
 
-First let's move out of our `MinorVampire` query and just look at how `.<` works. Here is one example:
+首先让我们抛开 `MinorVampire` 的查询，看看`.<` 是如何工作的。这有一个例子：
 
 ```edgeql
 SELECT MinorVampire.<slaves[IS Vampire] {
@@ -294,17 +294,17 @@ SELECT MinorVampire.<slaves[IS Vampire] {
 };
 ```
 
-Because it goes in reverse order, it is selecting `Vampire` that has `.slaves` that are of type `MinorVampire`.
+因为它以相反的顺序进行，所以它是指选择具有类型为 `MinorVampire` 的 `.slaves` 的 `Vampire`。
 
-You can think of `MinorVampire.<slaves[IS Vampire] {name, age}` as "Select the name and age of the Vampire type with slaves that are of type MinorVampire" - from right to left.
+你可以将 `MinorVampire.<slaves[IS Vampire] {name, age}` 视为“选择‘拥有 MinorVampire 类型奴隶’的 Vampire 的名称和年龄” —— 从右到左。
 
-Here is the output:
+这里是输出：
 
 ```
 {default::Vampire {name: 'Count Dracula', age: 800}}
 ```
 
-So far that's the same as just `SELECT Vampire: {name, age}`. But it becomes very useful in our query before, where we wanted to access multiple types. Now we can select all the `MinorVampire` types and their master:
+到目前为止，这与 `SELECT Vampire: {name, age}` 相同。但它在前面的查询中非常有用，因为我们想访问多个类型。现在我们可以选择所有的 `MinorVampire` 类型的对象和它们的主人：
 
 ```edgeql
 SELECT MinorVampire {
@@ -313,9 +313,9 @@ SELECT MinorVampire {
 };
 ```
 
-You could read `.<slaves[IS Vampire] {name}` as "the name of the `Vampire` type that links back to `MinorVampire` through `.slaves`".
+你可以将 `.<slaves[IS Vampire] {name}` 读作“通过 `.slaves` 链接到 `MinorVampire` 的 `Vampire` 的名称”。 
 
-Here is the output:
+这里是输出：
 
 ```
 {
@@ -344,17 +344,17 @@ Here is the output:
 
 ## 小测验
 
-1. How would you display just the numbers for all the `Person` types? e.g. if there are 20 of them, displaying `1, 2, 3..., 18, 19, 20`.
+1. 如何仅显示所有 `Person` 对象的编号？比如，如果有 20 个，则显示 `1, 2, 3..., 18, 19, 20`。
 
-2. Using reverse lookup, how would you display 1) all the `Place` types (plus their names) that have an `o` in the name and 2) the names of the people that visited them?
+2. 使用反向查找，你将如何显示 1）所有名称中带有 `o` 的 `Place` 的对象（及他们的名字）；2）访问过这些地方的人的名字？
 
-3. Using reverse lookup, how would you display all the Person types that will later become `MinorVampire`s?
+3. 使用反向查找，你将如何显示所有后来成为了 `MinorVampire` 的 `Person` 对象？
 
-   Hint: Remember, `MinorVampire` has a link back to the vampire's former self.
+   提示：别忘了，`MinorVampire` 有一个指向自己成为吸血鬼之前的前身的链接。
 
-4. How would you give the `MinorVampire` type an annotation called `note` that says `'first_appearance for MinorVampire should always match last_appearance for its matching NPC type'`?
+4. 如何给 `MinorVampire` 类型一个名为 `note` 的注解，说明 `'first_appearance for MinorVampire should always match last_appearance for its matching NPC type'`？
 
-5. How would you see this `note` annotation for `MinorVampire` in a query?
+5. 如何在查询中看到 `MinorVampire` 的 `note` 注释？
 
 [点击这里查看答案](answers.md)
 
