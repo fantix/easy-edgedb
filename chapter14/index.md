@@ -2,11 +2,11 @@
 tags: Type Annotations, Reverse Links
 ---
 
-# Chapter 14 - A ray of hope
+# 第十四章 - 一线希望
 
-> Finally there is some good news: Jonathan Harker is alive. After escaping Castle Dracula, he found his way to Budapest in August and then to a hospital, which sent Mina a letter. The hospital tells Mina that "He has had some fearful shock and continues to talk about wolves and poison and blood, of ghosts and demons." Mina takes a train to the hospital where Jonathan was recovering, and they take a train back to England to the city of Exeter where they get married. Mina sends Lucy a letter from Exeter about the good news...but it arrives too late and Lucy never opens it. Meanwhile, the men visit the graveyard as planned and see vampire Lucy walking around. When Arthur sees her he finally believes Van Helsing, and so do the rest. They now know that vampires are real, and manage to destroy her. Arthur is sad but happy to see that Lucy is no longer forced to be a vampire and can now die in peace.
+> 最终还是有一些好消息：乔纳森·哈克（Jonathan Harker）还活着。他逃离德古拉城堡（Castle Dracula）后，于 8 月找到了前往布达佩斯（Budapest）的路，然后进了一家医院，医院给米娜（Mina）发了一封信。医院告诉米娜：“他受到了一些可怕的刺激，不停地说着狼、毒和血，鬼和恶魔。” 米娜乘坐火车前往乔纳森所在的康复医院，他们乘火车回到英格兰（England），在埃克塞特（Exeter）举行了婚礼。米娜从埃克塞特寄给了露西一封信，告诉她这个好消息……但是太迟了，露西再也没有能打开它。与此同时，上一章提到的男人们按着计划到访了墓地，看到了吸血鬼露西在四处走动。当亚瑟（Arthur）看到她时，他终于相信了范海辛（Van Helsing），其他人也是如此。他们现在明白了吸血鬼是真实存在的，并设法摧毁了她。亚瑟很伤心，但很高兴看到露西不再被迫成为一只吸血鬼，现在可以平静地离开人世了。
 
-So we have a new city called Exeter, and adding it is of course easy:
+所以我们有了一个名为“Exeter（埃克塞特）”的新城市，添加它很容易：
 
 ```edgeql
 INSERT City {
@@ -15,13 +15,14 @@ INSERT City {
 };
 ```
 
-That's the population of Exeter at the time, and it doesn't have a `modern_name` that is different from the one in the book.
+40000 是当时埃克塞特的人口，且它没有一个与当时书中名称不同的 `modern_name`。
 
-## Adding annotations to types and using @
+## 为类型添加注解及 @ 的使用（Adding annotations to types and using @）
 
+既然我们知道如何进行内省查询，我们就可以开始给我们的类型 `annotations`（注解）了。注释是类型定义中的一个字符串，它为我们提供有关它的信息。默认情况下，注释可以使用标题 `title` 或 `description`。
 Now that we know how to do introspection queries, we can start to give our types `annotations`. An annotation is a string inside the type definition that gives us information about it. By default, annotations can use the titles `title` or `description`.
 
-Let's imagine that in our game a `City` needs at least 50 buildings. Let's use `description` for this:
+假设在我们的游戏中，一个 `City` 至少需要 50 座建筑物。让我们对此使用 `description`：
 
 ```sdl
 type City extending Place {
@@ -30,7 +31,7 @@ type City extending Place {
 }
 ```
 
-Now we can do an `INTROSPECT` query on it. We know how to do this from the last chapter - just add `: {name}` everywhere to get the inner details. Ready!
+现在我们可以对其进行 `INTROSPECT` 查询。我们从上一章就知道如何可以做到这一点 —— 只需在各处添加上 `: {name}` 即可获取其内部细节：
 
 ```edgeql
 SELECT (INTROSPECT City) {
@@ -40,7 +41,7 @@ SELECT (INTROSPECT City) {
 };
 ```
 
-Uh oh, not quite:
+哦，还不够完整：
 
 ```
 {
@@ -58,9 +59,9 @@ Uh oh, not quite:
 }
 ```
 
-Ah, of course: the `annotations: {name}` part returns the name of the _type_, which is `std::description`. In other words, it's a link, and the target of a link just tells us the kind of annotation that gets used. But we're looking for the value inside it.
+当然：`annotations: {name}` 部分返回的是 _type_ 的名称，即 `std::description`。换句话说，它是一个链接，链接的目标只是告诉我们所使用的注释类型。但我们要找的是其中的“值”。
 
-This is where `@` comes in. To get the value inside we write something else: `@value`. The `@` is used to directly access the value inside (the string) instead of just the type name. Let's try one more time:
+这就是 `@` 的用武之地。为了获得里面的值，我们要写入：`@value`。`@` 用于直接访问内部的值（字符串），而不仅仅是类型名称。让我们再试一次：
 
 ```edgeql
 SELECT (INTROSPECT City) {
@@ -73,7 +74,7 @@ SELECT (INTROSPECT City) {
 };
 ```
 
-Now we see the actual annotation:
+现在我们看到实际的注解了：
 
 ```
 {
@@ -96,13 +97,13 @@ Now we see the actual annotation:
 }
 ```
 
-What if we want an annotation with a different name besides `title` and `description`? That's easy, just declare with `abstract annotation` inside the schema and give it a name. We want to add a warning so that's what we'll call it:
+如果我们想要一个除了 `title` 和 `description` 之外的具有不同名称的注释怎么办？这很容易，只需在架构中声明 `abstract annotation` 并为其命名即可。我们想添加一个警告，我们就这么叫它：
 
 ```sdl
 abstract annotation warning;
 ```
 
-We'll imagine that it is important to use `Castle` instead of `OtherPlace` for not just castles, but castle towns too. Thanks to the new abstract annotation, now `OtherPlace` gives that information along with the other annotation:
+假设 `Castle` 类型不仅仅用于城堡，也用于城堡镇，而不是对城堡镇用 `OtherPlace`。多亏了上面新加的抽象注解，现在 `OtherPlace` 可以用新的注解类型给出了更多的信息：
 
 ```sdl
 type OtherPlace extending Place {
@@ -111,7 +112,7 @@ type OtherPlace extending Place {
 }
 ```
 
-Now let's do an introspect query on just its name and annotations:
+现在让我们仅对其名称和注释进行内省查询：
 
 ```edgeql
 SELECT (INTROSPECT OtherPlace) {
@@ -120,7 +121,7 @@ SELECT (INTROSPECT OtherPlace) {
 };
 ```
 
-And here it is:
+这是结果：
 
 ```
 {
@@ -134,7 +135,7 @@ And here it is:
 }
 ```
 
-## Even more working with dates
+## 更多关于日期（Even more working with dates）
 
 A lot of characters are starting to die now, so let's think about that. We could come up with a method to see who is alive and who is dead, depending on a `cal::local_date`. First let's take a look at the `People` objects we have so far. We can easily count them with `SELECT count(Person)`, which gives `{23}`.
 
@@ -337,11 +338,11 @@ Here is the output:
 }
 ```
 
-[Here is all our code so far up to Chapter 14.](code.md)
+[→ 点击这里查看第 14 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 小测验
 
 1. How would you display just the numbers for all the `Person` types? e.g. if there are 20 of them, displaying `1, 2, 3..., 18, 19, 20`.
 
@@ -355,8 +356,8 @@ Here is the output:
 
 5. How would you see this `note` annotation for `MinorVampire` in a query?
 
-[See the answers here.](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Time to get revenge._
+__接下来：__ _是时候报仇了。_
