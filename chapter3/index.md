@@ -183,11 +183,11 @@ SELECT (DELETE Country) {
 
 最后，让我们再次插入匈牙利（Hungary）和罗马尼亚（Romania）以供后续使用。
 
-[这里是第三章中到目前为止的所有代码。](code.md)
+[→ 点击这里查看第 3 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## 章节小练习
+## 小测验
 
 1. 此查询试图显示每个 `NPC` 的 `name`，并给每个 `NPC` 加上所有 `City` 类型，但执行后给出了错误。请问它缺少了什么？
 
@@ -216,7 +216,7 @@ SELECT (DELETE Country) {
 
 5. 你能插入一个 HumanAge 类型吗？
 
-[可以在这里查看答案。](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
