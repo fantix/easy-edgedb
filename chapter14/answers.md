@@ -1,30 +1,30 @@
 # Chapter 14 Questions and Answers
 
-#### 1. How would you display just the numbers for all the `Person` types? e.g. if there are 20 of them, displaying `1, 2, 3..., 18, 19, 20`.
+#### 1. 如何仅显示所有 `Person` 对象的编号？比如，如果有 20 个，则显示 `1, 2, 3..., 18, 19, 20`。
 
-One way to do it is with `enumerate()`. This is easy if we are just starting from 0, since `enumerate()` gives a tuple with two items. The first one is an `int64` so we select that:
+一种方法是使用 `enumerate()`。如果我们只是从 0 开始显示，这就容易。enumerate() 会给出一个包含两个项目的元组。第一个则是 `int64` 类型的索引，所以我们选择它：
 
 ```edgeql
 SELECT enumerate(Person).0;
 ```
 
-That will display: `{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}`
+将显示出：`{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}`
 
-Warning: selecting `.1` will generate an error since that is where the rest of the object type is, and there is no way to properly display that. But displaying a single property is fine, such as in this example:
+警告：选择 `.1` 会产生错误，因为这是对象的其余部分，且没有办法正确显示它。但是显示它的单个属性没问题，例如在下面的示例中：
 
 ```edgeql
 SELECT enumerate(Person.strength).1;
 ```
 
-And then to display numbers starting with 1, we just use `enumerate` again and add 1 to it:
+回到问题，如果要显示从 1 开始的数字，我们只需在使用 `enumerate` 时将其加 1：
 
 ```edgeql
 SELECT enumerate(Person).0 + 1
 ```
 
-#### 2. Using a reverse lookup, how would you display 1) all the `Place` types (plus their names) that have an `o` in the name and 2) the names of the people that visited them?
+#### 2. 使用反向查找，你将如何显示 1）所有名称中带有 `o` 的 `Place` 的对象（及他们的名字）；2）访问过这些地方的人的名字？
 
-This is not too hard if you start it in steps, first with a filter to get all the `Place` types:
+如果你一步一步开始，这并不太难，首先用一个过滤器来获取所有名字满足条件的 `Place` 对象：
 
 ```edgeql
 SELECT Place {
@@ -32,7 +32,7 @@ SELECT Place {
 } FILTER .name LIKE '%o%';
 ```
 
-And here they are:
+这是结果：
 
 ```edgeql
 {
@@ -42,7 +42,7 @@ And here they are:
 }
 ```
 
-Now we'll add the reverse lookup to the same query, and call the computable `visitors`:
+现在我们将反向查找添加到同一个查询，并调用可计算的 `visitors`：
 
 ```edgeql
 SELECT Place {
@@ -51,7 +51,7 @@ SELECT Place {
 } FILTER .name LIKE '%o%';
 ```
 
-Now we can see who visited:
+现在我们可以看到谁到访过这些地方：
 
 ```
 {
@@ -74,11 +74,11 @@ Now we can see who visited:
 }
 ```
 
-A clear victory for London as the most visited place! If you wanted, you could also add a `visitor_numbers := count(.<places_visited[IS Person].name)` to it to get the number of visitors too.
+伦敦作为访问量最大的地方的明显胜出！如果你想，你也可以添加一个 `visitor_numbers := count(.<places_visited[IS Person].name)` 来获取访问者的数量。
 
-#### 3. Using reverse lookup, how would you display all the Person types that will later become `MinorVampire`s?
+#### 3. 使用反向查找，你将如何显示所有后来成为了 `MinorVampire` 的 `Person` 对象？
 
-We can do it with a computable again, which we'll call `later_vampire`. Then we use reverse lookup to link back to the `MinorVampire` that links to `Person` via the property `former_self`:
+我们可以再次使用可计算公式来做到这一点，我们将其称为 `later_vampire`。然后我们使用反向查找链接回 `MinorVampire`，即通过属性 `former_self` 链接到 `Person` 的 `MinorVampire`：
 
 ```edgeql
 SELECT Person {
@@ -87,10 +87,11 @@ SELECT Person {
 } FILTER exists .later_vampire;
 ```
 
-That just gives us Lucy:
+这只是给了我们露西：
 
 `{default::NPC {name: 'Lucy Westenra', later_vampire: {'Lucy Westenra'}}}`
 
+还不错，但我们可能可以做得更好 —— 这里的 `later_vampire` 没有告诉我们它的类型的信息。让我们为其添加一些类型信息：
 This is not bad, but we can probably do better - `later_vampire` here isn't telling us anything about the type. Let's add some type info:
 
 ```edgeql
@@ -105,7 +106,7 @@ SELECT Person {
 } FILTER exists .later_vampire;
 ```
 
-Now we can see that `later_vampire` is of type `MinorVampire` instead of just displaying a string:
+现在我们可以看到 `later_vampire` 的类型是 `MinorVampire` 而不是仅仅显示一个字符串：
 
 ```
 {
@@ -121,15 +122,15 @@ Now we can see that `later_vampire` is of type `MinorVampire` instead of just di
 }
 ```
 
-#### 4. How would you give the `MinorVampire` type an annotation called `note` that says `'first_appearance for MinorVampire should always match last_appearance for its matching NPC type'`?
+#### 4. 如何给 `MinorVampire` 类型一个名为 `note` 的注解，说明 `'first_appearance for MinorVampire should always match last_appearance for its matching NPC type'`？
 
-First you would create the annotation itself, since it's not available yet:
+首先，你得创建这个注释，因为它还不存在：
 
 ```sdl
 abstract annotation note;
 ```
 
-After that you would just put it into the `MinorVampire` type and it's done!
+然后，您只需将其放入 `MinorVampire` 类型即可完成！
 
 ```sdl
 type MinorVampire extending Person {
@@ -138,9 +139,9 @@ type MinorVampire extending Person {
 }
 ```
 
-#### 5. How would you see this `note` annotation for `MinorVampire` in a query?
+#### 5. 如何在查询中看到 `MinorVampire` 的 `note` 注释？
 
-It would look like this:
+如下所示：
 
 ```edgeql
 SELECT (INTROSPECT MinorVampire) {
@@ -152,7 +153,7 @@ SELECT (INTROSPECT MinorVampire) {
 };
 ```
 
-Here's the output:
+这是输出：
 
 ```
 {
@@ -168,4 +169,4 @@ Here's the output:
 }
 ```
 
-Of course, `@value` by itself will show you the strings for all the annotations, but we just have one here.
+当然，`@value` 本身会显示所有注释的字符串，但这里我们只有一个。
