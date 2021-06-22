@@ -1,8 +1,8 @@
 # Chapter 13 Questions and Answers
 
-#### 1. How would you insert an `NPC` named 'Mr. Swales' who has visited the `City` called 'York', the `Country` called 'England', and the `OtherPlace` called 'Whitby Abbey'? Try it in a single insert.
+#### 1. 尝试用一个单独的插入语句插入一个名为“Mr. Swales”的 `NPC`，他曾到访过名为“York”的 `City`，名为“England”的  `Country` 以及名为“Whitby Abbey”的 `OtherPlace`。
 
-Here it is, similar to the `Ship` insert we did:
+类似于我们之前章节中所做的 `Ship` 插入：
 
 ```edgeql
 INSERT NPC {
@@ -21,9 +21,9 @@ INSERT NPC {
 };
 ```
 
-#### 2. How readable is this introspect query?
+#### 2. 这个内省查询的可读性如何？
 
-This query:
+这个查询：
 
 ```edgeql
 SELECT (INTROSPECT Ship) {
@@ -33,7 +33,7 @@ SELECT (INTROSPECT Ship) {
 };
 ```
 
-is one third readable: `name` will actually show up as a real human-readable name. Here's the result:
+三分之一可读：`name` 实际上会显示为人类可读的名称。结果如下：
 
 ```
 {
@@ -52,7 +52,7 @@ is one third readable: `name` will actually show up as a real human-readable nam
 }
 ```
 
-Add `: {name}` in two places to make it fully readable:
+在两个地方添加 `: {name}` 则可使其完全可读：
 
 ```edgeql
 SELECT (INTROSPECT Ship) {
@@ -62,7 +62,7 @@ SELECT (INTROSPECT Ship) {
 };
 ```
 
-Now it gives this:
+结果是：
 
 ```
 {
@@ -81,15 +81,15 @@ Now it gives this:
 }
 ```
 
-#### 3. What would be the shortest way to see what links from the `Vampire` type?
+#### 3. 查看 `Vampire` 类型有哪些链接的最简短的方法是什么？
 
-Similar to how `SELECT Vampire.name` just gives all the names for the `Vampire` type (as opposed to `SELECT Vampire { name }`, you can do this:
+类似于 `SELECT Vampire.name` 给出 `Vampire` 类型的所有名称（与 `SELECT Vampire { name }` 相反），你可以这样做：
 
 ```edgeql
 SELECT (Introspect Vampire).links { name };
 ```
 
-Here's the output:
+输出是：
 
 ```
 {
@@ -100,18 +100,18 @@ Here's the output:
 }
 ```
 
-#### 4. What do you think the output of `SELECT DISTINCT {1, 2} + {1, 2};` will be?
+#### 4. 你认为 `SELECT DISTINCT {1, 2} + {1, 2};` 的输出会是什么？
 
-Here's the output:
+输出是：
 
 ```
 {2, 3, 3, 4}
 ```
 
-You can see that `DISTINCT` works individually on each set, so `SELECT DISTINCT {1, 2} + {1, 2};` and `SELECT {1, 2} + {1, 2};` are the same. But if you were to write `SELECT DISTINCT {2, 2}` the output would be just `{2}`.
+你可以看到 `DISTINCT` 是独立作用于一个集合的（所以这里只是作用在了第一个上），所以 `SELECT DISTINCT {1, 2} + {1, 2};` 和 `SELECT {1, 2} + {1, 2};` 是相同的。如果你要写 `SELECT DISTINCT {2, 2}`，输出将只是 `{2}`。
 
-#### 5. What do you think the output of `SELECT DISTINCT {2, 2} + {2, 2};` will be?
+#### 5. 你认为 `SELECT DISTINCT {2, 2} + {2, 2};` 的输出会是什么？
 
-The output will be `{4, 4}` because `DISTINCT` only works on the first set.
+输出将为 `{4, 4}`，因为 `DISTINCT` 仅适用于第一个集合。
 
-To get the output `{4}`, you can repeat the `DISTINCT`: `SELECT DISTINCT {2, 2} + DISTINCT {2, 2};`. Or you can wrap the whole thing like this: `SELECT DISTINCT({2, 2} + {2,2})`.
+要获得输出 `{4}`，你可以重复 `DISTINCT`：`DISTINCT`: `SELECT DISTINCT {2, 2} + DISTINCT {2, 2};`。或者你可以像这样包装整个运算：`SELECT DISTINCT({2, 2} + {2,2})`。
