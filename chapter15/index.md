@@ -2,19 +2,19 @@
 tags: Expression On, Error Messages
 ---
 
-# Chapter 15 - The vampire hunt begins
+# 第十五章 - 开始追捕吸血鬼
 
-> It's good that Jonathan is back, but he is still in shock. He doesn't know if the experience with Dracula was real or not, and thinks he might be crazy. But then he meets Van Helsing who tells him that it was all true. Jonathan hears this and becomes strong and confident again. Now they begin to search for Dracula. The others learn that the Carfax mansion across from Dr. Seward's asylum is the one that Dracula bought. So that's why Renfield was so strongly affected... They search the house when the sun is up and find boxes of earth in which Dracula sleeps. They destroy them all in Carfax, but there are still many left in London. If they don't destroy the other boxes, Dracula will be able to rest in them during the day and terrorize London every night when the sun goes down.
+> 乔纳森（Jonathan）回来是件好事，但他仍然处于震惊之中。他不知道与德古拉（Dracula）的经历是否真实，他觉得自己可能疯了。直到后来他遇到了范海辛（Van Helsing），范海辛告诉他这一切都是真的。乔纳森听到后，再次变得坚强和自信。现在他们开始寻找德古拉。这时其他人得知苏厄德医生（Dr. Seward）的收容所对面的卡法克斯（Carfax）豪宅是德古拉买的。所以这就是为什么伦菲尔德（Renfield）受到如此强烈的影响……他们趁太阳升起时搜查房子，找到德古拉睡觉的箱子。他们将 Carfax 里的箱子全部摧毁了，但在伦敦仍然还有很多。如果他们不摧毁其他箱子，德古拉白天就可以在里面休息，每到晚上太阳落山时在出来恐吓伦敦。
 
-## More abstract types
+## 更多抽象类型（More abstract types）
 
-This chapter they learned something about vampires: they need to sleep in coffins (boxes for dead people) with holy earth during the day. That's why Dracula brought 50 of them over by ship on the Demeter. This is important for the mechanics of our game so we should create a type for this. And if we think about it:
+本章书里的人们学到了一些关于吸血鬼的知识：他们在白天需要睡在装有圣土的棺材里（用于装死人的盒子）。这就是为什么德古拉用德米特号（the Demeter）船带来了 50 个棺材。这对我们游戏的机制很重要，所以我们应该为此创建一个类型。如果我们考虑到：
 
-- Each place in the world either has coffins or doesn't have them,
-- Has coffins = vampires can enter and terrorize the people,
-- If a place has coffins, we should know how many of them there are.
+- 世界上的每个地方要么有棺材要么没有，
+- 有棺材（Has coffins）等于吸血鬼可以进入并恐吓人们，
+- 如果一个地方有棺材，我们应该知道有多少。
 
-This sounds like a good case for an abstract type. Here it is:
+这听起来像是抽象类型的一个好例子。如下所示：
 
 ```sdl
 abstract type HasCoffins {
@@ -24,11 +24,11 @@ abstract type HasCoffins {
 }
 ```
 
-Most places will not have a special vampire coffin, so the default is 0. The `coffins` property is just an `int16`, and vampires can remain close to a place if the number is 1 or greater. In the mechanics of our game we would probably give vampires an activity radius of about 100 km from a place with a coffin. That's because of the typical vampire schedule which is usually as follows:
+大多数地方不会有专门供吸血鬼使用的棺材，所以默认为 0。`coffins` 属性是一个 `int16`，如果数字为 1 或更大，意味着吸血鬼可以留在附近。在我们游戏的机制中，我们可能会给吸血鬼一个距离有棺材大约 100 公里的活动半径。这是因为典型的吸血鬼作息表通常如下：
 
-- Wake up refreshed in the coffin after the sun goes down, get ready to leave by 8 pm to find people to terrorize
-- Feel free because the night has just begun, start moving away from the safety of the coffins to find victims. May use a horse-driven carriage at 25 kph to do so.
-- Around 1 or 2 pm, start to feel nervous. The sun will be up in about 5 hours. Is there enough time to get home?
+- 太阳下山后，精神焕发地从棺材里醒来，准备晚上 8 点离开，到处恐吓人类，
+- 因为夜晚才刚刚开始，所以不用担心，于是离开安全的棺材去寻找受害者。可以使用以每小时 25 公里速度行驶的马车。
+- 大约夜里一两点时，开始感到紧张。大约 5 小时后太阳就会升起。有足够的时间回家吗？
 
 So the part between 8 pm and 1 am is when the vampire is free to move away, and at 25 kph we get an activity radius of about 100 km around a coffin. At that distance, even the bravest vampire will start running back towards home by 2 am.
 
@@ -314,11 +314,11 @@ And the result:
 
 Beautiful! All the information is right there.
 
-[Here is all our code so far up to Chapter 15.](code.md)
+[点击这里查看第 15 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 小测验
 
 1. How would you create a type called Horse with a `required property name -> str` that can only be 'Horse'?
 
@@ -332,8 +332,8 @@ Beautiful! All the information is right there.
 
 5. How would you make it without touching the schema?
 
-[See the answers here.](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Could Renfield be of help?_
+__接下来：__ _伦菲尔德能帮上忙吗？_
