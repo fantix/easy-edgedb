@@ -216,11 +216,11 @@ DDL 是比 SDL（我们一直在使用的语言）更低级别的语言。它对
 
 因此，对于类型，我们把 `TYPE` 放到 `DESCRIBE` 后面；对于模块，我们把 `MODULE` 放到 `DESCRIBE` 后面，那么对于链接或其他的呢？以下是可以放到 `DESCRIBE` 后面的所有关键字的列表：`OBJECT`、`ANNOTATION`、`CONSTRAINT`、`FUNCTION`、`LINK`、`MODULE`、`PROPERTY`、`SCALAR TYPE`、`TYPE`。如果你不想全部记住它们，只需使用 `OBJECT`：它会匹配你的架构（schema）中的任何内容（模块除外）。
 
-[这里是第五章中到目前为止的所有代码。](code.md)
+[→ 点击这里查看第 5 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## 章节小练习
+## 小测验
 
 1. 你认为 `SELECT to_datetime(3600);` 将返回什么？为什么？
 
@@ -234,7 +234,7 @@ DDL 是比 SDL（我们一直在使用的语言）更低级别的语言。它对
 
 5. 如果您只想查看如何编写的某个类型，那么描述该类型的最佳方式是什么？
 
-[可以在这里查看答案。](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
