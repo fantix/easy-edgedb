@@ -246,11 +246,11 @@ SELECT ( # Start a selection
 
 现在的输出结果对我们更有意义了：`{Object {date: '22.44.10', hour: '22', awake: 'awake', double_hour: 44}}`。我们知道了时间和小时，我们可以了解到吸血鬼是醒着的，我们甚至可以对我们刚刚输入的对象做计算。
 
-[这里是第四章中到目前为止的所有代码。](code.md)
+[→ 点击这里查看第 4 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## 章节小练习
+## 小测验
 
 1. 下面的插入语句不工作：
 
@@ -290,7 +290,7 @@ SELECT ( # Start a selection
 
    你将如何在插入的同时，用 `SELECT` 来显示它的 `name`，`age` 和 `age_ten_years_later`？`age_ten_years_later` 是指 `age` 加 10。
 
-[可以在这里查看答案。](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
