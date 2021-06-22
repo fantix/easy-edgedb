@@ -244,11 +244,11 @@ SELECT <int64><str><json>'18870503';
 
 [关于 JSON 的文档](https://www.edgedb.com/docs/datamodel/scalars/json) 解释了哪些 JSON 类型可以转换为哪些 EdgeDB 类型，如果你需要对 JSON 进行大量转换，可以将其添加至书签，便于后续查阅。您还可以在 [此处](https://www.edgedb.com/docs/edgeql/funcops/json) 中查看到所有 JSON 的函数列表。
 
-[这里是第六章中到目前为止的所有代码。](code.md)
+[→ 点击这里查看第 6 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## 章节小练习
+## 小测验
 
 1. 这个选择是不完整的。如何修改它从而使它能打印出“Pleased to meet you, I'm ”以及 NPC 的名字？
 
@@ -271,7 +271,7 @@ SELECT <int64><str><json>'18870503';
 
    额外问题：使用字符串索引来撤消此操作的快速方法是什么？
 
-[可以在这里查看答案。](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
