@@ -423,11 +423,11 @@ ELSE (
 
 这样做，我们可以保证得到一个名为慕尼黑（Munich）的 `City` 对象，且人口为 261,023，无论它是否已经存在于数据库中。
 
-[这里是第十章中到目前为止的所有代码。](code.md)
+[→ 点击这里查看第 10 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## 章节小练习
+## 小测验
 
 1. 尝试通过一个插入语句插入两个 `NPC` 类型的对象，其中包含 `name`, `first_appearance` 和 `last_appearance` 信息。
 
@@ -446,7 +446,7 @@ ELSE (
 5. 范海辛医生（Dr. Van Helsing ）有一份 `MinorVampire` 的名单，上面有他们的名字和力量。我们的数据库中已经有一些 `MinorVampire` 了。如果对象已经存在，你将如何在确保 `UPDATE` 的同时 `INSERT` 不存在的？ 
 
 
-[可以在这里查看答案。](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
