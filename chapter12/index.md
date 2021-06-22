@@ -358,11 +358,11 @@ SELECT Vampire.lover.name ?= Crewman.name;
 
 将返回 `{true}`。（因为德古拉没有情人，船员也没有名字，所以双方返回的都是类型为 `str` 的空集。）
 
-[这里是第十二章中到目前为止的所有代码。](code.md)
+[→ 点击这里查看第 12 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## 章节小练习
+## 小测验
 
 1. 考虑下面这两个函数。EdgeDB 会接受第二个吗？
 
@@ -402,7 +402,7 @@ SELECT Vampire.lover.name ?= Crewman.name;
 
 5. `SELECT array_join(array_agg(Person.name));` 在尝试获得一个含有所有人姓名的字符串，但它不能工作，问题出在哪里？
 
-[可以在这里查看答案。](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
