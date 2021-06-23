@@ -79,16 +79,17 @@ function can_enter(vampire: MinorVampire, place: HasCoffins) -> str
 
 重载函数可能是更简单的选择，因为我们不需要进行显式迁移（explicit migration）。
 
-另一个需要你足够信任使用该函数用户的是返回类型，它是一个 `-> str`。除了返回一个字符串之外，这个返回类型还意味着如果输入为空，则不会调用该函数。那么如果你想要它被调用呢？如果你希望它无论如何都被调用，你可以将返回类型更改为`-> OPTIONAL str`。
+> TODO: translate after fixing the original content.
+
 One other area where you need to trust the user of the function is seen in the return type, which is just `-> str`. Beyond just returning a string, this return type also means that the function won't be called if the input is empty. So what if you want it to be called anyway? If you want it to be called no matter what, you can change the return type to `-> OPTIONAL str`. [The documentation](https://www.edgedb.com/docs/edgeql/overview#optional) explains it like this: `the function is called normally when the corresponding argument is empty`. And: `A notable example of a function that gets called on empty input is the coalescing operator.`
 
 Interesting! You'll remember the coalescing operator `?` that we first saw in Chapter 12. And when we look at [its signature](https://www.edgedb.com/docs/edgeql/funcops/set/#operator::COALESCE), you can see the `OPTIONAL` in there:
 
 `OPTIONAL anytype ?? SET OF anytype -> SET OF anytype`
 
-So those are some ideas for how to set up your functions depending on how you think people might use them.
+因此，这些是关于如何设置功能的一些想法，具体取决于你认为用户可能会如何使用它们。
 
-Now let's give London some coffins. According to the book, our heroes destroyed 29 coffins at Carfax that night, which leaves 21 in London.
+现在，让我们来给伦敦（London）放置一些棺材。根据小说，我们的英雄们在那天晚上摧毁了卡法克斯（Carfax）里的 29 具棺材，也就是说还有 21 具在伦敦。
 
 ```edgeql
 UPDATE City filter .name = 'London'
@@ -97,18 +98,18 @@ SET {
 };
 ```
 
-Now we can finally call up our function and see if it works:
+现在我们终于可以调用我们的函数，看看它是否有效：
 
 ```edgeql
 SELECT can_enter('Count Dracula', (SELECT City filter .name = 'London'));
 ```
 
-We get `{'Count Dracula can enter.'}`.
+得到：`{'Count Dracula can enter.'}`.
 
-Some other possible ideas for improvement later on for `can_enter()` are:
+还可以有一些其他可能的改进 `can_enter()` 的想法，比如：
 
-- Move the property `name` from `Place` and `Ship` over to `HasCoffins`. Then the user could just enter a string. The function would then use it to `SELECT` the type and then display its name, giving a result like "Count Dracula can enter London."
-- Require a date in the function so that we can check if the vampire is dead or not first. For example, if we entered a date after Lucy died, it would just display something like `vampire.name ++ ' is already dead on ' ++ <str>.date ++ ' and cannot enter ' ++ city.name`.
+- 将属性 `name` 从 `Place` 和 `Ship` 移到 `HasCoffins`。然后用户可以只是输入一个字符串（名字）。函数里将通过它 `SELECT` 到对应的类型，然后显示其名称，给出类似 `{'Count Dracula can enter.'}` 的结果。
+- 给函数加一个日期类型的输入，以便我们可以先检查这个吸血鬼是否死了。例如，如果我们输入一个露西死后的日期，它只会显示类似 `vampire.name ++ ' is already dead on ' ++ <str>.date ++ ' and cannot enter ' ++ city.name`。
 
 ## 更多约束（More constraints）
 
@@ -149,7 +150,7 @@ property month -> int64 {
 
 现在让我们学习一下可能是 EdgeDB 中最有趣的约束：
 
-## expression on：最灵活的约束（expression on: the most flexible constraint）
+## 最灵活的约束（expression on: the most flexible constraint）
 
 还一种特别灵活的约束，叫做 [`expression on`](https://www.edgedb.com/docs/datamodel/constraints#constraint::std::expression)，它允许我们添加任何我们想要的表达式（约束）。在 `expression on` 之后（的小括号中）添加必须为“真”的表达式即可。
 
@@ -256,7 +257,8 @@ type MinorVampire extending Person {
 }
 ```
 
-要再次添加 `master` 链接，最好的方法是从一个名为 `master_name` 的属性开始，它只是一个字符串。然后我们可以在反向搜索中使用它链接到名字匹配的 `Vampire`。它是一个单链接（single link），所以我们加上 `LIMIT 1`（否则将无法工作）。下面是 `MinorVampire` 类型现在的样子：
+> TODO: translate after fixing the original content.
+
 To add the `master` link again, the best way is to start with a property called `master_name` that is just a string. Then we can use this in a reverse search to link to the `Vampire` type if the name matches. It's a single link, so we'll add `LIMIT 1` (it won't work otherwise). Here is what the type would look like now:
 
 ```sdl
@@ -322,17 +324,17 @@ And the result:
 
 ## 小测验
 
-1. How would you create a type called Horse with a `required property name -> str` that can only be 'Horse'?
+1. 如何创建一个名为“Horse”的类型，且它的属性 `required property name -> str` 只能是“Horse”？
 
-2. How would you let the user know that it needs to be called 'Horse'?
+2. 如何让用户们能了解到 `name` 需要被叫做“Horse”？如何提示他们？
 
-3. How would you make sure that `name` for type `PC` is always between 5 and 30 characters in length?
+3. 如何确保 `NPC` 类型的 `name` 长度始终在 5 到 30 个字符之间？
 
-   Try it first with `expression on`.
+   先用`expression on`试试。
 
-4. How would you make a function called `display_coffins` that pulls up all the `HasCoffins` types with more than 0 coffins?
+4. 如何创建一个名为 `display_coffins` 的函数来显示出所有棺材数量大于 0 的 `HasCoffins` 类型的对象？
 
-5. How would you make it without touching the schema?
+5. 如何在不触及架构（schema）的情况下创建上一题中的函数？
 
 [点击这里查看答案](answers.md)
 
