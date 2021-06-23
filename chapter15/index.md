@@ -28,13 +28,13 @@ abstract type HasCoffins {
 
 - 太阳下山后，精神焕发地从棺材里醒来，准备晚上 8 点离开，到处恐吓人类，
 - 因为夜晚才刚刚开始，所以不用担心，于是离开安全的棺材去寻找受害者。可以使用以每小时 25 公里速度行驶的马车。
-- 大约夜里一两点时，开始感到紧张。大约 5 小时后太阳就会升起。有足够的时间回家吗？
+- 大约凌晨一两点时，开始感到紧张。大约 5 小时后太阳就会升起。有足够的时间回家吗？
 
-So the part between 8 pm and 1 am is when the vampire is free to move away, and at 25 kph we get an activity radius of about 100 km around a coffin. At that distance, even the bravest vampire will start running back towards home by 2 am.
+所以晚上 8 点到凌晨 1 点之间是吸血鬼可以自由远离的时间，以 25 公里/小时的速度，他们可以在棺材周围获得大约 100 公里的活动半径。这个距离上，即使是最勇敢的吸血鬼也会在凌晨 2 点开始往家跑了。
 
-With a more complex game we could imagine that vampire terrorism is worse in the winter (activity radius = about 150 km), but we won't get into those details.
+对于更复杂的游戏，我们可以想象吸血鬼恐怖主义在冬天会更恶劣（因为活动半径可以扩大到约 150 公里），但我们不在这里对这些细节做深入的研究。
 
-With our abstract type done, we will want to have a lot of types `extending` this. First we can have `Place` extend it, and that gives it to all the other location types such as `City`, `OtherPlace`, etc.:
+完成抽象类型 `HasCoffins` 的创建后，有很多类型需要 `extending`（扩展）自它。首先，我们可以让 `Place` 扩展它，这样就可以把它赋给所有其他的位置类型，比如 `City`、`OtherPlace`等等：
 
 ```sdl
 abstract type Place extending HasCoffins {
@@ -45,7 +45,7 @@ abstract type Place extending HasCoffins {
   property important_places -> array<str>;
 }
 ```
-
+船也是足够大，可以放置棺材的（毕竟德米特号承载了 50 个），所以我们还将扩展 `Ship`：
 Ships are also big enough to have coffins (the Demeter had 50 of them, after all) so we'll extend for `Ship` as well:
 
 ```sdl
@@ -56,7 +56,7 @@ type Ship extending HasCoffins {
 }
 ```
 
-If we want, we can now make a quick function to test whether a vampire can enter a place:
+如果我们愿意，我们现在可以创建一个快速函数来测试吸血鬼是否可以进入一个地方：
 
 ```sdl
 function can_enter(person_name: str, place: HasCoffins) -> str
@@ -66,19 +66,20 @@ function can_enter(person_name: str, place: HasCoffins) -> str
   );
 ```
 
-You'll notice that `person_name` in this function actually just takes a string that it uses to select a `Person`. So technically it could say something like 'Jonathan Harker cannot enter'. It has a `LIMIT 1` though, and we can probably trust that the user of the function will use it properly. If we can't trust the user of the function, there are some options:
+你可能注意到了这个函数中的 `person_name` 实际上只是一个用来选择 `Person` 的字符串。所以从技术上讲，它可能会有类似“乔纳森·哈克不能进入”的输出（但乔纳森是个人类）。尽管其中使用了 `LIMIT 1`，我们可以选择相信运用该函数的用户能够做到正确地使用它。但如果我们不能信任用户，这里有一些更健壮的选择：
 
-- Overload the function to have two signatures, one for each type of Vampire:
+- 重载函数以获得两个签名，每种类型的吸血鬼均有一个签名：
 
 ```sdl
 function can_enter(vampire: Vampire, place: HasCoffins) -> str
 function can_enter(vampire: MinorVampire, place: HasCoffins) -> str
 ```
 
-- Create an abstract type (like `type IsVampire`) and extend it for `Vampire` and `MinorVampire`. Then `can_enter` can have this signature: `function can_enter(vampire: IsVampire, place: HasCoffins) -> str`
+- 创建一个抽象类型（如 `type IsVampire`）并使其扩展自 `Vampire` 和 `MinorVampire`。然后 `can_enter` 函数可以有签名：`function can_enter(vampire: IsVampire, place: HasCoffins) -> str`。
 
-Overloading the function is probably the easier option, because we wouldn't need to do an explicit migration.
+重载函数可能是更简单的选择，因为我们不需要进行显式迁移（explicit migration）。
 
+另一个需要你足够信任使用该函数用户的是返回类型，它是一个 `-> str`。除了返回一个字符串之外，这个返回类型还意味着如果输入为空，则不会调用该函数。那么如果你想要它被调用呢？如果你希望它无论如何都被调用，你可以将返回类型更改为`-> OPTIONAL str`。
 One other area where you need to trust the user of the function is seen in the return type, which is just `-> str`. Beyond just returning a string, this return type also means that the function won't be called if the input is empty. So what if you want it to be called anyway? If you want it to be called no matter what, you can change the return type to `-> OPTIONAL str`. [The documentation](https://www.edgedb.com/docs/edgeql/overview#optional) explains it like this: `the function is called normally when the corresponding argument is empty`. And: `A notable example of a function that gets called on empty input is the coalescing operator.`
 
 Interesting! You'll remember the coalescing operator `?` that we first saw in Chapter 12. And when we look at [its signature](https://www.edgedb.com/docs/edgeql/funcops/set/#operator::COALESCE), you can see the `OPTIONAL` in there:
@@ -109,11 +110,11 @@ Some other possible ideas for improvement later on for `can_enter()` are:
 - Move the property `name` from `Place` and `Ship` over to `HasCoffins`. Then the user could just enter a string. The function would then use it to `SELECT` the type and then display its name, giving a result like "Count Dracula can enter London."
 - Require a date in the function so that we can check if the vampire is dead or not first. For example, if we entered a date after Lucy died, it would just display something like `vampire.name ++ ' is already dead on ' ++ <str>.date ++ ' and cannot enter ' ++ city.name`.
 
-## More constraints
+## 更多约束（More constraints）
 
-Let's look at some more constraints. We've seen `exclusive` and `max_value` already, but there are [some others](https://www.edgedb.com/docs/datamodel/constraints) that we can use as well.
+让我们看看更多的约束限制。我们已经见到过了 `exclusive` 和 `max_value`，这里还有 [一些其他的](https://www.edgedb.com/docs/datamodel/constraints) 我们也可以使用。
 
-There is one called `max_len_value` that makes sure that a string doesn't go over a certain length. That could be good for our `PC` type, which we created many chapters ago. We only used it once as a test, because we don't have any players yet. We are still just using the book to populate the database with `NPC`s for our imaginary game. `NPC`s won't need this constraint because their names are already decided, but `max_len_value()` is good for `PC`s to make sure that players don't choose crazy names. We'll change it to look like this:
+有一种叫做 `max_len_value` 的方法可以确保字符串不会超过特定长度。这可能可以用于我们在许多章节之前创建的 `PC` 类型。我们只用过一次作为测试，因为我们还没有任何玩家。我们一直是参考这本小说（《德古拉》）来为我们想象的游戏创建 `NPC` 的数据库。`NPC` 不需要这个约束，因为他们的名字已经确定了，但是 `max_len_value()` 可以用于 `PC` 以确保玩家不会选择疯狂（太长）的名字。因此，我们可以将 `PC` 更改为如下所示：
 
 ```sdl
 type PC extending Person {
@@ -124,9 +125,9 @@ type PC extending Person {
 }
 ```
 
-Then when we try to insert a `PC` with a name that is too long, it will refuse with `ERROR: ConstraintViolationError: name must be no longer than 30 characters.`
+然后当我们尝试插入一个名字太长的 `PC` 时，会被拒绝，并得到错误提示：`ERROR: ConstraintViolationError: name must be no longer than 30 characters`。
 
-Another convenient constraint is called `one_of`, and is sort of like an enum. One place in our schema where we could use it is `property title -> str;` in our `Person` type. You'll remember that we added that in case we wanted to generate names from various parts (first name, last name, title, degree...). This constraint could work to make sure that people don't just make up their own titles:
+另一个方便的约束叫做 `one_of`，有点像枚举。在我们的架构中，我们可以使用到它的一个地方是我们的 `Person` 类型中的 `property title -> str;`。你一定还记得我们添加这个属性，以防我们想从各个部分（名字、姓氏、头衔、学位……）组合生成名称。这种约束可以确保人们不会给自己编造头衔：
 
 ```sdl
 property title -> str {
@@ -134,9 +135,9 @@ property title -> str {
 }
 ```
 
-For us it's probably not worth it to add a `one_of` constraint though, as there are probably too many titles throughout the book (Count, German _Herr_, etc. etc.).
+对我们来说，添加一个 `one_of` 约束可能不太值得，因为整本书中可能有太多的头衔（伯爵、先生，等等）。
 
-Another place you could imagine using a `one_of` is in the months, because the book only goes from May to October of the same year. If we had an object type generating a date then you could have this sort of constraint inside it:
+另一个你可以想到的使用 `one_of` 的地方是“月份”，因为这本小书的时间只涉及了同年的五月到十月。如果我们有一个生成日期的对象类型，那么你可以在其中包含该约束：
 
 ```sdl
 property month -> int64 {
@@ -144,23 +145,24 @@ property month -> int64 {
 }
 ```
 
-But that will depend on how the game works.
+但这将取决于游戏将如何设定。
 
-Now let's learn about perhaps the most interesting constraint in EdgeDB:
+现在让我们学习一下可能是 EdgeDB 中最有趣的约束：
 
-## expression on: the most flexible constraint
+## expression on：最灵活的约束（expression on: the most flexible constraint）
 
+还一种特别灵活的约束，名为 [`expression on`](https://www.edgedb.com/docs/datamodel/constraints#constraint::std::expression)，它允许我们添加任何我们想要的表达式。在 `expression on` 之后（的括号中）添加必须为“真”的表达式。换句话说：“创建这种类型 _只要_（在此处插入表达式）”。
 One particularly flexible constraint is called [`expression on`](https://www.edgedb.com/docs/datamodel/constraints#constraint::std::expression), which lets us add any expression we want. After `expression on` you add the expression (in brackets) that must be true to create the type. In other words: "Create this type _as long as_ (insert expression here)".
 
-Let's say we need a type `Lord` for some reason later on, and all `Lord` types must have the word 'Lord' in their name. We can constrain the type to make sure that this is always the case. For this, we will use a function called [contains()](https://www.edgedb.com/docs/edgeql/funcops/generic#function::std::contains) that looks like this:
+让我们假设稍后会出于某种原因需要一个 `Lord` 类型，并且所有 `Lord` 类型的对象名称中都必须包含“Lord”这个词。我们可以约束该类型以确保始总是如此。为此，我们使用一个名为 [contains()](https://www.edgedb.com/docs/edgeql/funcops/generic#function::std::contains) 的函数，如下所示：
 
 ```sdl
 std::contains(haystack: str, needle: str) -> bool
 ```
 
-It returns `{true}` if the `haystack` (a string) contains the `needle` (usually a shorter string).
+如果 `haystack`（一个字符串）包含 `needle`（通常是一个较短的字符串），它返回 `{true}`。
 
-We can write the constraint with `expression on` and `contains()` like this:
+我们可以像下面这样用 `expression on` 和 `contains()` 来编写这个约束：
 
 ```sdl
 type Lord extending Person {
@@ -170,9 +172,9 @@ type Lord extending Person {
 }
 ```
 
-`__subject__` there refers to the type itself.
+这里的 `__subject__` 是指类型本身。
 
-Now when we try to insert a `Lord` without it, it won't work:
+现在，当我们尝试插入一个名字中没有“Lord”的 `Lord` 时，将无法成功：
 
 ```edgeql
 INSERT Lord {
@@ -181,9 +183,9 @@ INSERT Lord {
 };
 ```
 
-But if the `name` is 'Lord Billy' (or 'Lord' anything), it will work.
+但是如果 `name` 是“Lord Billy”（或“Lord” + 任何东西），它就会正常工作。
 
-While we're at it, let's practice doing a `SELECT` and `INSERT` at the same time so we see the output of our `INSERT` right away. We'll change `Billy` to `Lord Billy` and say that Lord Billy (considering his great wealth) has visited every place in our database.
+在此期间，让我们练习一下 `SELECT` 和 `INSERT` 的同时执行，以便我们立即看到 `INSERT` 的结果。我们把 `Billy` 改为 `Lord Billy`，且比利勋爵（Lord Billy）因为有很多财富，到访过我们数据库中的所有地方。
 
 ```edgeql
 SELECT (
@@ -199,7 +201,7 @@ SELECT (
 };
 ```
 
-Now that `.name` contains the substring `Lord`, it works like a charm:
+`.name` 包含了子字符串 `Lord`，因此它能正常工作：
 
 ```
 {
@@ -219,7 +221,7 @@ Now that `.name` contains the substring `Lord`, it works like a charm:
 }
 ```
 
-## Setting your own error messages
+## 自定义错误信息（Setting your own error messages）
 
 Since `expression on` is so flexible, you can use it in almost any way you can imagine. But it's not certain that the user will know about this constraint - there's no message informing the user of this. Meanwhile, the automatically generated error message we have right now is not helping the user at all:
 
