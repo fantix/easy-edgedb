@@ -151,10 +151,9 @@ property month -> int64 {
 
 ## expression on：最灵活的约束（expression on: the most flexible constraint）
 
-还一种特别灵活的约束，名为 [`expression on`](https://www.edgedb.com/docs/datamodel/constraints#constraint::std::expression)，它允许我们添加任何我们想要的表达式。在 `expression on` 之后（的括号中）添加必须为“真”的表达式。换句话说：“创建这种类型 _只要_（在此处插入表达式）”。
-One particularly flexible constraint is called [`expression on`](https://www.edgedb.com/docs/datamodel/constraints#constraint::std::expression), which lets us add any expression we want. After `expression on` you add the expression (in brackets) that must be true to create the type. In other words: "Create this type _as long as_ (insert expression here)".
+还一种特别灵活的约束，叫做 [`expression on`](https://www.edgedb.com/docs/datamodel/constraints#constraint::std::expression)，它允许我们添加任何我们想要的表达式（约束）。在 `expression on` 之后（的小括号中）添加必须为“真”的表达式即可。
 
-让我们假设稍后会出于某种原因需要一个 `Lord` 类型，并且所有 `Lord` 类型的对象名称中都必须包含“Lord”这个词。我们可以约束该类型以确保始总是如此。为此，我们使用一个名为 [contains()](https://www.edgedb.com/docs/edgeql/funcops/generic#function::std::contains) 的函数，如下所示：
+假设我们稍后会出于某种原因需要一个 `Lord` 类型，并且所有 `Lord` 类型的对象名称中都必须包含“Lord”这个词。我们可以约束该类型以确保始总是如此。为此，我们使用一个名为 [contains()](https://www.edgedb.com/docs/edgeql/funcops/generic#function::std::contains) 的函数，如下所示：
 
 ```sdl
 std::contains(haystack: str, needle: str) -> bool
@@ -223,17 +222,17 @@ SELECT (
 
 ## 自定义错误信息（Setting your own error messages）
 
-Since `expression on` is so flexible, you can use it in almost any way you can imagine. But it's not certain that the user will know about this constraint - there's no message informing the user of this. Meanwhile, the automatically generated error message we have right now is not helping the user at all:
+由于 `expression on` 非常的灵活，因此你可以用任何你能想到的方式来使用它。但没法确定用户可以了解到这个约束的具体内容 —— 即没有对应的消息通知。同时，我们现在得到的系统自动生成的错误信息（如下所示）并无法带来什么有用的帮助：
 
 `ERROR: ConstraintViolationError: invalid Lord`
 
-So there's no way to tell that the problem is that `name` needs `'Lord'` inside it. Fortunately, constraints allow you to set your own error message just by using `errmessage`, like this: `errmessage := "All lords need 'Lord' in their name."`
+所以没有办法告知这里的问题是 `name` 里面需要包含 `Lord`。幸运的是，约束允许你通过使用 `errmessage` 来设定自己的错误提示信息，比如：`errmessage := "All lords need 'Lord' in their name."`
 
-Now the error becomes:
+现在，错误提示变成了：
 
 `ERROR: ConstraintViolationError: All lords need 'Lord' in their name.`
 
-Here's the `Lord` type now:
+下面是 `Lord` 类型现在的样子：
 
 ```sdl
 type Lord extending Person {
@@ -245,11 +244,11 @@ type Lord extending Person {
 
 ## Links in two directions
 
-Back in Chapter 6 we removed `link master` from `MinorVampire`, because `Vampire` already has `link slaves` to the `MinorVampire` type. One reason was complexity, and the other was because `DELETE` becomes impossible because they both depend on each other. But now that we know how to use reverse links, we can put `master` back in `MinorVampire` if we want.
+回到第 6 章，我们从 `MinorVampire` 中删除了 `link master`，因为 `Vampire` 已经有了 `link slave` 到 `MinorVampire` 类型。一个原因是复杂性，另一个原因是 `DELETE` 变得不可行，因为它们彼此依赖。但现在我们知道如何使用反向链接了，如果我们想，我们随时可以把 `master` 放回 `MinorVampire`。
 
-(Note: we won't actually change the `MinorVampire` type here because we already know how to access `Vampire` with a reverse lookup, but this is how to do it)
+（注意：实际上，我们不会在这里改变 `MinorVampire` 类型，因为我们已经知道如何通过反向查找访问 `Vampire`，这里是为了说明如何做到的）
 
-First, here is the `MinorVampire` type at present:
+首先，这是目前的 `MinorVampire` 类型：
 
 ```sdl
 type MinorVampire extending Person {
@@ -257,6 +256,7 @@ type MinorVampire extending Person {
 }
 ```
 
+要再次添加 `master` 链接，最好的方法是从一个名为 `master_name` 的属性开始，它只是一个字符串。然后我们可以在反向搜索中使用它链接到名字匹配的 `Vampire`。它是一个单链接（single link），所以我们加上 `LIMIT 1`（否则将无法工作）。下面是 `MinorVampire` 类型现在的样子：
 To add the `master` link again, the best way is to start with a property called `master_name` that is just a string. Then we can use this in a reverse search to link to the `Vampire` type if the name matches. It's a single link, so we'll add `LIMIT 1` (it won't work otherwise). Here is what the type would look like now:
 
 ```sdl
@@ -267,7 +267,7 @@ type MinorVampire extending Person {
 };
 ```
 
-Now let's test it out. We'll make a vampire named Kain, who has two `MinorVampire` slaves named Billy and Bob.
+现在让我们来测试一下。我们来创建一个名为“Kain”的吸血鬼，他有两个 `MinorVampire` 奴隶，分别叫做“Billy”和“Bob”。
 
 ```edgeql
 INSERT Vampire {
@@ -285,6 +285,7 @@ INSERT Vampire {
 };
 ```
 
+现在
 Now if the `MinorVampire` type works as it should, we should be able to see Kain via `link master` inside `MinorVampire` and we won't have to do a reverse lookup. Let's check:
 
 ```edgeql
@@ -314,7 +315,7 @@ And the result:
 }
 ```
 
-Beautiful! All the information is right there.
+完美！所有的信息都在这里了。
 
 [点击这里查看第 15 章相关代码](code.md)
 
