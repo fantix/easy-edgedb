@@ -285,7 +285,6 @@ INSERT Vampire {
 };
 ```
 
-现在
 Now if the `MinorVampire` type works as it should, we should be able to see Kain via `link master` inside `MinorVampire` and we won't have to do a reverse lookup. Let's check:
 
 ```edgeql
