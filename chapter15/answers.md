@@ -1,8 +1,8 @@
 # Chapter 15 Questions and Answers
 
-#### 1. How would you create a type called Horse with a `required property name -> str` that can only be 'Horse'?
+#### 1. 如何创建一个名为“Horse”的类型，且它的属性 `required property name -> str` 只能是“Horse”？
 
-This is easy with `expression on` and using `__subject__.name` to refer to the name of the object we are inserting:
+使用 `expression on` 则很容易，并用 `__subject__.name` 来引用我们要插入的对象的名称：
 
 ```sdl
 type Horse {
@@ -11,9 +11,9 @@ type Horse {
 };
 ```
 
-#### 2. How would you let the user know that it needs to be called 'Horse'?
+#### 2. 如何让用户们能了解到 `name` 需要被叫做“Horse”？如何提示他们？
 
-Just put it inside the `constraint` like this:
+像下面这样把提示放在 `constraint` 中：
 
 ```sdl
 type Horse {
@@ -24,9 +24,9 @@ type Horse {
 };
 ```
 
-#### 3. How would you make sure that `name` for type `PC` is always between 5 and 30 characters in length?
+#### 3. 如何确保 `NPC` 类型的 `name` 长度始终在 5 到 30 个字符之间？
 
-First of all, here is the type right now:
+首先，这里是 `NPC` 类型的定义：
 
 ```sdl
 type NPC extending Person {
@@ -39,7 +39,7 @@ type NPC extending Person {
 }
 ```
 
-Since `name` comes from Person, we can overload it with this constraint. With `expression on` and `len` we can make sure that it's always greater than 4 and less than 31:
+由于 `name` 来自 `Person`，我们可以重载它并进行约束。使用 `expression on` 和 `len`，我们可以确保它始终大于 4 且小于 31：
 
 ```sdl
 type NPC extending Person {
@@ -55,11 +55,11 @@ type NPC extending Person {
 }
 ```
 
-Another option is just to use the `max_len_value()` and `min_len_value()` constraints that we learned in this chapter.
+另一种选择是使用我们在本章中学到的约束：`max_len_value()` 和 `min_len_value()`。
 
-#### 4. How would you make a function called `display_coffins` that pulls up all the `HasCoffins` types with more than 0 coffins?
+#### 4. 如何创建一个名为 `display_coffins` 的函数来显示出所有棺材数量大于 0 的 `HasCoffins` 类型的对象？
 
-Here's one way to do it:
+方法如下所示：
 
 ```sdl
 function display_coffins() -> SET OF HasCoffins
@@ -68,7 +68,7 @@ function display_coffins() -> SET OF HasCoffins
   );
 ```
 
-Note though that `HasCoffins` doesn't have properties like `name` so queries using it would look something like this:
+请注意，`HasCoffins` 没有像 `name` 这样的属性，所以使用它的查询看起来应该像这样：
 
 ```edgeql
 SELECT display_coffins() {
@@ -77,6 +77,6 @@ SELECT display_coffins() {
 };
 ```
 
-#### 5. How would you make it without touching the schema?
+#### 5. 如何在不触及架构（schema）的情况下创建上一题中的函数？
 
-Easy, just put `CREATE` in front of it!
+很简单，只需在它的最前面加上 `CREATE`！
