@@ -2,13 +2,13 @@
 tags: Aliases, Named Tuples
 ---
 
-# Chapter 17 - Poor Renfield. Poor Mina.
+# 第十七章 - 可怜的伦菲尔德，可怜的米娜
 
-> Last chapter Dr. Seward and Dr. Van Helsing wanted to let Renfield out, but couldn't trust him. But it turns out that Renfield was telling the truth! That night, Dracula found out that they were destroying his coffins and decided to attack Mina. He succeeded, and now Mina is slowly turning into a vampire. She is still human, but has a connection with Dracula now.
+> 上一章里，苏厄德医生（Dr. Seward）和范海辛医生（Dr. Van Helsing）想放伦菲尔德（Renfield）出去，但他们无法信任他。但事实证明，伦菲尔德说的是实话！那天晚上，德古拉（Dracula）发现他们正在摧毁他的棺材，于是决定袭击米娜（Mina）。他成功了，现在米娜正在慢慢变成一只吸血鬼。虽然她仍然是人类，但她现在与德古拉有了联系。
 
-> The group finds Renfield in a pool of blood, dying. Renfield is sorry and tells them the truth. He was in communication with Dracula and thought that he would help him become a vampire too, so he let him in the house. But once inside Dracula ignored him, and headed for Mina's room. Renfield attacked Dracula to try to stop him from hurting her, but Dracula was much stronger and won.
+> 大家发现伦菲尔德躺在血泊中，奄奄一息。伦菲尔德很抱歉，告诉了他们真相。他和德古拉有联系，以为德古拉也会帮助他变成吸血鬼，所以他让德古拉进了屋子。但是一进屋，德古拉就没有理他，而是径直走向了米娜的房间。伦菲尔德攻击德古拉试图阻止他伤害米娜，但德古拉太强壮了，打不过。
 
-> Mina does not give up though, and has a good idea. If she is now connected to Dracula, what happens if Van Helsing uses hypnotism on her? Could that work? He takes out his pocket watch and tells her: "Please concentrate on this watch. You are beginning to feel sleepy...what do you feel? Think about the man who attacked you, try to feel where he is..."
+> 不过，米娜并没有放弃，她有一个好主意。如果她现在与德古拉有联系，如果范海辛（Van Helsing）对她使用催眠术会发生什么？那能行吗？范海辛拿出怀表对米娜说：“请专心看这只表。你正在感到困倦……你有什么感觉？想想那个袭击你的人，试着去感受他在哪里……” 
 
 ## Named tuples
 
