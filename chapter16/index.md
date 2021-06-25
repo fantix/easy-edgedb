@@ -2,15 +2,15 @@
 tags: Indexing, String Functions
 ---
 
-# Chapter 16 - Is Renfield telling the truth?
+# 第十六章 - 雷菲尔德说的是实话吗？
 
-> Arthur Holmwood's father has died and now Arthur is the head of the house. His new title is Lord Godalming, and he has a lot of money. With this money he helps the team to find the houses where Dracula has hidden his boxes.
+> 亚瑟·霍姆伍德（Arthur Holmwood）的父亲去世了，现在亚瑟是一家之主。他的新头衔是戈达尔明勋爵（Lord Godalming），他有很多钱。用这笔钱，他可以帮助大家到出德古拉（Dracula）藏匿那些箱子的房子。
 
-> Meanwhile, Van Helsing is curious and asks John Seward if he can meet Renfield. He is surprised to see that Renfield is very educated and well-spoken. Renfield talks about Van Helsing's research, politics, history, and so on - he doesn't seem crazy at all! But later, Renfield doesn't want to talk and just calls him an idiot. Very confusing. And one night, Renfield was very serious and asks them to let him leave. He says: “Don’t you know that I am sane and earnest...a sane man fighting for his soul? Oh, hear me! hear me! Let me go! let me go! let me go!” They want to believe him, but can't trust him. Finally Renfield stops and calmly says: “Remember, later on, that I did what I could to convince you tonight.”
+> 与此同时，范海辛（Van Helsing）很好奇，问约翰·西沃德（John Seward）是否可以见见伦菲尔德（Renfield）。他很惊讶地看到伦菲尔德受过很好的教育，而且口才很好。伦菲尔德谈论着范海辛的研究、政治、历史等 —— 他看起来一点都不疯狂！但后来，伦菲尔德又不想说话了，只是骂他是个白痴。令人很困惑。一天晚上，伦菲尔德非常认真地要求他们让他离开。他说：“你们难道不知道我是理智而认真的吗？……一个为灵魂而战的正常人？听我的，听我的，让我走！让我走！”。他们想相信他，但又无法相信他。最后，伦菲尔德停了下来并平静地说：“记住，我今晚已经尽力说服你们了。” 
 
-## `index on` for quicker lookups
+## `index on` 用于更快的查询（for quicker lookups）
 
-We're getting closer to the end of the book and there is a lot of data that we haven't entered yet. There is also a lot of data from the book that might be useful but we're not ready to organize yet. Fortunately, the original book Dracula is all organized into letters, diaries, etc. that begin with the date and sometimes the time. They all start out in this sort of way:
+我们快到书的结尾了，但还有很多数据尚未输入。书中还有很多可能有用的数据，但我们还没有准备好进行整理。幸运的是，原版小说《德古拉》是以书信、日记等形式组织的，均以日期或时间开头。它们都是以下面这种方式开始的：
 
 ```
 Dr. Seward’s Diary.
@@ -24,7 +24,7 @@ Mina Murray’s Journal.
 8 August. — Lucy was very restless all night, and I, too, could not sleep...
 ```
 
-This is very convenient for us. With this we can make a type that holds a date and a string from the book for us to search through later. Let's call it `BookExcerpt` (excerpt = part of a book).
+这对我们来说非常方便。有了这个，我们可以创建一个类型来保存日期和书中的字符串，供我们以后搜索。我们称之为 `BookExcerpt`（excerpt = 摘录 = 一本书的一部分）。
 
 ```sdl
 type BookExcerpt {
@@ -35,25 +35,25 @@ type BookExcerpt {
 }
 ```
 
-The [`index on (.date)`](https://www.edgedb.com/docs/datamodel/indexes#indexes) part is new, and means to create an index to make future queries faster. Lookups are faster with `index on` because now the database doesn't need to scan the whole set of objects in sequence to find objects that match. Indexing makes a lookup by an exact match faster compared to always scanning everything.
+[`index on (.date)`](https://www.edgedb.com/docs/datamodel/indexes#indexes) 部分是之前没见过的，它意味着创建一个索引以加快未来的查询速度。使用 `index on` 查找更快，是因为现在数据库不需要按顺序扫描整个对象集来找到匹配的对象。与总是扫描所有内容相比，索引使精确匹配查找速度更快。
 
-We could do this for certain other types too - it might be good for types like `Place` and `Person`.
+我们也可以对某些其他类型执行此操作 —— 它可能适用于诸如 `Place` 和 `Person` 之类的类型。
 
-Note: `index` is good in limited quantities, but you don't want to index everything. Here is why:
+注意：`index` 在数量有限的情况下是表现良好的，且你不会希望索引所有的东西，因为：
 
-- It makes the queries faster, but increases the database size.
-- This may make `insert`s and `update`s slower if you have too many.
+- 它使查询更快了，但增加了数据库大小。
+- 如果你有太多，这可能会使 `INSERT` 和 `UPDATE` 变慢。
 
-This is probably not surprising, because you can see that `index` is a choice that the user needs to make. If using `index` was the best idea in every case, then EdgeDB would just do it automatically.
+这可能并不奇怪，因为你可以看到 `index` 是用户需要做出的选择。如果在每个情况下使用 `index` 都是最好的主意，那么 EdgeDB 会自动执行。
 
-Finally, here are two times when you don't need to create an `index`:
+最后，这里有两个不需要创建 `index` 的情况：
 
-- on links,
-- on exclusive constraints for a property.
+- 在链接上（on links），
+- 在有排他性约束的属性上。
 
-Indexes are automatically created in these two cases so you don't need to use indexes for them.
+在这两种情况下索引都会被自动创建，因此你无需为它们使用索引。
 
-So let's insert two book excerpts. The strings in these entries are very long (pages long, sometimes) so we will only show the beginning and the end here:
+那么，让我们来插入两条摘录。这些条目中的字符串很长（有时会长达几页），因此我们将在此处仅显示开头和结尾：
 
 ```edgeql
 INSERT BookExcerpt {
@@ -71,7 +71,7 @@ INSERT BookExcerpt {
 };
 ```
 
-Then later on we could do this sort of query to get all the entries in order and displayed as JSON.
+稍后我们可以执行查询，按时间顺序获取所有条目并显示为 JSON。
 
 ```edgeql
 SELECT <json>(
@@ -85,7 +85,7 @@ SELECT <json>(
 );
 ```
 
-Here's the JSON output with just a small part of the excerpts:
+这是仅包含一小部分摘录的 JSON 输出：
 
 ```
 {
@@ -94,7 +94,7 @@ Here's the JSON output with just a small part of the excerpts:
 }
 ```
 
-After this, we can add a link to our `Event` type to join it to our new `BookExcerpt` type. `Event` now looks like this:
+然后，我们可以添加一个链接到我们的 `Event` 类型，并连到我们新的类型 —— `BookExcerpt`。于是，`Event` 现在看起来是这样：
 
 ```sdl
 type Event {
@@ -110,28 +110,32 @@ type Event {
 }
 ```
 
-You can see that `description` is a short string that we write, while `excerpt` links to the longer pieces of text that come directly from the book.
+你可以看到 `description` 是我们写的一个短字符串，而 `excerpt` 则链接到直接来自原著中的较长文本。
 
-## More functions for strings
+## 更多字符串函数（More functions for strings）
 
-The [functions for strings](https://www.edgedb.com/docs/edgeql/funcops/string) can be particularly useful when doing queries on our `BookExcerpt` type (or `BookExcerpt` via `Event`). One is called [`str_lower()`](https://www.edgedb.com/docs/edgeql/funcops/string#function::std::str_lower) and makes strings lowercase:
+[字符串函数](https://www.edgedb.com/docs/edgeql/funcops/string) 在对我们的 `BookExcerpt` 类型（或通过 `Event` 的 `BookExcerpt`）进行查询时特别有用。一个是函数 [`str_lower()`](https://www.edgedb.com/docs/edgeql/funcops/string#function::std::str_lower) ，它可以使字符串都变为小写：
 
 ```edgeql-repl
 edgedb> SELECT str_lower('RENFIELD WAS HERE');
 {'renfield was here'}
 ```
 
-Here it is in a longer query:
+下面是一个较长的查询：
 
 ```edgeql
-select BookExcerpt {
+SELECT BookExcerpt {
   excerpt,
   length := (<str>(SELECT len(.excerpt)) ++ ' characters'),
   the_date := (SELECT (<str>.date)[0:10]),
 } FILTER contains(str_lower(.excerpt), 'mina');
 ```
 
-It uses `len()` which is then cast to a string, and `str_lower()` to compare against `.excerpt()` by making it lowercase first. It also slices the `cal::local_datetime` into a string so it can just print indexes 0 to 10. Here is the output:
+- 对 `.excerpt` 使用了 `len()`，然后将其转换为字符串；
+- 使用 `str_lower()` 将 `.excerpt` 转换为全部小写，并与 `mina` 进行比较；
+- 将 `cal::local_datetime` 切片成一个字符串，使其只打印索引 0 到 10。
+
+这是输出结果：
 
 ```
 {
@@ -143,7 +147,7 @@ It uses `len()` which is then cast to a string, and `str_lower()` to compare aga
 }
 ```
 
-Another way to make `the_date` is with the [to_str](https://www.edgedb.com/docs/edgeql/funcops/string#function::std::to_str) method, which (as you can probably guess) will turn it into a string:
+制作 `the_date` 的另一种方法是使用 [to_str](https://www.edgedb.com/docs/edgeql/funcops/string#function::std::to_str) 函数，它（你可能猜到了）会将其变成一个字符串：
 
 ```edgeql
 select BookExcerpt {
@@ -153,13 +157,13 @@ select BookExcerpt {
 } FILTER contains(str_lower(.excerpt), 'mina');
 ```
 
-Some other functions for strings are:
+字符串的其他一些函数有：
 
-- `find()` This gives the index of the first match it finds, and returns `-1` if it can't find anything:
+- `find()`：给出找到的第一个匹配项的索引，如果找不到任何匹配内容，则返回 `-1`：
 
-`SELECT find(BookExcerpt.excerpt, 'sofa');` produces `{-1, 151}`. That's because first `BookExcerpt.excerpt` doesn't have the word `sofa`, while the second has it at index 151.
+`SELECT find(BookExcerpt.excerpt, 'sofa');` 输出 `{-1, 151}`。这是因为第一个 `BookExcerpt.excerpt` 中没有单词 `sofa`，而第二个里在索引 151 处有 `sofa`。
 
-- `str_split()` lets you make an array from a string, split however you like. Most common is to split by `' '` to separate words:
+- `str_split()`：可以将字符串以你想要的方式进行拆分并转变为数组。最常见的是用 `' '` 分割来分隔单词：
 
 ```edgeql-repl
 edgedb> SELECT str_split('Oh, hear me! hear me! Let me go! let me go! let me go!', ' ');
@@ -184,7 +188,7 @@ edgedb> SELECT str_split('Oh, hear me! hear me! Let me go! let me go! let me go!
 }
 ```
 
-But this works too:
+下面的例子也同样工作（以 `'n'` 进行分割）：
 
 ```edgeql
 SELECT MinorVampire {
@@ -192,7 +196,7 @@ SELECT MinorVampire {
 };
 ```
 
-Now the `n`s are all gone:
+现在 `n` 都不见了：
 
 ```
 {
@@ -203,7 +207,7 @@ Now the `n`s are all gone:
 }
 ```
 
-You can also split by `\n` to split by new line. You can't see it but from the point of view of the computer every new line has a `\n` in it. So this:
+你也可以以 `\n` 为分割按新行进行拆分。虽然你看不到它（`\n`），但从计算机的角度来看，每条新行中都有一个 `\n`。因此：
 
 ```edgeql
 SELECT str_split('Oh, hear me!
@@ -219,27 +223,28 @@ will split it by line and give the following array:
 {['Oh, hear me! ', 'hear me! ', 'Let me go! ', 'let me go! ', 'let me go!']}
 ```
 
-- Two functions called `re_match()` (for the first match) and `re_match_all()` (for all matches) if you know how to use [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) (regexes) and want to use those. This could be useful because the book Dracula was written over 100 years ago and has different spelling sometimes. The word `tonight` for example is always written with the older `to-night` spelling in Dracula. We can use these functions to take care of that:
+- `re_match()`（用于第一次匹配）和 `re_match_all()`（用于所有匹配）：如果你了解如何使用 [正则表达式](https://en.wikipedia.org/wiki/Regular_expression)，并想使用它们。这俩函数可能很有用，因为这本小说写于 100 多年前，有些拼写已经不大一样了。例如，`tonight` 这个词在《德古拉》中总是使用较旧的 `to-night` 拼写。为了处理这样的问题，我们就可以使用这两个函数：
 
 ```edgeql-repl
 edgedb> SELECT re_match_all('[Tt]o-?night', 'Dracula is an old book, so the word tonight is written to-night. Tonight we know how to write both tonight and to-night.');
 {['tonight'], ['to-night'], ['Tonight'], ['tonight'], ['to-night']}
 ```
 
-The function signature is `std::re_match(pattern: str, string: str) -> array<str>`, and as you can see the pattern comes first, then the string. The pattern `[Tt]o-?night` means words that:
+这个函数签名是`std::re_match(pattern: str, string: str) -> array<str>`，正如你所看到的那样，第一个参数是模式（pattern），然后是一个字符串。模式 `[Tt]o-?night` 的意思是：
 
-- start with a `T` or a `t`,
-- then have an `o`,
-- maybe have an `-` in between,
-- and end in `night`,
+- 以 `T` 或 `t` 开头，
+- 然后有一个 `o`，
+- 也许中间有一个 `-`，
+- 并以 `night` 结束，
 
-so it gives: `{['tonight'], ['to-night']}`.
+所以它给出：`{['tonight'], ['to-night'], ['Tonight'], ['tonight'], ['to-night']}`。
 
-And to match anything, you can use the wildcard character: `.`
+如果想匹配任何内容，你可以使用通配符：`.`。
 
-## Two more notes on `index on`
+## 更多关于 `index on`（Two more notes on `index on`）
 
-By the way, `index on` can also be used on expressions that you make yourself. This is especially useful now that we know all of these string functions. For example, if we always need to query a `City`'s name along with its population, we could index in this way:
+顺便说一下，`index on` 也可以用在你自己制作的表达式上。在我们知道所有这些字符串函数后，这尤其有用。例如，如果我们总是需要查询一个 `City` 的名称及其人口，我们可以通过下面这种方式进行索引：
+
 
 ```sdl
 type City extending Place {
@@ -249,7 +254,7 @@ type City extending Place {
 }
 ```
 
-Also don't forget that you can add add an annotation to this as well. `(.name ++ ': ' + <str>.population)` might be a good case for an annotation if you think readers of the code might not know what it's for:
+另外不要忘记，你也可以为此添加注释。如果你认为代码的读者可能不知道它的用途，`(.name ++ ': ' + <str>.population)` 则可能是一个很好的注释案例：
 
 ```
 type City extending Place {
@@ -261,34 +266,34 @@ type City extending Place {
 }
 ```
 
-`get_city_names` isn't a real function; we're just pretending that it's used somewhere in the game and is important to remember.
+其中 `get_city_names` 不是一个真正的函数；我们只是假装它在游戏中的某个地方使用过并且重要到应该记住。
 
-[Here is all our code so far up to Chapter 16.](code.md)
+[→ 点击这里查看第 16 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 小测验
 
-1. How would you split all the `Person` names into two strings if they have two words, and ignore any that don't have exactly two words?
+1. 如何将所有名称是由两个单词构成的 `Person` 对象的名称拆分成两个字符串，并忽略掉那些不完全是两个词的？
 
-2. How would you display all the `Person` names and where the string 'ma' is in their name?
+2. 如何显示所有名称里有“ma”的 `Person` 对象的名称？
 
-   Hint: this uses the function `find()`.
+   提示：使用函数 `find()`。
 
-3. How would you index on the `pen_name` property for type Person?
+3. 如何对 `Person` 类型的 `pen_name` 属性进行索引？
 
-   Hint: try using `describe type Person as SDL` to take a look at it the `pen_name` property again.
+   提示：尝试使用 `describe type Person as SDL` 查看一下它的 `pen_name` 属性。
 
-4. How would you display the name of every `Person` in uppercase followed by a space and then the same name in lowercase?
+4. 如何对每个 `Person` 的名称先以大写字母显示，再跟一个空格及其名称的小写形式？
 
-   Hint: the [str_repeat()](https://www.edgedb.com/docs/edgeql/funcops/string#function::std::str_repeat) function could help (though there is more than one way to do it)
+   提示：[str_repeat()](https://www.edgedb.com/docs/edgeql/funcops/string#function::std::str_repeat) 函数可以提供帮助（尽管还有很多其他方法）
 
-5. How would you use `re_match_all()` to display all the `Person.name`s with `Crewman` in the name? e.g. Crewman 1, Crewman 2, etc.
+5. 如何使用 `re_match_all()` 来显示名称中带有 `Crewman` 的所有 `Person.name`？例如：Crewman 1，Crewman 2，等等。
 
-   Hint: [Here are some basic concepts](https://en.wikipedia.org/w/index.php?title=Regular_expression&oldid=988356211#Basic_concepts) if you want a quick read on regular expressions.
+   提示：如果你想快速了解正则表达式，[这里有一些基本概念](https://en.wikipedia.org/w/index.php?title=Regular_expression&oldid=988356211#Basic_concepts) 供你阅读。
 
-[See the answers here.](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _The truth about Renfield._
+__接下来：__ _关于伦菲尔德的真相。_
