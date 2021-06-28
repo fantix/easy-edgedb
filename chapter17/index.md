@@ -182,7 +182,6 @@ SELECT Ship {
 ## 别名：创建子类型（Aliases: creating subtypes when you need them）
 
 我们在本书中大量使用了抽象类型。你会注意到抽象类型本身通常是由非常普遍的概念构成的：`Person`，`HasNameAndCoffins` 等等。在现实生活中的数据库中，你可能会以 `HasEmail`、`HasID` 等形式看到它们，它们被扩展为子类型。别名也可以创建子类型，它们使用 `:=` 而不是 `extending` 且从完整类型中提取。
-We've used abstract types a lot in this book. You'll notice that abstract types by themselves are generally made from very general concepts: `Person`, `HasNameAndCoffins`, etc. In databases in real life you'll probably see them in the forms `HasEmail`, `HasID` and so on, which get extended to make subtypes. Aliases also make subtypes, except they use `:=` instead of `extending` and draw from full types.
 
 让我们也为我们的架构（schema）创建一个别名。再来看一下德米特号（The Demeter），船从保加利亚（Bulgaria）的瓦尔纳（Varna）出发，抵达伦敦（London）。让我们想象在我们的游戏中，我们已经将瓦尔纳建成了一个供角色们探索的大港口，并且正在改变架构以反映这一点。现在我们的 `Crewman` 类型看起来像这样：
 
