@@ -10,9 +10,9 @@ tags: Aliases, Named Tuples
 
 > 不过，米娜并没有放弃，她有一个好主意。如果她现在与德古拉有联系，如果范海辛（Van Helsing）对她使用催眠术会发生什么？那能行吗？范海辛拿出怀表对米娜说：“请专心看这只表。你正在感到困倦……你有什么感觉？想想那个袭击你的人，试着去感受他在哪里……” 
 
-## Named tuples
+## 命名元组（Named tuples）
 
-Remember the function `fight()` that we made? It was overloaded to take either `(Person, Person)` or `(str, Person)` as input. Let's give it Dracula and Renfield:
+还记得我们创建的 `fight()` 函数吗？它被重载后可以接受 `(Person, Person)` 或 `(str, Person)` 作为输入。现在让我们将德古拉（Dracula）和伦菲尔德（Renfield）输入进去：
 
 ```edgeql
 WITH
@@ -21,9 +21,9 @@ WITH
 SELECT fight(dracula, renfield);
 ```
 
-The output is of course `{'Count Dracula wins!'}`. No surprise there.
+毫无疑问，结果当然会是 `{'Count Dracula wins!'}`。
 
-One other way to do the same query is with a single tuple. Then we can give it to the function with `.0` for Dracula and `.1` for Renfield:
+执行同样查询的另一种方法是使用单个元组。然后我们可以将他们输入函数，其中德古拉为 `.0`，伦菲尔德为 `.1`。
 
 ```edgeql
 WITH fighters := (
@@ -33,7 +33,7 @@ WITH fighters := (
 SELECT fight(fighters.0, fighters.1);
 ```
 
-That's not bad, but there is a way to make it clearer: we can give names to the items in the tuple instead of using `.0` and `.1`. It looks like a regular computable, using `:=`:
+看起来还不错，但有一种方法可以使它更清楚：我们可以为元组中的项目命名，来替代使用 `.0` 和 `.1`。它看起来像一个普通的可计算公式，使用`:=`：
 
 ```edgeql
 WITH fighters := (
@@ -43,7 +43,7 @@ WITH fighters := (
 SELECT fight(fighters.dracula, fighters.renfield);
 ```
 
-Here's one more example of a named tuple:
+下面是命名元组的另一个示例：
 
 ```edgeql
 WITH minor_vampires := (
@@ -53,13 +53,13 @@ WITH minor_vampires := (
 SELECT (minor_vampires.women.name, minor_vampires.lucy.name);
 ```
 
-The output is:
+输出是：
 
 ```
 {('Woman 1', 'Lucy Westenra'), ('Woman 2', 'Lucy Westenra'), ('Woman 3', 'Lucy Westenra')}
 ```
 
-Renfield is no longer alive, so we need to use `UPDATE` to give him a `last_appearance`. Let's do a fancy one again where we `SELECT` the update we just made and display that information:
+伦菲尔德已经不在人世了，所以我们需要使用 `UPDATE` 给他一个 `last_appearance`。让我们再做一个有趣的 —— `SELECT` 我们刚刚更新的并显示其信息：
 
 ```edgeql
 SELECT ( # Put the whole update inside
@@ -74,27 +74,27 @@ SELECT ( # Put the whole update inside
 };
 ```
 
-This gives us: `{default::NPC {name: 'Renfield', last_appearance: <cal::local_date>'1887-10-03'}}`
+结果是：`{default::NPC {name: 'Renfield', last_appearance: <cal::local_date>'1887-10-03'}}`
 
-One last thing: naming an item in a tuple doesn't have any effect on the items inside. So this:
+最后要提的是：在元组中命名一个项目对项目本身没有任何影响。所以：
 
 ```edgeql
 SELECT ('Lucy Westenra', 'Renfield') = (character1 := 'Lucy Westenra', character2 := 'Renfield');
 ```
 
-will return `{true}`.
+返回 `{true}`。
 
-## Putting abstract types together
+## 将抽象类型放在一起（Putting abstract types together）
 
-Wherever there are vampires, there are vampire hunters. Sometimes they will destroy their coffins, and other times vampires will build more. So it would be cool to create a quick function called `change_coffins()` to change the number of coffins in a place. With this function we could write something like `change_coffins('London', -13)` to reduce it by 13, for example. But the problem right now is this:
+哪里有吸血鬼，哪里就有吸血鬼猎人。有时猎人会摧毁棺材，有时吸血鬼会建造更多。因此，是时候创建一个函数 `change_coffins()` 用来快速更改某个地方的棺材数量了。例如，使用此函数，我们可以编写类似 `change_coffins('London', -13)` 之类的来将伦敦的棺材数减少 13。但现在的问题是：
 
-- the `HasCoffins` type is an abstract type, with one property: `coffins`
-- places that can have coffins are `Place` and all the types from it, plus `Ship`,
-- the best way to filter is by `.name`, but `HasCoffins` doesn't have this property.
+- `HasCoffins` 类型是一个抽象类型，具有一个属性：`coffins`，
+- 可以放置棺材的地方是 `Place` 及其扩展出的所有类型，再加上 `Ship`，
+- 最好的过滤方式是通过 `.name`，但是 `HasCoffins` 没有这个属性。
 
-So maybe we can turn this type into something else called `HasNameAndCoffins`, and put the `name` and `coffins` properties inside there. This won't be a problem because every place needs a name and a number of coffins in our game. Remember, 0 coffins means that vampires can't stay in a place for long: just quick trips in at night before the sun rises.
+所以也许我们可以把这个类型转换成一个叫做 `HasNameAndCoffins` 的类型，然后把 `name` 和 `coffins` 两个属性放在里面。这没有什么问题，因为在我们的游戏中每个地方都需要一个名字和一些可能存在的棺材。请记住，0 棺材意味着吸血鬼不能在一个地方呆很长时间：只能在夜间、太阳升起前快速行动。
 
-Here is the type with its new property. We'll give it two constraints: `exclusive` and `max_len_value` to keep names from being too long.
+下面是具有新属性 `name` 的类型。我们会给它两个约束：`exclusive` 和 `max_len_value` 以防止重名及名称太长。
 
 ```sdl
 abstract type HasNameAndCoffins {
@@ -108,7 +108,7 @@ abstract type HasNameAndCoffins {
 }
 ```
 
-So now we can change our `Ship` type (notice that we removed `name`)
+所以现在我们可以更改我们的 `Ship` 类型了（注意我们删除了 `name`）
 
 ```sdl
 type Ship extending HasNameAndCoffins {
@@ -117,7 +117,7 @@ type Ship extending HasNameAndCoffins {
 }
 ```
 
-And the `Place` type. It's much simpler now.
+还有 `Place` 类型。现在简单多了。
 
 ```sdl
 abstract type Place extending HasNameAndCoffins {
@@ -126,7 +126,7 @@ abstract type Place extending HasNameAndCoffins {
 }
 ```
 
-Finally, we can change our `can_enter()` function. This one needed a `HasCoffins` type before:
+最后，我们可以更改我们的 `can_enter()` 函数。之前它需要一个 `HasCoffins` 类型作为输入之一：
 
 ```sdl
 function can_enter(person_name: str, place: HasCoffins) -> str
@@ -136,7 +136,7 @@ function can_enter(person_name: str, place: HasCoffins) -> str
   );
 ```
 
-But now that `HasNameAndCoffins` holds `name`, the user can now just enter a string. We'll change it to this:
+但是现在 `HasNameAndCoffins` 包含了 `name`，所以用户现在可以只输入一个字符串（名称）。我们将其更改为：
 
 ```sdl
 function can_enter(person_name: str, place: str) -> str
@@ -148,9 +148,9 @@ function can_enter(person_name: str, place: str) -> str
   );
 ```
 
-And now we can just enter `can_enter('Count Dracula', 'Munich')` to get `'Count Dracula cannot enter.'`. That makes sense: Dracula didn't bring any coffins there.
+现在我们输入 `can_enter('Count Dracula', 'Munich')` 可以得到 `'Count Dracula cannot enter.'`。这是合理的：德古拉没有带来任何棺材到那里（慕尼黑，Munich）。
 
-Finally, we can make our `change_coffins` function. It's easy:
+最后，我们来创建我们的 `change_coffins` 函数。很容易：
 
 ```sdl
 function change_coffins(place_name: str, number: int16) -> HasNameAndCoffins
@@ -162,13 +162,13 @@ function change_coffins(place_name: str, number: int16) -> HasNameAndCoffins
   );
 ```
 
-Now let's give the ship `The Demeter` some coffins.
+现在让我们给 `The Demeter` 船放上一些棺材。
 
 ```edgeql
 SELECT change_coffins('The Demeter', 10);
 ```
 
-Then we'll make sure that it got them:
+然后我们来确保一下函数的执行：
 
 ```edgeql
 SELECT Ship {
@@ -177,20 +177,21 @@ SELECT Ship {
 };
 ```
 
-We get: `{default::Ship {name: 'The Demeter', coffins: 10}}`. The Demeter got its coffins!
+我们得到：`{default::Ship {name: 'The Demeter', coffins: 10}}`。德米特号（The Demeter）得到了它的棺材。
 
-## Aliases: creating subtypes when you need them
+## 别名：创建子类型（Aliases: creating subtypes when you need them）
 
+我们在本书中大量使用了抽象类型。你会注意到抽象类型本身通常是由非常普遍的概念构成的：`Person`，`HasNameAndCoffins` 等等。在现实生活中的数据库中，你可能会以 `HasEmail`、`HasID` 等形式看到它们，它们被扩展为子类型。别名也可以创建子类型，它们使用 `:=` 而不是 `extending` 且从完整类型中提取。
 We've used abstract types a lot in this book. You'll notice that abstract types by themselves are generally made from very general concepts: `Person`, `HasNameAndCoffins`, etc. In databases in real life you'll probably see them in the forms `HasEmail`, `HasID` and so on, which get extended to make subtypes. Aliases also make subtypes, except they use `:=` instead of `extending` and draw from full types.
 
-Let's make an alias for our schema too. Looking at the Demeter again, the ship left from Varna in Bulgaria and reached London. We'll imagine in our game that we have built Varna up into a big port for the characters to explore, and are changing the schema to reflect this. Right now our `Crewman` type just looks like this:
+让我们也为我们的架构（schema）创建一个别名。再来看一下德米特号（The Demeter），船从保加利亚（Bulgaria）的瓦尔纳（Varna）出发，抵达伦敦（London）。让我们想象在我们的游戏中，我们已经将瓦尔纳建成了一个供角色们探索的大港口，并且正在改变架构以反映这一点。现在我们的 `Crewman` 类型看起来像这样：
 
 ```sdl
 type Crewman extending HasNumber, Person {
 }
 ```
 
-Imagine that for some reason we would like a `CrewmanInBulgaria` alias as well, because Bulgarians call each other 'Gospodin' instead of Mr. and our game needs to reflect that. Our Crewman types will get called "Gospodin (name)" whenever they are there. Let's also add a `current_location` computable that makes a link to `Place` types with the name Bulgaria. Here's how to do that:
+想象一下，出于某种原因，我们想要一个 `CrewmanInBulgaria` 别名，因为保加利亚人互相称对方为“Gospodin”而不是“Mr.”，我们的游戏需要反映这一点。无论何时我们的船员出现在保加利亚时，都将被称为“Gospodin (+名字)”。然我们再加上一个可计算的 `current_location`，并链接到名为保加利亚的 `Place` 类型。如下所示：
 
 ```sdl
 alias CrewmanInBulgaria := Crewman {
@@ -199,13 +200,13 @@ alias CrewmanInBulgaria := Crewman {
 }
 ```
 
-You'll notice right away that `name` and `current_location` inside the alias are separated by commas, not semicolons. That's a clue that this isn't creating a new type: it's just creating a _shape_ on top of the existing `Crewman` type. For the same reason, you can't do an `INSERT CrewmanInBulgaria`, because there is no such type. It gives this error:
+你可能马上注意到了别名（alias）里面的 `name` 和 `current_location` 被逗号隔开了，而不是分号。它表明这不是在创建新类型：它只是在现有的 `Crewman` 类型之上创建了一个 _shape_。出于同样的原因，您不能执行 `INSERT CrewmanInBulgaria`，因为并没有这样的类型。EdgeDB 将给出错误：
 
 ```
 error: cannot insert into expression alias 'default::CrewmanInBulgaria'
 ```
 
-So all inserts are still done through the `Crewman` type. But because an alias is a subtype and a shape, we can select it in the same way as anything else. Let's add Bulgaria now,
+所以所有的插入仍然是通过 `Crewman` 类型完成的。但是因为别名（alias）是一个子类型（subtype）和一个形状（shape），所以我们可以像选择其他任何东西一样选择它。现在让我们添加保加利亚：
 
 ```edgeql
 INSERT Country {
@@ -213,7 +214,7 @@ INSERT Country {
 };
 ```
 
-And then select this alias to see what we get:
+然后选择这个别名看看我们得到了什么：
 
 ```edgeql
 SELECT CrewmanInBulgaria {
@@ -224,7 +225,7 @@ SELECT CrewmanInBulgaria {
 };
 ```
 
-And now we see the same `Crewman` types under their `CrewmanInBulgaria` alias: with _Gospodin_ added to their name and linked to the `Country` type we just inserted.
+现在我们在别名 `CrewmanInBulgaria` 下看到了相同的 `Crewman` 类型：在他们的名字中添加了 _Gospodin_ 并链接到了我们刚刚插入的 `Country` 对象。
 
 ```
 {
@@ -255,11 +256,11 @@ And now we see the same `Crewman` types under their `CrewmanInBulgaria` alias: w
 }
 ```
 
-The [documentation on aliases](https://www.edgedb.com/docs/cheatsheet/aliases/) mentions that they let you use "the full power of EdgeQL (expressions, aggregate functions, backwards link navigation) from GraphQL", so keep aliases in mind if you use GraphQL a lot.
+[别名的文档](https://www.edgedb.com/docs/cheatsheet/aliases/) 中提到它们允许你使用“来自 GraphQL 的 EdgeQL（表达式、聚合函数、反向链接导航）的全部功能”，所以如果你经常使用 GraphQL，请记住别名。
 
-## Creating new names for types in a query (local expression aliases)
+## 为查询中的类型创建新名称（本地表达式别名）Creating new names for types in a query (local expression aliases)
 
-It's somewhat interesting that our alias is just declared using a `:=` when we wrote `alias CrewmanInBulgaria := Crewman`. Would it be possible to do something similar inside a query? The answer is yes: we can use `WITH` and then give a new name for an existing type. (In fact, the keyword `WITH` that we have been using the whole time is defined as a "[block used to define aliases](https://www.edgedb.com/docs/edgeql/statements/with)"). Take a simple query like this that shows Count Dracula and the names of his slaves:
+有趣的是，当我们编写 `alias CrewmanInBulgaria := Crewman` 时，只是使用了 `:=` 来声明我们的别名。那么是否可以在查询中做类似的事情？答案是肯定的：我们可以使用 `WITH`，然后为现有类型指定一个新名称。（实际上，我们一直在使用的关键字 `WITH` 被定义为“[用于定义别名的块](https://www.edgedb.com/docs/edgeql/statements/with)”）。以这样一个简单的查询为例，它显示了德古拉伯爵和他的奴隶们的名字：
 
 ```edgeql
 SELECT Vampire {
@@ -270,7 +271,7 @@ SELECT Vampire {
 };
 ```
 
-If we wanted to use `WITH` to create a new type that is identical to `Vampire`, we would just do this.
+如果我们想使用 `WITH` 创建一个与 `Vampire` 相同的新类型，我们就这样做：
 
 ```edgeql
 WITH Drac := Vampire,
@@ -282,7 +283,7 @@ SELECT Drac {
 };
 ```
 
-So far this is nothing special, because the output is the same:
+到目前为止，没什么特别的，因为输出是相同的：
 
 ```
 {
@@ -298,9 +299,9 @@ So far this is nothing special, because the output is the same:
 }
 ```
 
-But where it becomes useful is when using this new type to perform operations or comparisons on the type it is created from. It's the same as `DETACHED`, but we give it a name and have some more flexibility to use it.
+但它变得有用的地方是当使用这种新类型对创建它的类型执行操作或比较时。它与 `DETACHED` 相同，但我们给它起了一个名字，使用起来更加灵活。
 
-So let's give this a try. We'll pretend that we are testing out our game engine. Right now our `fight()` function is ridiculously simple, but let's pretend that it's complicated and needs a lot of testing. Here's the variant we would use:
+所以让我们来试一下。我们假装我们正在测试我们的游戏引擎。现在我们的 `fight()` 函数非常简单，但让我们假设它很复杂并且需要大量测试。下面是 `fight()` 当前的定义：
 
 ```sdl
 function fight(one: Person, two: Person) -> str
@@ -309,7 +310,7 @@ function fight(one: Person, two: Person) -> str
   );
 ```
 
-But for debugging purposes it would be nice to have some more info. Let's create the same function but call it `fight_2()` and add some more information on who is fighting who.
+但是出于调试目的，最好有更多信息。让我们创建相同的函数，但将其命名为 `fight_2()` 并添加更多关于谁在与谁战斗的信息。
 
 ```edgeql
 CREATE FUNCTION fight_2(one: Person, two: Person) -> str
@@ -320,15 +321,15 @@ CREATE FUNCTION fight_2(one: Person, two: Person) -> str
   );
 ```
 
-So let's make our `MinorVampire` types fight each other and see what output we get. We have four of them (the three vampire women plus Lucy). First let's just put the `MinorVampire` type into the function and see what we get. Try to imagine what the output will be.
+所以我们让 `MinorVampire` 们互相争斗，看看我们会得到什么结果。我们有四个 `MinorVampire`（三个女吸血鬼加上露西）。首先让我们将 `MinorVampire` 类型放入函数中，看看我们得到了什么。试着想象输出会是什么。
 
 ```edgeql
 SELECT fight_2(MinorVampire, MinorVampire);
 ```
 
-So the output for this is...
+所以这个输出是……
 
-...
+……
 
 ```
 {
@@ -339,20 +340,20 @@ So the output for this is...
 }
 ```
 
-The function only gets used four times because a set with only a single object goes in every time...and each `MinorVampire` is fighting itself. That's probably not what we wanted. Now let's try our local type alias again.
+该函数只使用了四次，因为每次进入函数的是只有一个对象的集合……每个 `MinorVampire` 都在和她自己战斗。这可能不是我们想要的。现在让我们用本地类型别名在尝试一下。
 
 ```edgeql
 WITH M := MinorVampire,
 SELECT fight_2(M, MinorVampire);
 ```
 
-By the way, so far this is exactly the same as:
+顺便说一句，这实际上与下面的内容完全相同：
 
 ```edgeql
 SELECT fight_2(MinorVampire, DETACHED MinorVampire);
 ```
 
-The output is too long now:
+现在，输出很长了：
 
 ```
 {
@@ -375,14 +376,14 @@ The output is too long now:
 }
 ```
 
-We succeeded at getting each `MinorVampire` type to fight the other one, but there are still `MinorVampire`s fighting themselves (Lucy vs. Lucy, Woman 1 vs. Woman 1, etc.). This is where the convenience of the local type alias comes in: we can filter on it, for example. Now we'll filter to only use `fight_2()` with objects that are not identical to each other:
+我们成功地让每个 `MinorVampire` 都与其他 `MinorVampire` 进行了战斗，但仍然有 `MinorVampire` 和自己战斗（露西对露西，女人 1 对女人 1，等等）。这就是本地类型别名的便利之处：例如，我们可以对其进行过滤。现在我们将过滤写为仅对彼此不同的对象使用 `fight_2()`：
 
 ```edgeql
 WITH M := MinorVampire,
 SELECT fight_2(M, MinorVampire) FILTER M != MinorVampire;
 ```
 
-And now we finally have every combination of `MinorVampire` fighting the other one, with no duplicates.
+现在我们终于让每个 `MinorVampire` 都与其他 `MinorVampire` 进行了战斗，且没有重复。
 
 ```
 {
@@ -401,11 +402,11 @@ And now we finally have every combination of `MinorVampire` fighting the other o
 }
 ```
 
-Perfect!
+完美！
 
-With just `DETACHED` this wouldn't work: `SELECT fight_2(MinorVampire, DETACHED MinorVampire) FILTER MinorVampire != DETACHED MinorVampire;` won't do it because the first `DETACHED MinorVampire` isn't a variable name. Without that name to access, the next `DETACHED MinorVampire` is just a new `DETACHED MinorVampire` with no relation to the other one.
+仅使用 `DETACHED` 是行不通的：`SELECT Fight_2(MinorVampire, DETACHED MinorVampire) FILTER MinorVampire != DETACHED MinorVampire;` 是做不到的，因为第一个 `DETACHED MinorVampire` 不是变量名。如果没有该名称可供访问，下一个 `DETACHED MinorVampire` 只会是一个新的 `DETACHED MinorVampire`，与另一个没有关系。
 
-So how about adding links and properties in the same way that we did to our `CrewmanInBulgaria` alias? We can do that too by using `SELECT` and then adding any new links and properties you want inside `{}`. Here's a simple example:
+那么如何用与我们对 `CrewmanInBulgaria` 别名所做的相同的方式来添加链接和属性呢？我们也可以通过使用 `SELECT` 然后在 `{}` 中添加任何你想要的新链接和属性来做到这一点。下面是一个简单的例子：
 
 ```edgeql
 WITH NPCExtraInfo := (
@@ -419,7 +420,7 @@ SELECT NPCExtraInfo {
 };
 ```
 
-And here's the result. Looks like nobody wins:
+结果如下。看起来没有人能赢德古拉：
 
 ```
 {
@@ -435,7 +436,7 @@ And here's the result. Looks like nobody wins:
 }
 ```
 
-Let's create a quick type alias where Dracula has achieved all his goals and now rules London. We'll create a quick new type called `DraculaKingOfLondon` with a better name, and a link to `subjects` (= people under a king) that will be every `Person` that has been to London. Then we'll select this type, and also count how many subjects there are. It looks like this:
+现在假设德古拉已经实现了他的所有目标，现在统治了伦敦，让我们为其创建一个快速类型别名。我们将创建一个叫做 `DraculaKingOfLondon` 的快速新类型，包含一个指向 `subjects`（= 国王统治的人）的链接，该链接将是每个去过伦敦的 `Person`。然后我们将选择这种类型，并计算有多少 `subjects`。如下所示：
 
 ```edgeql
 WITH DraculaKingOfLondon := (
@@ -451,7 +452,7 @@ SELECT DraculaKingOfLondon {
 };
 ```
 
-Here's the output:
+这是输出：
 
 ```
 {
@@ -473,20 +474,20 @@ Here's the output:
 }
 ```
 
-[Here is all our code so far up to Chapter 17.](code.md)
+[点击这里查看第 17 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+##小测验
 
-1. How would you display every NPC's name, strength, name and population of cities visited, and age (displaying 0 if age = `{}`)? Try it on a single line.
+1. 如何显示每个 NPC 的名称、力量值、所访问城市的名称和人口，以及年龄（如果年龄 = `{}`，则显示 0）？试试只用单行代码。
 
-2. The query in 1. showed a lot of numbers without any context. What should we do?
+2. 上题的查询显示了很多没有任何上下文的数字。我们应该做些什么使其更友好？
 
-3. Renfield is now dead and needs a `last_appearance`. Try writing a function called `make_dead(person_name: str, date: str) -> Person` that lets you just write the character name and date to do it.
+3. 伦菲尔德（Renfield）现在已经死了，需要一个 `last_appearance`。尝试编写一个名为 `make_dead(person_name: str, date: str) -> Person` 的函数，你只需要输入角色的名字和日期就即可。
 
-[See the answers here.](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Jonathan the detective._
+__接下来：__ _乔纳森侦探。_
