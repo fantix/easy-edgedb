@@ -1,8 +1,8 @@
 # Chapter 18 Questions and Answers
 
-#### 1. During the time of Dracula, the Goldmark was used in Germany. One Goldmark had 100 Pfennig. How would you make this type?
+#### 1. 在德古拉时代，德国的货币使用的是金马克（Goldmark）。一金马克是 100 芬尼（Pfennig）。你会如何制作这种货币类型？
 
-This is a lot easier than the `Pound` type, since the only thing smaller than a Goldmark was a Pfennig (as easy as dollars/euros and cents today).
+这比 `Pound` 类型容易得多，因为唯一比金马克小的单位是芬尼（就像今天的美元和美分一样）。
 
 ```sdl
 type Goldmark extending Currency {
@@ -18,13 +18,13 @@ type Goldmark extending Currency {
 }
 ```
 
-#### 2. Try adding two annotations to this type. One should be called `description` and mention that `One mark = 100 Pfennig`. The other should be called `note` and mention the types of coins there are.
+#### 2. 尝试给这种类型添加两个注释（annotations）。其中一个称为 `description` 并说明 `One mark = 100 Pfennig`。另一个称为 `note`，并说明硬币的种类。
 
-Since `description` is already an option for annotations we wouldn't need to do anything for that. But for `note`, we would need to add this:
+由于 `description` 已经是注释的一个选项了，我们不需要再为此做任何事情。但是对于 `note`，我们还是需要添加：
 
 `abstract annotation note;`
 
-After that, we add the annotations to Goldmark and it's done:
+然后，我们将注释添加到 `Goldmark`：
 
 ```sdl
 type default::Goldmark extending Currency {
@@ -42,9 +42,9 @@ type default::Goldmark extending Currency {
 }
 ```
 
-#### 3. A vampire named Godbrand has just attacked a village and turned three villagers into `MinorVampire`s. How would you insert all four of them at once?
+#### 3. 一个名叫戈德布兰（Godbrand）的吸血鬼刚刚袭击了一个村庄，将三个村民变成了 `MinorVampire`。你将如何一次插入涉及到的四个对象？
 
-Here it is, a fairly long insert:
+这是一个相当长的插入：
 
 ```edgeql
 WITH new_vampires := {
