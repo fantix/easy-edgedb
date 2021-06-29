@@ -2,21 +2,21 @@
 tags: Complex Inserts, Schema Cleanup
 ---
 
-# Chapter 18 - Using Dracula's own weapon against him
+# 第十八章 - 以牙还牙
 
-> Van Helsing was correct: Mina is connected to Dracula. He continues to use hypnotism to find out more about where he is and what he is doing. Jonathan does a lot of investigation into Dracula's activities in London. He visits all the companies that were involved in selling Dracula's house, and some moving companies who moved his coffins around. Jonathan is becoming more and more confident, and never stops working to find Dracula. They find Dracula's other house in London with all his money. Knowing that he will come to get it, they wait for him to arrive...Suddenly, Dracula runs into the house and attacks. Jonathan hits out with his knife, and cuts Dracula's bag with all his money. Dracula grabs some of the money that fell and jumps out the window. He yells at them: "You shall be sorry yet, each one of you! You think you have left me without a place to rest; but I have more. My revenge is just begun!" Then he disappears.
+> 范海辛（Van Helsing）是对的：米娜（Mina）与德古拉（Dracula）有关。他继续对米娜使用催眠术来了解德古拉在哪里以及他在做什么。乔纳森（Jonathan）对德古拉在伦敦的活动进行了大量的调查。他拜访了所有出售房子给德古拉的公司，以及一些给他搬运棺材的搬家公司。乔纳森越来越自信，从未停止寻找德古拉的工作。他们找到了德古拉在伦敦的另一所房子，里面有他所有的钱。知道他一定会来拿，他们便等他来……突然，德古拉跑进房子进行攻击。乔纳森用刀猛击德古拉，把他包里所有的钱都割破了。德古拉抓起一些掉下来的钱，从窗户跳了出去。德古拉冲他们吼道：“你们每个人都要后悔！你们以为你们让我无处可去；但其实我还有更多落脚地。我的报复才刚刚开始！”然后他就消失了。
 
-This is a good reminder that we should probably think about money in our game. The characters have been to countries like England, Romania and Germany, and each of those have their own money. An `abstract type` seems to be a good choice here: we should create an `abstract type Currency` that we can extend for all the other types of money.
+这是一个很好的提醒，我们可能应该在游戏中引入“钱”的概念。书中的角色们去过英国、罗马尼亚和德国等国家，他们每个人都有自己的钱。“抽象类型”在这里似乎是一个不错的选择：我们应该创建一个 `abstract type Currency`，我们可以将其扩展为所有其他类型的货币。
 
-Now, there is one difficulty: in the 1800s, monetary systems were more complicated than they are today. In England, for example it wasn't 100 pence to 1 pound, it was as follows:
+现在，有一个困难是：在 1800 年代，货币体系比今天更复杂。例如，在英国，不是 100 便士兑换 1 磅，而是：
 
-- 12 pence (the smallest coin) made one shilling,
-- 20 shillings made one pound, thus
-- 240 pence per pound.
+- 12 便士（最小单位的硬币）兑换一先令，
+- 20 先令等于一磅，因此
+- 每磅 240 便士。
 
-(There was also a _halfpenny_ that was half of one pence, but let's not get into that much detail in our game.)
+（还有一个 _半便士铜币（halfpenny）_ 是一便士的一半，但让我们就不在我们的游戏中引入那么多细节了。）
 
-To reflect this, we'll say that `Currency` has three properties: `major`, `minor`, and `sub_minor`. Each one of these will have an amount, and finally there will be a number for the conversion, plus a `link owner -> Person`. So `Currency` will look like this:
+为了说明这些，我们定义 `Currency` 具有三个属性：`major`、`minor` 和 `sub_minor`。每一个都会有一个金额，还会有一个用于换算的数字，再加上一个 `link owner -> Person`。所以 `Currency` 看起来像这样：
 
 ```sdl
 abstract type Currency {
@@ -44,11 +44,11 @@ abstract type Currency {
 }
 ```
 
-You'll notice that only `major` properties are `required`, because some currencies don't even have things like cents. In modern times that includes Japanese yen, Korean won, etc. that are just a single money unit and a number.
+你会注意到只有属性 `major` 是 `required` 的，因为有些货币甚至没有美分之类的东西。在现代，包括日元、韩元等只是一个单一的货币单位加一个数字。
 
-We also gave it a constraint of `min_value(0)` so that characters won't be able to buy with money they don't have. And complicated things like credit and negative money we can probably just ignore for now.
+我们还给了它一个 `min_value(0)` 的约束，这样书中的角色们就不能透支他们的账户了。还有一些复杂的事情，比如信用和负货币，我们现在暂时先忽略。
 
-Then comes our first currency: the `Pound` type. The `minor` property is called `'shilling'`, and we use `minor_conversion` to get the amount in pounds. The same thing happens with `'pence'`. Then our characters can collect various coins but the final value can still quickly be turned into pounds. Here's the `Pound` type:
+然后来看一下我们的第一种货币：`Pound` 类型。属性 `minor` 称为 `'shilling'`，我们使用 `minor_conversion` 来说明获取以 1 磅所需的金额。`'pence'` 也一样。然后我们的角色可以收集各种硬币，但最终价值仍然可以很快变成英镑来表示。这是 `Pound` 类型：
 
 ```sdl
 type Pound extending Currency {
@@ -70,7 +70,7 @@ type Pound extending Currency {
 }
 ```
 
-Now let's give Dracula some money. We'll give him 2500 pounds, 50 shillings, and 200 pence. Maybe that's a lot of money in 1887.
+现在让我们给德古拉一些钱。我们给他 2500 英镑、50 先令和 200 便士。也许在 1887 年这是一大笔钱了。
 
 ```edgeql
 INSERT Pound {
@@ -81,7 +81,7 @@ INSERT Pound {
 };
 ```
 
-Then we can use the conversion rates to display the total amount he owns in pounds:
+然后我们可以使用转换率以磅为单位来显示他拥有的总金额：
 
 ```edgeql
 SELECT Currency {
@@ -90,15 +90,15 @@ SELECT Currency {
 };
 ```
 
-He has this many:
+他拥有这么多：
 
 ```
 {default::Pound {owner: default::Vampire {name: 'Count Dracula'}, total: 2503.3333333333335}}
 ```
 
-We know that Arthur (now called Lord Godalming) has all the money he needs, but the others we aren't sure about. Let's give a few of them a random amount of money, and also `SELECT` it at the same time to display the result. For the random number we'll use the method we used for `strength` before: `round()` on a `random()` number multiplied by the maximum.
+我们知道亚瑟（Arthur）（现在称为戈达尔明勋爵（Lord Godalming））有他需要的钱，但其他人我们不确定。让我们给他们中的一些人随机数量的钱，同时 `SELECT` 它以显示结果。对于随机数，我们将使用我们之前用于 `strength` 的方法：`round()` 一个 `random()` 数并乘以最大值。
 
-Finally, when displaying the total we will cast it to a `decimal` type. With this, we can display the number of pounds as something like 555.76 instead of 555.76545256. For this we use the same `round()` function, but using the last signature:
+最后，在显示总数时，我们将其转换为 `decimal` 类型。这样我们就可以将磅数显示为 555.76 而不是 555.76545256。为此，我们仍然使用 `round()` 函数，但使用最后一个签名：
 
 ```sdl
 std::round(value: int64) -> float64
@@ -108,9 +108,9 @@ std::round(value: decimal) -> decimal
 std::round(value: decimal, d: int64) -> decimal
 ```
 
-That signature has an extra `d: int64` part for the number of decimal places we want to give it.
+该签名有一个额外的 `d: int64` 部分，用于表示我们想要给它的小数位数。
 
-All together, it looks like this:
+总之，它看起来像这样：
 
 ```edgeql
 SELECT (
@@ -136,7 +136,7 @@ SELECT (
 };
 ```
 
-And then it will give a result similar to this with our collections of money, each with an owner:
+然后它会在下面的结果里给出我们要收集的钱，每个钱都有一个所有者：
 
 ```
 {
@@ -147,11 +147,11 @@ And then it will give a result similar to this with our collections of money, ea
 }
 ```
 
-(If you don't want to see the `n` for the `decimal` type, just cast it into a `<float32>` or `<float64>`.)
+（如果你不想看到 `decimal` 类型最后的 `n`，只需将其转换为 `<float32>` 或 `<float64>`。）
 
-You'll notice now that there could be some debate on how to show money. Should it be a `Currency` that links to an owner? Or should it be a `Person` that links to a property called `money`? Our way might be easier for a realistic game, simply because there are many types of `Currency`. If we chose the other method, we would have one `Person` type linked to every type of currency, and most of them would be zero. But with our method, we only have to create 'piles' of money when a character starts owning them. Or these 'piles' could be things like purses and bags, and then we could change `required link owner -> Person;` to `optional link owner -> Person;` if it's possible for a character in the game to lose them.
+你现在可能会注意到，关于如何显示金钱可能存在一些争论。它应该是一个 `Currency` 链接到所有者吗？或者它应该是一个 `Person` 链接到名为 `money` 的属性的？我们的方法对于现实游戏来说可能更简单，因为游戏中存在多种 `Currency` 类型。如果我们选择另一种方法，我们将有一个 `Person` 类型链接到每种类型的货币，并且大多数都为零。但是使用我们的方法，我们只需要在角色开始拥有某种货币时为其创造“成堆”的金钱。或者这些“堆”可能是钱包和袋子之类的东西，如果游戏中的角色可能会丢失它们，我们可以将 `required link owner -> Person;` 改为 `optional link owner -> Person;`。
 
-Of course, if we only had one type of money then it would be simpler to just put it inside the `Person` type. We won't do this in our schema, but let's imagine how to do it. If the game were only inside the United States, it would be easier to just do this without an abstract `Currency` type:
+当然，如果我们只有一种类型的钱，那么将它放在 `Person` 类型中会更简单。我们不会在我们的架构中这样做，但我们可以想象一下该如何做到这一点。如果游戏只在美国境内，那么在没有抽象的 `Currency` 类型的情况下这样做会更容易：
 
 ```sdl
 type Dollar {
@@ -161,15 +161,15 @@ type Dollar {
 }
 ```
 
-The `total_money` type, by the way, will become a `float64` because of the `/ 100` part. We can confirm this with a quick query:
+顺便说一下，由于 `/ 100` 部分，`total_money` 类型将变成 `float64`。我们可以通过快速查询来确认这一点：
 
 ```edgeql
 SELECT (100 + (55 / 100)) is float64;
 ```
 
-The output: `{true}`.
+结果是：`{true}`。
 
-We can see the same when we make an insert and use `SELECT` to check the `total_money` property:
+当我们进行插入并使用 `SELECT` 检查 `total_money` 属性时，我们可以看到相同的效果：
 
 ```edgeql
 SELECT(
@@ -182,17 +182,17 @@ SELECT(
 };
 ```
 
-Here's the output: `{default::Dollar {total_money: 100.55}}`. Perfect!
+输出是：`{default::Dollar {total_money: 100.55}}`。完美！
 
-Not that we need this `Dollar` type in our game: in our schema it would be `type Dollar extending Currency`.
+这里并不是说我们在游戏中需要这种 `Dollar` 类型：在我们的架构中，它会是 `type Dollar extending Currency`。
 
-One final note: our `total_money` property is just created by dividing by 100, so it's using `float64` in a limited fashion (which is good). But you want to be careful with floats because they are not always precise, and if we were to need to divide by 3 for example we would get results like `100 / 3 = 33.33333333`...not very good for actual currency. So in that case it would be better to stick to integers.
+最后一个注意事项：我们的 `total_money` 属性只是通过除以 100 创建的，因此它以小数有限的方式使用了 `float64`（这很好）。但是你要小心浮动，因为它们并不总是精确的，例如，如果我们需要除以 3，我们会得到类似 `100 / 3 = 33.33333333` 的结果……这对于实际货币来说不是很好。因此，在这种情况下，最好坚持使用整数。
 
-## Cleaning up the schema
+## 清理架构（Cleaning up the schema）
 
-We are nearing the end of the book, and should probably start to clean up the schema and inserts a bit.
+我们已经接近本书的结尾了，可能应该开始清理一下我们的架构并插入一些内容。
 
-First, we have two inserts here where we could only have one.
+首先，我们这里有两个插入，但我们可以只用一个插入。
 
 ```edgeql
 INSERT City {
@@ -204,7 +204,7 @@ INSERT City {
 };
 ```
 
-We'll change that to an insert with a `FOR` loop:
+我们将其更改为使用 `FOR` 循环的插入：
 
 ```edgeql
 FOR city_name IN {'Munich', 'London'}
@@ -215,7 +215,7 @@ UNION (
 );
 ```
 
-Then we'll do the same for the four `Country` types that we inserted (Hungary, Romania, France, Slovakia). Now they are a single insert:
+然后，我们将对插入的四个 `Country` 对象（匈牙利、罗马尼亚、法国、斯洛伐克）执行相同的操作。如下是一个单个插入：
 
 ```edgeql
 FOR country_name IN {'Hungary', 'Romania', 'France', 'Slovakia'}
@@ -226,7 +226,7 @@ UNION (
 );
 ```
 
-The other `City` inserts are a bit different: some have `modern_name` and others have `population`. In a real game we would insert them all in this sort of form, all at once:
+其他 `City` 的插入有点不同：一些有 `modern_name`，一些有 `population`。在真正的游戏中，我们会以这种形式一次性将它们全部插入：
 
 ```edgeql
 FOR city IN {
@@ -243,9 +243,9 @@ UNION (
 );
 ```
 
-And we would do the same with all the `NPC` types, their `first_appearance` data, and so on. But we don't have that many cities and characters to insert in this tutorial so we don't need to be so systematic yet.
+我们会对所有的 `NPC` 类型、它们的 `first_appearance` 数据等做同样的处理。但是我们在本教程中没有那么多的城市和角色要插入，所以我们还不需要那么系统。
 
-We can also turn the inserts for the `Ship` type into a single one. Right now it looks like this:
+我们还可以将 `Ship` 类型的插入件转换为一个单个插入。如下所示：
 
 ```edgeql
 FOR n IN {1, 2, 3, 4, 5}
@@ -284,7 +284,7 @@ INSERT Ship {
 };
 ```
 
-Let's put that all together:
+让我们把所有这些放在一起：
 
 ```edgeql
 INSERT Ship {
@@ -320,23 +320,23 @@ INSERT Ship {
 };
 ```
 
-Much better!
+好多了！
 
-[Here is all our code so far up to Chapter 18.](code.md)
+[点击这里查看第 18 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 小测验
 
-1. During the time of Dracula, the Goldmark was used in Germany. One Goldmark had 100 Pfennig. How would you make this type?
+1. 在德古拉时代，德国的货币使用的是金马克（Goldmark）。一金马克是 100 芬尼（Pfennig）。你会如何制作这种货币类型？
 
-2. Try adding two annotations to this type. One should be called `description` and mention that `One mark = 100 Pfennig`. The other should be called `note` and mention the types of coins there are.
+2. 尝试给这种类型添加两个注释（annotations）。其中一个称为 `description` 并说明 `One mark = 100 Pfennig`。另一个称为 `note`，并说明硬币的种类。
 
-   [Here are the types of coins](https://en.wikipedia.org/w/index.php?title=German_gold_mark&oldid=972733514#Base_metal_coins): 1, 2, 5, 10, 20, 25 Pfennig coins.
+   [这里是硬币的种类](https://en.wikipedia.org/w/index.php?title=German_gold_mark&oldid=972733514#Base_metal_coins)：1, 2, 5, 10, 20, 25 芬尼（Pfennig）硬币。
 
-3. A vampire named Godbrand has just attacked a village and turned three villagers into `MinorVampire`s. How would you insert all four of them at once?
+3. 一个名叫戈德布兰（Godbrand）的吸血鬼刚刚袭击了一个村庄，将三个村民变成了 `MinorVampire`。你将如何一次插入涉及到的四个对象？
 
-   Here is their data (name, date of birth (`first_appearance`), date turned into a MinorVampire (`last_appearance`)):
+   下面他们的数据（姓名、出生日期（`first_appearance`）、变成 MinorVampire 的日期（`last_appearance`））：
 
    ```
    ('Fritz Frosch', '1850-01-15', '1887-09-11'),
@@ -344,8 +344,8 @@ Much better!
    ('김훈', '1860-09-09', '1887-09-11'),
    ```
 
-[See the answers here.](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _Only Mina can tell them where Dracula has gone._
+__接下来：__ _只有米娜可以告诉他们德古拉去了哪里。_
