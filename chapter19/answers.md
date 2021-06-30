@@ -1,8 +1,8 @@
 # Chapter 19 Questions and Answers
 
-#### 1. How would you display all the `City` names and the names of the `Region` they are in?
+#### 1. 如何显示所有 `City` 名称和它们所在的 `Region` 名称？
 
-This is not too hard for us now, just a reverse lookup. We'll also put a filter on to only show `City` objects that are inside a `Region`:
+现在这对我们来说不是太难，只是一个反向查找。我们还将添加一个过滤器，只显示位于存在的 `Region` 中的 `City` 对象：
 
 ```edgeql
 SELECT City {
@@ -11,15 +11,15 @@ SELECT City {
 } FILTER EXISTS .region_name;
 ```
 
-#### 2. How about the `City` names plus the names of the `Region` and the name of the `Country` they are in?
+#### 2. 基于上一题，如何显示所有 `City` 名称和它们所在的 `Region` 名称及 `Country` 名称？
 
-This is a similar query except that we need to go back two links this time.
+这是一个类似的查询，只是这次我们需要返回两个链接。
 
-In the same way that `.<cities[IS Region].name` means "the name of the `Region` connected via a link called `cities`", now it looks like this:
+`.<cities[IS Region].name` 的意思是“通过一个名为 `cities` 的链接连接的 `Region` 的名称”，对 `Country` 使用同样的方式。如下所示：
 
 `.<cities[IS Region].<regions[IS Country].name`
 
-In other words, "the name of the `Country` connected via a link called `regions` to the type called `Region` connected to the city via a link called `cities`.
+换句话说，是指“通过一个名为 `cities` 的链接链接到的 `Region`，这些 `Region` 再通过一个名为 `regions` 的链接连接到的 `Country` 的名称"。
 
 ```edgeql
 SELECT City {
@@ -29,7 +29,7 @@ SELECT City {
 } FILTER EXISTS .country_name;
 ```
 
-That gives us a nice output going from the `City` to the `Country` level:
+这为我们提供了不错的、从 `City` 到 `Country` 级别的输出：
 
 ```
 {
