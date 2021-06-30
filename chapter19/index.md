@@ -2,31 +2,31 @@
 tags: Reverse Links, Schema Cleanup
 ---
 
-# Chapter 19 - Dracula escapes
+# 第十九章 - 德古拉逃了
 
-> Van Helsing hypnotises Mina, who is now half vampire and can feel Dracula. He asks her questions:
+> 范海辛（Van Helsing）催眠了米娜（Mina），米娜现在是半个吸血鬼，她可以感知到德古拉（Dracula）。范海辛问她：
 
-> “Where are you now?”
+> “你现在在哪里？”
 >
-> “I do not know. It is all strange to me!”
+> “我不知道。这一切对我来说都很奇怪！”
 >
-> “What do you see?”
+> “你看到了什么？”
 >
-> “I can see nothing; it is all dark.”
+> “我什么也看不见；一片漆黑。”
 >
-> “What do you hear?”
+> “你听到了什么？”
 >
-> “The water... and little waves.”
+> “水声……还有小浪。”
 >
-> “Then you are on a ship?”
+> “那你在船上？”
 >
-> “Oh, yes!”
+> “哦，是的！”
 
-> Now they know that Dracula has escaped on a ship with his last box and is going back to Transylvania. Van Helsing and Mina go to Castle Dracula, while the others go to Varna to try to catch the ship when it arrives. Jonathan Harker just sharpens his knife, and looks like a different person now. All he wants to do is kill Dracula and save his wife. But where is the ship? Every day they wait...and then one day, they get a message: the ship arrived at Galatz up the river, not Varna! Are they too late? They rush off up the river to try to find Dracula.
+> 现在他们知道了德古拉带着他的最后一个棺材箱子逃到了一艘船上，准备返回特兰西瓦尼亚（Transylvania）。范海辛和米娜前往德古拉城堡（Castle Dracula），而其他人则前往瓦尔纳（Varna）试图在船到达时抓住德古拉。乔纳森·哈克（Jonathan Harker）磨好了刀，他现在看起来完全变了个人。但是船在哪里？他们每天都在等待……然后有一天，他们收到一条消息：船到达了河上游的加拉茨（Galatz），而不是瓦尔纳！他们来晚了吗？他们冲到河的上游去寻找德古拉。
 
-## Adding some new types
+## 添加一些新类型（Adding some new types）
 
-We have another ship moving around the map in this chapter. Last time, we made a `Ship` type that looks like this:
+在本章中，出现了另一艘船在地图上移动。之前，我们制作了一个 `Ship` 类型，如下所示：
 
 ```sdl
 type Ship extending HasNameAndCoffins {
@@ -35,7 +35,7 @@ type Ship extending HasNameAndCoffins {
 }
 ```
 
-That's not bad, but we can build on it a bit more in this chapter. Right now, it doesn't have any information about visits made by which ship to where. Let's make a quick type that contains all the information on ship visits. Each visit will have a link to a `Ship` and a `Place`, and a `cal::local_date`. It looks like this:
+这还不错，但我们可以在本章中进一步构建它。目前，我们还没有任何关于哪艘船到过哪里的信息。让我们创建一个包含所有船舶访问信息的快速类型。每次访问都会有一个指向 `Ship` 的链接和一个指向 `Place` 的链接，以及一个 `cal::local_date`。如下所示：
 
 ```sdl
 type Visit {
@@ -45,9 +45,9 @@ type Visit {
 }
 ```
 
-This new ship that Dracula is on is called the `Czarina Catherine` (a Czarina is a Russian queen). Let's use that to insert a few visits from the ships we know. You'll remember that the other ship was called The Demeter and left from Varna towards London.
+德古拉乘坐的这艘新船被称为 `Czarina Catherine`（沙皇（Czarina）是俄罗斯女王）。让我们用上面的类型来插入我们所知道的船只的一些访问记录。你应该还记的另一艘叫做德米特号的船，它从瓦尔纳开往伦敦。
 
-But first we'll insert a new `Ship` and two new places (`City`s) so we can link them. We know the name of the ship and that there is one coffin in it: Dracula's last coffin. But we don't know about the crew, so we'll just insert this information:
+但首先我们先插入新的 `Ship` 和两个新的地点（`City`），以便我们可以链接它们。我们知道这艘船的名字，且上面有一口棺材：德古拉的最后一口棺材。但是我们不知道船员的情况，所以我们只插入以下信息：
 
 ```edgeql
 INSERT Ship {
@@ -56,7 +56,7 @@ INSERT Ship {
 };
 ```
 
-After that we have the two cities of Varna and Galatz. We'll put them in at the same time:
+之后我们需要创建瓦尔纳（Varna）和加拉茨（Galatz）两个城市。我们一次性将他们插入：
 
 ```edgeql
 FOR city in {'Varna', 'Galatz'}
@@ -67,7 +67,7 @@ UNION (
 );
 ```
 
-The captain's book from the Demeter has a lot of other places too, so let's look at a few of them. The Demeter also passed through the Bosphorus. That area is the small bit of ocean in Turkey that divides Europe from Asia, so it's not a city. We can use the `OtherPlace` type for it, which is also the type we added some annotations to in Chapter 14. Remember how to call them up? It looks like this:
+德米特号（the Demeter）船长的书中还提及了很多其他的地方，我们来看看其中的几个。德米特号曾穿过博斯普鲁斯海峡（Bosphorus）。该地区是土耳其将欧洲与亚洲分开的一小块海洋，因此它不是一个城市。我们可以使用 `OtherPlace` 类型，这也是我们在第 14 章中添加了一些注解的类型。还记得如何调用它们吗？如下所示：
 
 ```edgeql
 SELECT (INTROSPECT OtherPlace) {
@@ -78,7 +78,7 @@ SELECT (INTROSPECT OtherPlace) {
 };
 ```
 
-Let's look at the output to see what we wrote before to make sure that we should use it:
+让我们看看输出，看看我们之前写了什么，以确保我们能够使用它：
 
 ```
 {
@@ -96,7 +96,7 @@ Let's look at the output to see what we wrote before to make sure that we should
 }
 ```
 
-Well, it's not a castle and it isn't actually a place with buildings, so it should work. Soon we will create a `Region` type so that we can have a `Country` -> `Region` -> `City` layout. In that case, `OtherPlace` might be linked to from `Country` or `Region`. But in the meantime we'll add it without being linked to anything:
+嗯，它不是一座城堡，它实际上也不是一个有建筑物的地方，所以使用它很合适。很快我们将会创建一个 `Region` 类型，以便我们可以有一个 `Country` -> `Region` -> `City` 布局。在这种情况下，`OtherPlace` 可能会在 `Country` 或 `Region` 中被链接。但在此，我们将只添加它而不链接到任何其他：
 
 ```edgeql
 INSERT OtherPlace {
@@ -104,7 +104,7 @@ INSERT OtherPlace {
 };
 ```
 
-That was easy. Now we can put the ship visits in.
+很简单。现在我们可以输入船舶的访问记录。
 
 ```edgeql
 FOR visit in {
@@ -123,7 +123,7 @@ UNION (
 );
 ```
 
-With this data, now our game can have certain ships in cities at certain dates. For example, imagine that a character has entered the city of Galatz. If the date is 28 October 1887, we can see if there are any ships in town:
+有了这些数据，现在我们的游戏可以在特定日期各城市的船只停泊情况。例如，假设一个角色进入了加拉茨（Galatz）。如果日期是 1887 年 10 月 28 日，我们可以查看镇上是否有船只：
 
 ```edgeql
 SELECT Visit {
@@ -137,7 +137,7 @@ SELECT Visit {
 } FILTER .place.name = 'Galatz' AND .date = <cal::local_date>'1887-10-28';
 ```
 
-And it looks like there is a ship in town! It's the Czarina Catherine.
+看起来镇上确实有一艘船！正是沙皇凯瑟琳。
 
 ```
 {
@@ -149,7 +149,7 @@ And it looks like there is a ship in town! It's the Czarina Catherine.
 }
 ```
 
-While we're doing this, let's practice reverse lookup again on our visits. Here's one:
+现在，让我们在船只的访问中再次练习一下反向查找。比如：
 
 ```edgeql
 SELECT Ship.<ship[IS Visit] {
@@ -163,9 +163,9 @@ SELECT Ship.<ship[IS Visit] {
 } FILTER .place.name = 'Galatz';
 ```
 
-`Ship.<ship[IS Visit]` refers to all the `Visits` with link `ship` to type `Ship`. Because we are selecting `Visit` and not `Ship`, our filter is now on `Visit`'s `.place.name` instead of the properties inside `Ship`.
+`Ship.<ship[IS Visit]` 是指所有带有指向 `Ship` 类型的链接 `ship` 的 `Visits`。因为我们选择的是 `Visit` 而不是 `Ship`，所以我们的过滤器现在是作用在 `Visit` 的 `.place.name` 上，而不是 `Ship` 中的属性。
 
-Here is the output:
+这是输出：
 
 ```
 {
@@ -177,7 +177,7 @@ Here is the output:
 }
 ```
 
-By the way, the heroes of the story found out about the Czarina Catherine thanks to a telegram by a company in the city of Varna that told them. Here's what it said:
+顺便说一下，故事的主人公们通过瓦尔纳市一家公司发来的电报得知了 `Czarina Catherine` 的情况。电报中说：
 
 ```
 28 October.—Telegram. Rufus Smith, London, to Lord Godalming, care H. B. M. Vice Consul, Varna.
@@ -185,7 +185,7 @@ By the way, the heroes of the story found out about the Czarina Catherine thanks
 “Czarina Catherine reported entering Galatz at one o’clock to-day.”
 ```
 
-Remember our `Time` type? We made it so that we could enter a string and get some helpful information in return. You can see now that it's almost a function:
+还记得我们的 `Time` 类型吗？我们制作它是为了我们主需要输入一个字符串即可获得一些有用的信息。现在看来，它几乎是一个函数：
 
 ```sdl
 type Time {
@@ -196,7 +196,7 @@ type Time {
 }
 ```
 
-Now that we know that the time was one o'clock, let's put that into the query too - including the `awake` property. Now it looks like this:
+现在我们知道时间是下午 1 点钟，让我们将其也放入查询中 - 包括 `awake` 属性。如下所示：
 
 ```edgeql
 SELECT Ship.<ship[IS Visit] {
@@ -222,7 +222,7 @@ SELECT Ship.<ship[IS Visit] {
 } FILTER .place.name = 'Galatz';
 ```
 
-Here's the output, including whether vampires are awake or asleep.
+下面是输出，包括吸血鬼是醒着还是睡着了。
 
 ```
 {
@@ -235,9 +235,10 @@ Here's the output, including whether vampires are awake or asleep.
 }
 ```
 
-## More cleaning up the schema
+## 更多架构清理（More cleaning up the schema）
 
-It is of course cool that we can do a quick insert in a query like this, but it's a bit weird. The problem is that we now have a random `Time` type floating around that is not linked to anything. Instead of that, let's just steal all the properties from `Time` to improve the `Visit` type instead.
+像上面那样在查询中快速做插入当然很酷，但这有点奇怪。问题是我们现在有的是一个随机的 `Time` 对象，它没有链接到任何东西。为此，让我们把 `Time` 中的所有属性拿出来用于改进 `Visit` 类型。
+
 
 ```sdl
 type Visit {
@@ -251,7 +252,7 @@ type Visit {
 }
 ```
 
-Then update the visit to Galatz to give it a `time`:
+然后更新对加拉茨（Galatz）的访问，给它一个 `time`：
 
 ```edgeql
 UPDATE Visit FILTER .place.name = 'Galatz'
@@ -260,7 +261,7 @@ SET {
 };
 ```
 
-Then we'll use the reverse query again. Let's add a computable for fun, assuming that it took two hours, five minutes and ten seconds for Arthur to get the telegram. We'll cast the string to a `cal::local_time` and then add a `duration` to it.
+然后我们将再次使用反向查询。我们再添加一个可计算的公式（给到 `when_arthur_got_the_telegram`）以增加一些趣味性：假设亚瑟（Arthur）花了两小时五分十秒才收到电报。我们将 `time` 字符串转换为 `cal::local_time`，然后添加一个 `duration`。
 
 ```edgeql
 SELECT Ship.<ship[IS Visit] {
@@ -278,7 +279,7 @@ SELECT Ship.<ship[IS Visit] {
 } FILTER .place.name = 'Galatz';
 ```
 
-And now we get all the output that the `Time` type gave us before, plus our extra info about when Arthur got the telegram:
+现在我们得到了之前 `Time` 类型给我们的所有输出，以及我们关于亚瑟（Arthur）何时收到电报的额外信息：
 
 ```
 {
@@ -294,7 +295,7 @@ And now we get all the output that the `Time` type gave us before, plus our extr
 }
 ```
 
-Since we are looking at `Place` again, now we can finish up the chapter by filling out the map with the `Region` type that we discussed. That's easy:
+我们再来看一下 `Place`，现在我们可以通过使用我们讨论过的 `Region` 类型填写地图来完成本章。这很容易：
 
 ```sdl
 type Country extending Place {
@@ -308,13 +309,14 @@ type Region extending Place {
 }
 ```
 
-That connects our types based on `Place` quite well.
+这很好地连接了我们基于 `Place` 的各类型。
 
-Now let's do a medium-sized entry that has `Country`, `Region`, and `City` all at the same time. We'll choose Germany in 1887 because Jonathan went through there first. It will have:
+现在让我们做一个同时包含 `Country`、`Region` 和 `City` 的中等条目。我们将选择 1887 年的德国，因为乔纳森首先经过了那里。它将有：
 
-- One country: Germany,
-- Three regions: Prussia, Hesse, Saxony
-- Two cities for each region, for six in total: Berlin and Königsberg, Darmstadt and Mainz, Dresden and Leipzig.
+- 1 个国家：德国（Germany），
+- 3 个地区：普鲁士（Prussia）、黑森（Hesse）、萨克森（Saxony），
+- 每个地区有两个城市，共计 6 个城市：柏林（Berlin）和柯尼斯堡（Königsberg）、达姆施塔特（Darmstadt）和美因茨（Mainz）、德累斯顿（Dresden）和莱比锡（Leipzig）。
+
 
 Here is the insert:
 
@@ -359,7 +361,7 @@ INSERT Country {
 };
 ```
 
-With this nice structure set up, we can do things like select a `Region` and see the cities inside it, plus the country it belongs to. To get `Country` from `Region` we need a reverse lookup:
+有了这个漂亮的结构的搭建，我们可以做一些事情，比如选择一个 `Region` 并查看其中的城市，以及它所属的国家。要从 `Region` 获取 `Country`，我们需要反向查找：
 
 ```edgeql
 SELECT Region {
@@ -373,7 +375,7 @@ SELECT Region {
 };
 ```
 
-With the reverse lookup at the end we have another link between `Country` and its property `regions`, but now we get the `Country` as the output instead. Here's the output:
+通过最后的反向查找，我们在 `Country` 和它的属性 `regions` 之间有了另一个链接，现在我们得到了 `Country` 作为输出。这是输出：
 
 ```
 {
@@ -395,18 +397,18 @@ With the reverse lookup at the end we have another link between `Country` and it
 }
 ```
 
-[Here is all our code so far up to Chapter 19.](code.md)
+[点击这里查看第 19 章相关代码](code.md)
 
 <!-- quiz-start -->
 
-## Time to practice
+## 小测验
 
-1. How would you display all the `City` names and the names of the `Region` they are in?
+1. 如何显示所有 `City` 名称和它们所在的 `Region` 名称？
 
-2. How about the `City` names plus the names of the `Region` and the name of the `Country` they are in?
+2. 基于上一题，如何显示所有 `City` 名称和它们所在的 `Region` 名称及 `Country` 名称？
 
-[See the answers here.](answers.md)
+[点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
-__Up next:__ _The race against time._
+__接下来：__ _与时间赛跑。_
