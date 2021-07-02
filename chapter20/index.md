@@ -2,15 +2,16 @@
 tags: Ddl, Sdl, Edgedb Community
 ---
 
-# Chapter 20 - The final battle
+# 第二十章 - 最后一战
 
+你进入了最后一章 —— 恭喜！下面是本章的最后一幕，但我们并不打算剧透最终的结局：
 You made it to the final chapter - congratulations! Here's the final scene from the last chapter, though we won't spoil the final ending:
 
-> Mina is almost a vampire now, and says she can feel Dracula all the time, no matter what hour of the day. Van Helsing arrives at Castle Dracula and Mina waits outside. Van Helsing then goes inside and destroys the vampire women and Dracula's coffin. Meanwhile, the other men approach from the south and are also close to Castle Dracula. Dracula's friends have him inside his box, and are carrying him on a wagon towards the castle as fast as they can. The sun is almost down, it is snowing, and the need to hurry to catch him. They get closer and closer, and grab the box. They pull the nails back and open it up, and see Dracula lying inside. Jonathan pulls out his knife. But just then the sun goes down. Dracula smiles and opens his eyes, and...
+> 米娜（Mina）现在几乎是一个吸血鬼，她说无论一天中的什么时候，她都能感觉到德古拉（Dracula）。范海辛（Van Helsing）抵达德古拉城堡，米娜在外面等候。范海辛进到城堡摧毁了吸血鬼女人和德古拉的棺材。与此同时，其他人从南方赶来，也将抵达德古拉城堡。德古拉的朋友们把他放在他的盒子（棺材）里，并用一辆马车以最快的速度把他运回城堡。太阳快落山了，下起了雪，必须尽快抓到德古拉。他们越来越靠近，终于抓住了盒子。他们拔出钉子打开了棺材，看到德古拉正躺在里面。乔纳森立即拔出他的刀。但就在这时，太阳下山了。德古拉微笑着睁开眼睛，然后……
 
-If you're curious about the ending to this scene, just [check out the book on Gutenberg](http://www.gutenberg.org/files/345/345-h/345-h.htm#CHAPTER_XIX) and search for "the look of hate in them turned to triumph".
+如果你对结局感到好奇，可以 [查看这里](http://www.gutenberg.org/files/345/345-h/345-h.htm#CHAPTER_XIX) 并搜索“the look of hate in them turned to triumph”。
 
-We are sure that the vampire women have been destroyed, however, so we can do one final change by giving them a `last_appearance`. Van Helsing destroys them on November 5, so we will insert that date. But don't forget to filter Lucy out - she's the only `MinorVampire` that isn't one of the three women at the castle.
+然而，我们可以确信的是女吸血鬼们已经被摧毁了，因此我们可以通过给她们一个 `last_appearance` 来做最后的改变。范海辛在 11 月 5 日摧毁了她们，因此我们将插入该日期。但不要忘记过滤掉露西 —— 她并不在居住在城堡里的三个女 `MinorVampire` 之中。
 
 ```edgeql
 UPDATE MinorVampire FILTER .name != 'Lucy Westenra'
@@ -19,29 +20,29 @@ SET {
 };
 ```
 
-Depending on what happens in the last battle, we might have to do the same for Dracula or some of the heroes...
+根据最后一场战斗中发生的事情，我们可能不得不对德古拉或一些英雄做同样的事情……
 
-## Reviewing the schema
+## 审查架构（Reviewing the schema）
 
-[Here's the schema and inserted data we have up to Chapter 20.](code.md)
+[点击这里查看到目前为止我们搭建的架构和插入的数据](code.md)
 
-Now that you've made it through 20 chapters, you should have a good understanding of the schema that we put together and how to work with it. Let's take a look at it one more time from top to bottom. We'll make sure that we fully understand it and think about which parts are good, and which need improvement, for an actual game.
+现在你已经学习了 20 章，你应该对我们搭建的架构以及如何使用它已经有了很好的理解。让我们从上到下再看一遍，以确保我们完全理解了它，并考虑在实际游戏中哪些部分是好的，哪些还需要改进。
 
-The first part to a schema is always the command to start the migration:
+一个架构（a schema）的最初始终是启动迁移的命令：
 
-- `START MIGRATION TO {};`: This is how a schema migration starts. Everything goes inside `{}` curly brackets and ends with a `;` semicolon.
-- `module default {}`: We only used one module (namespace) for our schema, but you can make more if you like. You can see the module when you use `DESCRIBE TYPE AS SDL` (or `AS TEXT`).
+- `START MIGRATION TO {};`：这就是架构迁移的开始方式。一切都在大括号 `{}` 内，并以分号 `;` 结尾。
+- `module default {}`：在我们的架构里只使用了一个模块（命名空间），但如果你愿意，你可以制作更多。你可以使用 `DESCRIBE TYPE AS SDL`（或 `AS TEXT`）看到该模块。
 
-Here's an example with `Person`, which starts like this and shows us the module it's located in:
+这里有一个 `Person` 的例子，它像下面这样开始，并向我们显示了它所在的模块：
 
 `abstract type default::Person`
 
-For a real game our schema would probably be a lot larger with various modules. We might see types in different modules like `abstract type characters::Person` and `abstract type places::Place`, or even modules inside modules like `type characters::PC::Fighter` and `type characters::NPC::Barkeeper`.
+对于真正的游戏，我们的架构可能会更大，包含各种模块。我们可能会看到各个类型在不同的模块里，比如 `abstract type characters::Person` 和 `abstract type places::Place`，甚至模块中的模块，比如 `type characters::PC::Fighter` 和 `type characters::NPC::Barkeeper`。
 
-Our first type is called `HasNameAndCoffins`, which is abstract because we don't want any actual objects of this type. Instead, it is extended by types like `Place` because every place in our game
+我们的第一个类型叫做 `HasNameAndCoffins`，它是抽象的，因为我们不想要任何这种类型的实际对象。相反，它被像 `Place` 这样的类型所扩展，因为在我们游戏中的每一个地方：
 
-1. has a name, and
-2. has a number of coffins (which is important because places without coffins are safer from vampires).
+1. 有一个名称，
+2. 有许多棺材（这很重要，因为没有棺材的地方对人类来说更安全，因为吸血鬼更难出没于此）。
 
 ```sdl
 abstract type HasNameAndCoffins {
@@ -55,9 +56,9 @@ abstract type HasNameAndCoffins {
 }
 ```
 
-We could have gone with [`int32`, `int64` or `bigint`](https://www.edgedb.com/docs/datamodel/scalars/numeric#numerics) for the `coffins` property but we probably won't see that many coffins so `int16` is fine.
+我们本可以对 `coffins` 属性使用 [`int32`、`int64` 或 `bigint`](https://www.edgedb.com/docs/datamodel/scalars/numeric#numerics)，但我们可能不会看到有那么多棺材，所以 `int16` 足够了。
 
-Next is `abstract type Person`. This type is by far the largest, and does most of the work for all of our characters. Fortunately, all vampires used to be people and can have things like `name` and `age`, so they can extend from it too.
+接下来是 `abstract type Person`。这个类型是迄今为止最大的，并且为我们所有的角色完成了大部分工作。幸运的是，所有吸血鬼曾经都是人，并且可以拥有诸如 `name` 和 `age` 之类的东西，因此它们也可以从 `Person` 扩展出来。
 
 ```sdl
 abstract type Person {
@@ -79,11 +80,11 @@ abstract type Person {
 }
 ```
 
-`exclusive` is probably the most common [constraint](https://www.edgedb.com/docs/datamodel/constraints#constraints), which we use to make sure that each character has a unique name. This works because we already know all the names of all the `NPC` types. But if there is a chance of more than one "Jonathan Harker" or other character, we could give `Person` an `id` property and make that exclusive instead.
+`exclusive` 可能是最常见的 [约束](https://www.edgedb.com/docs/datamodel/constraints#constraints) 了，我们用它来确保每个角色都有一个唯一的（无重复的）名称。这样就足够了，是因为我们已经知道所有 `NPC` 类型的名称没有重复的。但是，如果有可能出现多个“乔纳森·哈克（Jonathan Harker）”或其他角色的名称，我们则需要给 `Person` 一个 `id` 属性，并将其设为独占（`exclusive`）。
 
-Properties like `conversational_name` are [computables](https://www.edgedb.com/docs/datamodel/computables#computables). In our case, we added properties like `first` and `last` later on. It is tempting to remove `name` and only use `first` and `last` for every character, but the book has too many characters with strange names: `Woman 2`, `The innkeeper`, etc. In a standard user database, we would certainly only use `first` and `last` and a field like `email` with `constraint exclusive` to make sure that all users are unique.
+像 `conversational_name` 这样的属性是 [可计算的组件（computables）](https://www.edgedb.com/docs/datamodel/computables#computables)。在我们的例子中，我们稍后添加了诸如 `first` 和 `last` 之类的属性。删除 `name` 并只对每个角色使用 `first` 和 `last` 是不错，但书中有太多名字奇怪的角色，比如：`Woman 2`、`The innkeeper`等。在标准的用户数据库中，我们当然只会使用 `first` 和 `last` 以及带有 `constraint exclusive` 的 `email` 字段，以确保所有用户都是唯一的。
 
-Every property has a type (like `str`, `bigint`, etc.). Computables have them too but we don't need to tell EdgeDB the type because the computable itself makes the type. For example, `pen_name` takes `.name` which is a `str` and adds more strings, which will of course produce a `str`. The `++` used to join them together is called [concatenation](https://www.edgedb.com/docs/edgeql/funcops/string#operator::STRPLUS).
+每个属性都有一个类型（如 `str`、`bigint` 等）。 可计算的组件（computables）也有，但我们不需要告诉 EdgeDB 要什么类型，因为它本身就构成了类型。例如，`pen_name` 用到了 `str` 类型的 `.name`，并添加更多其他的字符串，这当然会产生一个 `str`。其中用于将它们连接在一起的 `++` 称为 [拼接/串联（concatenation）](https://www.edgedb.com/docs/edgeql/funcops/string#operator::STRPLUS)。
 
 The two links are `multi link`s, without which a `link` is to only one object. If you just write `link`, it will be a `single link` and you will have to add `LIMIT 1` when creating a link or it will give this error:
 
