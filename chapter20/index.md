@@ -86,15 +86,15 @@ abstract type Person {
 
 每个属性都有一个类型（如 `str`、`bigint` 等）。 可计算的组件（computables）也有，但我们不需要告诉 EdgeDB 要什么类型，因为它本身就构成了类型。例如，`pen_name` 用到了 `str` 类型的 `.name`，并添加更多其他的字符串，这当然会产生一个 `str`。其中用于将它们连接在一起的 `++` 称为 [拼接/串联（concatenation）](https://www.edgedb.com/docs/edgeql/funcops/string#operator::STRPLUS)。
 
-The two links are `multi link`s, without which a `link` is to only one object. If you just write `link`, it will be a `single link` and you will have to add `LIMIT 1` when creating a link or it will give this error:
+其中有两个链接是 `multi link`，如果没有 `multi`，一个 `link` 只能指向一个对象。如果你仅写 `link`，它将是一个 `single link`，你必须在创建链接时添加`LIMIT 1`，否则会出现这个错误：
 
 ```
 error: possibly more than one element returned by an expression for a computable link 'former_self' declared as 'single'
 ```
 
-For `first_appearance` and `last_appearance` we use `cal::local_date` because our game is only based in one part of Europe inside a certain period. For a modern user database we would prefer [`std::datetime`](https://www.edgedb.com/docs/datamodel/scalars/datetime#type::std::datetime) because it is timezone aware and always ISO8601 compliant.
+对于 `first_appearance` 和 `last_appearance`，我们使用 `cal::local_date`，因为我们的游戏设定在特定时期内且仅基于欧洲的一部分。对于现代的用户数据库，我们更喜欢 [`std::datetime`](https://www.edgedb.com/docs/datamodel/scalars/datetime#type::std::datetime) 因为它是感知时区的并且总是符合 ISO8601。
 
-So for databases with users around the world, `datetime` is usually the best choice. Then you can use a function like [`std::to_datetime`](https://www.edgedb.com/docs/edgeql/funcops/datetime#function::std::to_datetime) to turn five `int64`s, one `float64` (for the seconds) and one `str` (for [the timezone](https://en.wikipedia.org/wiki/List_of_time_zone_abbreviations)) into a `datetime` that is always returned as UTC:
+所以对于用户遍布全球的数据库来说，`datetime` 通常是最好的选择。然后，你可以使用 [`std::to_datetime`](https://www.edgedb.com/docs/edgeql/funcops/datetime#function::std::to_datetime) 之类的函数将五个 `int64`、一个 `float64`（用于秒）和一个 `str`（用于 [the timezone](https://en.wikipedia.org/wiki/List_of_time_zone_abbreviations)）转换为一个总是作为 UTC 返回的 `datetime`：
 
 ```edgeql-repl
 edgedb> SELECT std::to_datetime(2020, 10, 12, 15, 35, 5.5, 'KST');
@@ -102,7 +102,7 @@ edgedb> SELECT std::to_datetime(2020, 10, 12, 15, 35, 5.5, 'KST');
 {<datetime>'2020-10-12T06:35:05.500000000Z'} # The return value is UTC, 6:35 (plus 5.5 seconds) in the morning
 ```
 
-A similar abstract type to `HasNameAndCoffins` is this one:
+还有一个与 `HasNameAndCoffins` 类似的抽象类型是：
 
 ```sdl
 abstract type HasNumber {
@@ -110,14 +110,14 @@ abstract type HasNumber {
 }
 ```
 
-We only used this for the `Crewman` type, which only extends two abstract types and nothing else:
+我们只将它用于 `Crewman` 类型，`Crewman` 扩展自两个抽象类型：
 
 ```sdl
 type Crewman extending HasNumber, Person {
 }
 ```
 
-This `HasNumber` type was used for the five `Crewman` objects, who in the beginning didn't have a name. But later on, we used those numbers to create names based on the numbers:
+这个 `HasNumber` 类型用于五个 `Crewman` 对象，它们一开始没有名字。但后来，我们使用这些数字为他们创建了基于数字名称：
 
 ```edgeql
 UPDATE Crewman
@@ -126,9 +126,9 @@ SET {
 };
 ```
 
-So even though it was rarely used, it could become useful later on. For types later in the game you could imagine this being used for townspeople or random NPCs: 'Shopkeeper 2', 'Carriage Driver 12', etc.
+所以即使它很少被用到，它也可能在之后会变得有用。对于游戏后期的类型，你可以想象这将被用于居民或随机 NPC：“店主 2”、“马车司机 12”等等。
 
-Our vampire types extend `Person`, while `MinorVampire` also has an optional (single) link to `Person`. This is because some characters begin as humans and are "reborn" as vampires. With this format, we can use the properties `first_appearance` and `last_appearance` from `Person` to have them appear in the game. And if one is turned into a `MinorVampire`, we can link the two.
+我们的吸血鬼类型扩展了 `Person`，而 `MinorVampire` 也有一个到 `Person` 的可选（单一）链接。这是因为一些角色最初是人类，然后“重生”成为了吸血鬼。有了这个格式，我们可以使用 `Person` 中的 `first_appearance` 和 `last_appearance` 属性让各个角色出现在游戏中。如果有人变成了 `MinorVampire`，我们可以将两者链接起来。
 
 ```sdl
 type Vampire extending Person {
@@ -140,7 +140,7 @@ type MinorVampire extending Person {
 }
 ```
 
-With this format we can do a query like this one that pulls up all people who have turned into `MinorVampire`s.
+有了这个格式，我们可以像下面这样查询所有变成 `MinorVampire` 的人。
 
 ```edgeql
 SELECT Person {
@@ -149,9 +149,9 @@ SELECT Person {
 } FILTER EXISTS .vampire_name;
 ```
 
-In our case, that's just Lucy: `{default::NPC {name: 'Lucy Westenra', vampire_name: {'Lucy Westenra'}}}` But if we wanted to, we could extend the game back to more historical times and link the vampire women to an `NPC` type. That would become their `former_self`.
+在我们的例子中，只有 Lucy: `{default::NPC {name: 'Lucy Westenra', vampire_name: {'Lucy Westenra'}}}` 但如果我们愿意，我们可以将游戏扩展到更早的历史时期，并将那三个吸血鬼女性与 `NPC` 类型联系起来。那将成为他们的 `former_self`。
 
-Our two enums were used for the `PC` and `Sailor` types:
+我们的两个枚举用于 `PC` 和 `Sailor` 类型：
 
 ```sdl
 scalar type Rank extending enum<Captain, FirstMate, SecondMate, Cook>;
@@ -165,17 +165,17 @@ type PC extending Person {
 }
 ```
 
-The enum `Transport` never really got used, and needs some more transportation types. We didn't look at these in detail, but in the book there are a lot of different types of transport. In the last chapter, Arthur's team that waited at Varna used a boat called a "steam launch" which is smaller than the boat "The Demeter", for example. This enum would probably be used in the game logic itself in this sort of way:
+枚举 `Transport` 从未真正被使用过，需要更多的运输类型。我们没有详细研究这些，但在书中有很多不同类型的传输方式。例如，在最后一章中，在瓦尔纳（Varna）等候的亚瑟（Arthur）的团队使用了一艘名为“蒸汽发射（steam launch）”的船，该船比“德米特（The Demeter）”号还小。这个枚举可能会以下面的方式用于游戏逻辑本身：
 
-- choosing `Feet` gives the character a certain speed and costs nothing,
-- `HorseDrawnCarriage` increases speed but decreases money,
-- `Train` increases speed the most but decreases money and can only follow railway lines, etc.
+- 选择 `Feet` 会给角色一定的速度，而且不需要任何费用，
+- `HorseDrawnCarriage` 提高速度但会减少金钱，
+- `Train` 提速最多，同样会减少钱，且只能沿着铁路线行驶等。
 
-`Visit` is one of our two "hackiest" (but most fun) types. We stole most of it from the `Time` type that we created earlier but never used. In it, we have a `time` property that is just a string, but gets used in this way:
+`Visit` 是我们两种“最黑客”（但最有趣）的类型之一。我们从我们之前创建但从未使用过的 `Time` 类型中窃取了大部分。在其中，我们有一个 `time` 属性，它只是一个字符串，以下面的方式使用：
 
-- by casting it into a <cal::local_time> to make the `local_time` property,
-- by slicing its first two characters to get the `hour` property, which is just a string. This is only possible because we know that even single digit numbers like `1` need to be written with two digits: `01`
-- by another computable called `awake` that is either 'asleep' or 'awake' depending on the `hour` property we just made, cast into an `int16`.
+- 通过将其转换为 <cal::local_time> 以创建 `local_time` 属性，
+- 通过切片它的前两个字符来获得 `hour` 属性，它只是一个字符串。这是唯一可能的，因为我们知道即使像 `1` 这样的单个数字也需要用两位数书写：“01”，
+- 由另一个名为 `awake` 的可计算性决定是 'sleep' 或 'awake'，具体取决于我们刚刚创建的 `hour` 属性，并转换为 `int16`。
 
 ```sdl
 type Visit {
@@ -189,7 +189,7 @@ type Visit {
 }
 ```
 
-The NPC type is where we first saw the [`overloaded`](https://www.edgedb.com/docs/edgeql/sdl/links#overloading) keyword, which lets us use properties, links, functions etc. in different ways than the default. Here we wanted to constrain `age` to 120 years, and to use the `places_visited` link in a different way than in `Person` by giving it London as the default.
+NPC 类型是我们第一次看到 [`overloaded`](https://www.edgedb.com/docs/edgeql/sdl/links#overloading) 关键字的地方，它让我们可以以不同于默认的方式使用属性、链接、函数等。在这里，我们希望将 `age` 限制为 120 岁，并以不同于 `Person` 的方式使用 `places_visited` 链接，将其默认值设置为 `London`。
 
 ```sdl
 type NPC extending Person {
@@ -202,7 +202,7 @@ type NPC extending Person {
 }
 ```
 
-Our `Place` type shows that you can extend as many times as you want. It's an `abstract type` that extends another `abstract type`, and then gets extended for other types like `City`.
+我们的 `Place` 类型显示出你可以根据需要扩展任意多次。它是一个 `abstract type`，它扩展自另一个 `abstract type`，然后再扩展为其他类型，例如 `City`。
 
 ```sdl
 abstract type Place extending HasNameAndCoffins {
@@ -211,7 +211,7 @@ abstract type Place extending HasNameAndCoffins {
 }
 ```
 
-The `important_places` property only got used once in this insert:
+`important_places` 属性仅在此插入中使用过一次：
 
 ```edgeql
 INSERT City {
@@ -221,6 +221,7 @@ INSERT City {
 };
 ```
 
+现在它只是一个数组。我们现在可以保持不变，因为我们还没有为酒店和公园等非常小的地方创建类型。但是如果我们确实为这些地方创建了一个新类型，那么我们应该把它变成一个“多链接”。甚至我们的 `OtherPlace` 类型也不是完全正确的类型，如 [annotation](https://www.edgedb.com/docs/edgeql/sdl/annotations#annotations) 所示：
 and right now it is just an array. We can keep it unchanged for now, because we haven't made a type yet for really small locations like hotels and parks. But if we do make a new type for these places, then we should turn it into a `multi link`. Even our `OtherPlace` type is not quite the right type for this, as the [annotation](https://www.edgedb.com/docs/edgeql/sdl/annotations#annotations) shows:
 
 ```sdl
@@ -230,17 +231,18 @@ type OtherPlace extending Place {
 }
 ```
 
+因此，在实际游戏中，我们会创建一些其他较小的位置类型，并将它们设为来自“城市”内的“重要位置”属性的链接。我们也可以将 `important_places` 移动到 `Place`，这样像 `Region` 这样的类型也可以从中链接。
 So in a real game we would create some other smaller location types and make them a link from the `property important_places` inside `City`. We might also move `important_places` to `Place` so that types like `Region` could link from it too.
 
-Annotations: we used `abstract annotation` to add a new annotation:
+注释：我们使用 `abstract annotation` 来添加新注释：
 
 ```sdl
 abstract annotation warning;
 ```
 
-because by default a type [can only have annotations](https://www.edgedb.com/docs/datamodel/annotations#ref-datamodel-annotations) called `title`, `description`, or `deprecated`. We only used annotations for fun for this one type, because nobody else is working on our database yet. But if we made a real database for a game with many people working on it, we would put annotations everywhere to make sure that they know how to use each type.
+因为默认情况下，类型只能有称为 `title`、`description` 或 `deprecated` 的 [注释](https://www.edgedb.com/docs/datamodel/annotations#ref-datamodel-annotations)。我们对这种类型使用注释只是为了好玩，因为还没有其他人也在处理我们的数据库。但是，如果我们为一个有很多人参与制作的游戏创建了一个真实的数据库，我们就会在各处放置注释，以确保所有人都知道该如何使用每种类型。
 
-Our `Lord` type was only created to show how to use `constraint expression on`, which lets us make our own constraints:
+我们创建 `Lord` 类型只是为了展示如何使用 `constraint expression on`，这让我们可以创建我们自己的约束：
 
 ```sdl
 type Lord extending Person {
@@ -250,6 +252,7 @@ type Lord extending Person {
 };
 ```
 
+（我们可能会在真正的游戏中删除它，或者它可能会成为类型 Lord 扩展 PC，以便玩家角色可以选择成为领主、小偷、侦探等。）
 (We might remove this in a real game, or maybe it would become type Lord extending PC so player characters could choose to be a lord, thief, detective, etc. etc.)
 
 The `Lord` type uses the function [`contains`](https://www.edgedb.com/docs/edgeql/funcops/generic#function::std::contains) which returns `true` if the item we are searching for is inside the string, array, etc. It also uses `__subject__` which refers to the type itself: `__subject__.name` means `Person.name` in this case. [Here are some more examples](https://www.edgedb.com/docs/datamodel/constraints#constraint::std::expression) from the documentation of using `constraint expression on`.
@@ -335,15 +338,15 @@ This one is probably closest to an actual usable type for a real game. With `sta
 
 The last two types in our schema, `Currency` and `Pound`, were created two chapters ago so we won't review them here.
 
-## Navigating EdgeDB documentation
+## 导览 EdgeDB 文档
 
-Now that you have reached the end of the book, you will certainly start looking at the EdgeDB documentation. We'll close the book out with some tips to do so, so that it feels familiar and easy to look through.
+现在你已经读到了本书的结尾，你肯定会开始查看 EdgeDB 文档。我们将通过一些提示来结束本书，以便你查看文档时感觉熟悉且易于阅读。
 
-### Syntax
+### 句法
 
-This book included a lot of links to EdgeDB documentation, such as types, functions, and so on. If you are trying to create a type, property etc. and are having trouble, a good idea is to start with the section on syntax. This section always shows the order you need to follow, and all the options you have.
+本书包含了很多 EdgeDB 文档的链接，例如类型、函数等。如果你尝试创建类型、属性等并且遇到问题，最好从语法部分开始。这部分展示了需要遵循的顺序以及你拥有的所有选项。
 
-For a simple example, [here is the syntax on creating a module](https://www.edgedb.com/docs/edgeql/sdl/modules):
+举个简单的例子，[这里是创建模块的语法](https://www.edgedb.com/docs/edgeql/sdl/modules)：
 
 ```sdl-synopsis
 module ModuleName "{"
@@ -352,9 +355,9 @@ module ModuleName "{"
 "}"
 ```
 
-Looking at that you can see that a module is just a module name, `{}`, and everything inside (the schema declarations). Easy enough.
+你可以看到一个模块只是一个模块名称加上 `{}` 和里面的所有东西（架构声明）。这很容易。
 
-How about object types? [They look like this](https://www.edgedb.com/docs/edgeql/sdl/objects):
+那么，对象类型呢？ [它们看起来像这样](https://www.edgedb.com/docs/edgeql/sdl/objects)：
 
 ```sdl-synopsis
 [abstract] type TypeName [extending supertype [, ...] ]
@@ -368,9 +371,9 @@ How about object types? [They look like this](https://www.edgedb.com/docs/edgeql
   "}" ]
 ```
 
-This should be familiar to you: you need `type TypeName` to start. You can add `abstract` on the left and `extending` for other types, and then everything else goes inside `{}`.
+这对你来说应该很熟悉了：你需要使用 `type TypeName` 来启动。你可以在左侧添加 `abstract`，也可以在右侧添加 `extending` 来拓展某个类型，然后其他所有内容都放在随后的 `{}` 当中。
 
-Meanwhile, the [properties are more complex](https://www.edgedb.com/docs/edgeql/sdl/props) and include three types: concrete, computable, and abstract. We're most familiar with concrete so let's take a look at that:
+同时，[属性更复杂些](https://www.edgedb.com/docs/edgeql/sdl/props) 它包括三种类型：具体的（concrete）、可计算（computable）的和抽象的（abstract）。让我们来看一下我们最熟悉的“具体的（concrete）”属性声明：
 
 ```sdl-synopsis
 [ overloaded ] [{required | optional}] [{single | multi}]
@@ -385,7 +388,7 @@ Meanwhile, the [properties are more complex](https://www.edgedb.com/docs/edgeql/
     "}" ]
 ```
 
-You can think of the syntax as a helpful guide to keep your declarations in the right order.
+你可以将语法视为有助于使声明保持正确顺序的指南。
 
 ### Dipping into DDL
 
@@ -433,25 +436,45 @@ Not as bad as you might have thought! The two general rules for experimenting a 
 - You can get a lot done just by adding `CREATE` to every line, `ALTER` to change things and `DROP` to delete them,
 - Using `DESCRIBE TYPE` and `DESCRIBE TYPE AS SDL` are very useful to compare the two. If you do this with a type you created and are familiar with, you'll be able to use it as a stepping stone if you are curious about DDL.
 
-## EdgeDB lexical structure
+## EdgeDB 词法结构
 
-You might want to take a look at or bookmark [this page](https://www.edgedb.com/docs/edgeql/lexical/) for reference during your projects. It contains the whole lexical structure of EdgeDB including items that are maybe too dry for a textbook like this one. Things like order of precedence for operators, all reserved keywords, which characters can be used in identifiers, and so on.
+你可能想要查看或收藏 [此页面](https://www.edgedb.com/docs/edgeql/lexical/) 以供你在项目期间可以参考。它包含 EdgeDB 的整个词汇结构，包括一些可能对这样的教科书来说有些枯燥的条目。诸如运算符的优先顺序、所有保留关键字、可在标识符中使用哪些字符等等。
 
-## Getting help
+## 获得帮助
 
-Help is always just a message away. The best way to get help is to start a discussion on [our discussion board](https://github.com/edgedb/edgedb/discussions) on GitHub. You can also [start an issue here](https://github.com/edgedb/edgedb/issues/new/choose) on EdgeDB, or do the same for the Easy EdgeDB book on this very page.
+帮助总是一条信息就能搞定。获得帮助的最佳方式是在 GitHub 上的 [我们的讨论板](https://github.com/edgedb/edgedb/discussions) 上发起讨论。你还可以对 EdgeDB [在此处提出问题](https://github.com/edgedb/edgedb/issues/new/choose)，也同样可以在该页面对本书提出问题。
 
-## And now it's time to say goodbye
+## 再见
 
-We hope you enjoyed learning EdgeDB through a story, and are now familiar enough with it to implement it for your own projects. Ironically, if we wrote the book with enough detail to answer all your questions then we might never see you on the forums! If that's the case, then we wish you the best of luck with your projects. Let's finish the book up with a poem from another book, the Lord of the Rings, on the endless possibilities of life.
+我们希望你能喜欢通过这个故事来学习 EdgeDB，并且现在已经足够熟悉 EdgeDB 以在你自己的项目中使用它。有趣的是，如果我们写的书足够详细以回答你的所有问题，那么我们可能永远不会在论坛上看到你！如果是那样，我们只能祝你的项目一切顺利。现在，让我们用另一本书《指环王》中的一首诗来结束这本书，关于生命的无限可能性。
 
 > The Road goes ever on and on
+> 漫漫长路
+> 
 > Down from the door where it began.
+> 起于家门
+> 
 > Now far ahead the Road has gone,
+> 路其修远
+> 
 > And I must follow, if I can,
+> 紧随不息
+> 
 > Pursuing it with eager feet,
+> 步履匆匆
+> 
 > Until it joins some larger way
+> 直奔通途
+> 
 > Where many paths and errands meet.
-> And whither then? I cannot say.
+> 歧路迭起
+> 
+> And whither then?
+> 去向何方？
+> 
+> I cannot say.
+> 我心彷徨
+> 
+> PS: 中文翻译部分采用石中歌老师，邓嘉宛老师和杜蕴慈老师译本。
 
-See you, or not see you, however things turn out! Thanks again for reading.
+再见，或者不再见，不管结果如何！再次感谢你的阅读。
