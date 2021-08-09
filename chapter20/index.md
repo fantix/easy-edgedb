@@ -4,12 +4,11 @@ tags: Ddl, Sdl, Edgedb Community
 
 # 第二十章 - 最后一战
 
-你进入了最后一章 —— 恭喜！下面是本章的最后一幕，但我们并不打算剧透最终的结局：
-You made it to the final chapter - congratulations! Here's the final scene from the last chapter, though we won't spoil the final ending:
+终于，我们来到了最后一章 —— 恭喜！下面是本章的最后一幕，但我们并不打算剧透最终的结局：
 
 > 米娜（Mina）现在几乎是一个吸血鬼，她说无论一天中的什么时候，她都能感觉到德古拉（Dracula）。范海辛（Van Helsing）抵达德古拉城堡，米娜在外面等候。范海辛进到城堡摧毁了吸血鬼女人和德古拉的棺材。与此同时，其他人从南方赶来，也将抵达德古拉城堡。德古拉的朋友们把他放在他的盒子（棺材）里，并用一辆马车以最快的速度把他运回城堡。太阳快落山了，下起了雪，必须尽快抓到德古拉。他们越来越靠近，终于抓住了盒子。他们拔出钉子打开了棺材，看到德古拉正躺在里面。乔纳森立即拔出他的刀。但就在这时，太阳下山了。德古拉微笑着睁开眼睛，然后……
 
-如果你对结局感到好奇，可以 [查看这里](http://www.gutenberg.org/files/345/345-h/345-h.htm#CHAPTER_XIX) 并搜索“the look of hate in them turned to triumph”。
+如果你对最终的结局感到好奇，可以点击 [查看这里](http://www.gutenberg.org/files/345/345-h/345-h.htm#CHAPTER_XIX) 并搜索“the look of hate in them turned to triumph”。
 
 然而，我们可以确信的是女吸血鬼们已经被摧毁了，因此我们可以通过给她们一个 `last_appearance` 来做最后的改变。范海辛在 11 月 5 日摧毁了她们，因此我们将插入该日期。但不要忘记过滤掉露西 —— 她并不在居住在城堡里的三个女 `MinorVampire` 之中。
 
@@ -24,7 +23,7 @@ SET {
 
 ## 审查架构（Reviewing the schema）
 
-[点击这里查看到目前为止我们搭建的架构和插入的数据](code.md)
+[点击这里查看到目前为止我们搭建的架构和插入的所有数据](code.md)
 
 现在你已经学习了 20 章，你应该对我们搭建的架构以及如何使用它已经有了很好的理解。让我们从上到下再看一遍，以确保我们完全理解了它，并考虑在实际游戏中哪些部分是好的，哪些还需要改进。
 
@@ -41,8 +40,8 @@ SET {
 
 我们的第一个类型叫做 `HasNameAndCoffins`，它是抽象的，因为我们不想要任何这种类型的实际对象。相反，它被像 `Place` 这样的类型所扩展，因为在我们游戏中的每一个地方：
 
-1. 有一个名称，
-2. 有许多棺材（这很重要，因为没有棺材的地方对人类来说更安全，因为吸血鬼更难出没于此）。
+1. 都有一个名称；
+2. 都有许多棺材（这很重要，因为没有棺材的地方对人类来说更安全，因为吸血鬼更难出没于此）。
 
 ```sdl
 abstract type HasNameAndCoffins {
@@ -58,7 +57,7 @@ abstract type HasNameAndCoffins {
 
 我们本可以对 `coffins` 属性使用 [`int32`、`int64` 或 `bigint`](https://www.edgedb.com/docs/datamodel/scalars/numeric#numerics)，但我们可能不会看到有那么多棺材，所以 `int16` 足够了。
 
-接下来是 `abstract type Person`。这个类型是迄今为止最大的，并且为我们所有的角色完成了大部分工作。幸运的是，所有吸血鬼曾经都是人，并且可以拥有诸如 `name` 和 `age` 之类的东西，因此它们也可以从 `Person` 扩展出来。
+接下来是 `abstract type Person`。这个类型是迄今为止最大的，并且为我们所有的角色完成了大部分的工作。幸运的是，所有吸血鬼曾经都是人，并且可以拥有诸如 `name` 和 `age` 之类的东西，因此它们也可以从 `Person` 扩展出来。
 
 ```sdl
 abstract type Person {
@@ -221,8 +220,7 @@ INSERT City {
 };
 ```
 
-现在它只是一个数组。我们现在可以保持不变，因为我们还没有为酒店和公园等非常小的地方创建类型。但是如果我们确实为这些地方创建了一个新类型，那么我们应该把它变成一个“多链接”。甚至我们的 `OtherPlace` 类型也不是完全正确的类型，如 [annotation](https://www.edgedb.com/docs/edgeql/sdl/annotations#annotations) 所示：
-and right now it is just an array. We can keep it unchanged for now, because we haven't made a type yet for really small locations like hotels and parks. But if we do make a new type for these places, then we should turn it into a `multi link`. Even our `OtherPlace` type is not quite the right type for this, as the [annotation](https://www.edgedb.com/docs/edgeql/sdl/annotations#annotations) shows:
+`important_places` 现在只是一个数组。我们现在可以保持不变，因为我们还没有为酒店和公园等非常小的地方创建类型。但是如果我们确实为这些地方创建了一个新类型，那么我们应该把它变成一个“多链接”。甚至我们的 `OtherPlace` 类型也不是完全正确的类型，如 [annotation](https://www.edgedb.com/docs/edgeql/sdl/annotations#annotations) 所示：
 
 ```sdl
 type OtherPlace extending Place {
@@ -231,8 +229,7 @@ type OtherPlace extending Place {
 }
 ```
 
-因此，在实际游戏中，我们会创建一些其他较小的位置类型，并将它们设为来自“城市”内的“重要位置”属性的链接。我们也可以将 `important_places` 移动到 `Place`，这样像 `Region` 这样的类型也可以从中链接。
-So in a real game we would create some other smaller location types and make them a link from the `property important_places` inside `City`. We might also move `important_places` to `Place` so that types like `Region` could link from it too.
+因此，在真实的游戏中，我们会创建一些其他较小的位置类型，并将它们设为来自 `City` 内的 `property important_places` 属性的链接。我们也可以将 `important_places` 移动到 `Place`，这样像 `Region` 这样的类型也可以从中链接。
 
 注释：我们使用 `abstract annotation` 来添加新注释：
 
@@ -240,7 +237,7 @@ So in a real game we would create some other smaller location types and make the
 abstract annotation warning;
 ```
 
-因为默认情况下，类型只能有称为 `title`、`description` 或 `deprecated` 的 [注释](https://www.edgedb.com/docs/datamodel/annotations#ref-datamodel-annotations)。我们对这种类型使用注释只是为了好玩，因为还没有其他人也在处理我们的数据库。但是，如果我们为一个有很多人参与制作的游戏创建了一个真实的数据库，我们就会在各处放置注释，以确保所有人都知道该如何使用每种类型。
+因为默认情况下，类型只能有称为 `title`、`description` 或 `deprecated` 的 [注释](https://www.edgedb.com/docs/datamodel/annotations#ref-datamodel-annotations)。我们对这种类型使用注释只是为了好玩，因为还没有其他人同时在处理我们的数据库。但是，如果我们为一个有很多人参与制作的游戏创建了一个真实的数据库，我们就会在各处放置注释，以确保所有人都知道该如何使用每种类型。
 
 我们创建 `Lord` 类型只是为了展示如何使用 `constraint expression on`，这让我们可以创建我们自己的约束：
 
@@ -252,12 +249,11 @@ type Lord extending Person {
 };
 ```
 
-（我们可能会在真正的游戏中删除它，或者它可能会成为类型 Lord 扩展 PC，以便玩家角色可以选择成为领主、小偷、侦探等。）
-(We might remove this in a real game, or maybe it would become type Lord extending PC so player characters could choose to be a lord, thief, detective, etc. etc.)
+（我们可能会在真正的游戏中删除它，或者它可能会成为扩展自 PC 的类型 Lord，以便玩家角色可以选择成为领主、小偷、或侦探等等。）
 
-The `Lord` type uses the function [`contains`](https://www.edgedb.com/docs/edgeql/funcops/generic#function::std::contains) which returns `true` if the item we are searching for is inside the string, array, etc. It also uses `__subject__` which refers to the type itself: `__subject__.name` means `Person.name` in this case. [Here are some more examples](https://www.edgedb.com/docs/datamodel/constraints#constraint::std::expression) from the documentation of using `constraint expression on`.
+`Lord` 类型使用了函数 [`contains`](https://www.edgedb.com/docs/edgeql/funcops/generic#function::std::contains)，如果字符串、数组等包含我们正在搜索的项目，则该函数返回 `true`。这里还使用了 `__subject__`，它指的是类型本身：在这种情况下，`__subject__.name` 的意思是 `Person.name`。[这里有更多示例](https://www.edgedb.com/docs/datamodel/constraints#constraint::std::expression) 来自 `constraint expression on` 的使用文档。
 
-Another possible way to create a `Lord` is to do it this way, since `Person` has the property called `title`:
+另一种创建 `Lord` 的可能方法如下所示，因为 `Person` 具有名为 `title` 的属性：
 
 ```sdl
 type Lord extending Person {
@@ -267,9 +263,9 @@ type Lord extending Person {
 }
 ```
 
-This will depend on if we want to create `Lord` types with names just as a single string in `.name`, or by using `.first`, `.last`, `.title` etc. with a computable to form the full name.
+这将取决于我们创建 `Lord` 类型时，名称是使用 `.name` 中的单个字符串，还是使用带有可计算形式的 `.first`、`.last`、`.title` 等全名。
 
-Our next types extending `Place` including `Country` and `Region` were looked at just last chapter, so we won't review them here. But `Castle` is a bit unique:
+接下来扩展自 `Place` 的类型包括 `Country` 和 `Region`，我们刚在上一章看到过，所以不在这里回顾它们了。但是 `Castle` 有些特别：
 
 ```sdl
 type Castle extending Place {
@@ -277,7 +273,7 @@ type Castle extending Place {
 }
 ```
 
-Back in Chapter 7, we used this in a query to see if Jonathan could break any of the doors and escape the castle. The idea was simple: Jonathan would try to open every door, and if he had more strength then any one of them then he could escape the castle.
+回到第 7 章，我们在查询中使用了它来查看乔纳森（Jonathan）是否可以打破任何门并逃离城堡。这个想法很简单：乔纳森会尝试打开每一扇门，只要他比其中任意一个门更有力量，那么他就可以逃离城堡。
 
 ```edgeql
 WITH
@@ -286,7 +282,7 @@ WITH
 SELECT jonathan_strength > min(array_unpack(doors));
 ```
 
-However, later on we learned the `any()` function so let's see how we could use it here. With `any()`, we could change the query to this:
+但是，稍后我们学习了 `any()` 函数，所以让我们看看如何在这里使用它。使用 `any()`，我们可以将查询更改为：
 
 ```edgeql
 WITH
@@ -295,19 +291,20 @@ WITH
 SELECT any(array_unpack(doors) < jonathan_strength); # Only this part is different
 ```
 
-And of course, we could also create a function to do the same now that we know how to write functions and how to use `any()`. Since we are filtering by name (Jonathan Harker and Castle Dracula), the function would also just take two strings and do the same query.
+当然，我们也可以创建一个函数来做同样的事情，因为我们知道如何编写函数以及如何使用 `any()`。由于我们按名称进行过滤（Jonathan Harker 和 Castle Dracula），因此该函数也将只采用两个字符串并执行相同的查询。
 
+不要忘记，我们还需要 `array_unpack()`，因为函数 [`any()`](https://www.edgedb.com/docs/edgeql/funcops/set#function::std::any) 是作用于集合的：
 Don't forget, we needed `array_unpack()` because the function [`any()`](https://www.edgedb.com/docs/edgeql/funcops/set#function::std::any) works on sets:
 
 ```sdl
 std::any(values: SET OF bool) -> bool
 ```
 
-So this (a set) will work: `SELECT any({5, 6, 7} = 7);`
+所以这个（一个集合）将起作用：`SELECT any({5, 6, 7} = 7);`
 
-But this (an array) will not: `SELECT any([5, 6, 7] = 7);`
+但是这个（一个数组）将不工作：`SELECT any([5, 6, 7] = 7);`
 
-Our next type is `BookExcerpt`, which we imagined being useful for the humans creating the database. It would need a lot of inserts from each part of the book, with the text exactly as written. Because of that, we chose to use [`index on`](https://www.edgedb.com/docs/edgeql/sdl/indexes#indexes) for the `excerpt` property, which will then be faster to look up. Remember to use this only where needed: it will increase lookup speed, but make the database larger overall.
+接下来的类型是 `BookExcerpt`，我们认为它对创建数据库的人是有用的。它需要从书中的每个部分插入大量内容，并且文本与所写的完全相同。因此，我们选择使用 [`index on`](https://www.edgedb.com/docs/edgeql/sdl/indexes#indexes) 作为 `excerpt` 属性，这样查找起来会更快。记住仅在需要的地方使用它：它会提高查找速度，但也会使数据库整体变大。
 
 ```sdl
 type BookExcerpt {
@@ -318,7 +315,7 @@ type BookExcerpt {
 }
 ```
 
-Next is our other fun and hacky type, `Event`.
+接下来是另一个有趣且“黑客”的类型 `Event`。
 
 ```sdl
 type Event {
@@ -334,9 +331,9 @@ type Event {
 }
 ```
 
-This one is probably closest to an actual usable type for a real game. With `start_time` and `end_time`, `place` and `people` (plus `url`) we can properly arrange which characters are at which locations, and when. The `description` property is for users of the database with descriptions like `'The Demeter arrives at Whitby, crashing on the beach'` that are used to find events when we need to.
+这个类型可能最接近真实游戏的实际可用的类型。使用 `start_time` 和 `end_time`、`place` 和 `people`（加上 `url`），我们可以正确地安排什么角色在什么位置以及何时。`description` 属性是为数据库用户提供的，如 `'The Demeter arrives at Whitby, crashing on the beach'` 这样的描述，用于在我们需要时查找事件。
 
-The last two types in our schema, `Currency` and `Pound`, were created two chapters ago so we won't review them here.
+架构中的最后的两种类型是 `Currency` 和 `Pound`，它们是在两章前刚创建的，所以我们就不在这里回顾它们了。
 
 ## 导览 EdgeDB 文档
 
@@ -390,17 +387,17 @@ module ModuleName "{"
 
 你可以将语法视为有助于使声明保持正确顺序的指南。
 
-### Dipping into DDL
+### 深入探寻 DDL
 
-DDL is something you'll see frequently in the documentation. Up to now, we've only mentioned DDL for functions because it's so easy to just add `CREATE` to make a function whenever you need.
+DDL 是你经常会在文档中看到的内容。到目前为止，我们只提到了函数的 DDL，因为在需要时添加 `CREATE` 来创建函数非常容易。
 
 SDL: `function says_hi() -> str using('hi');`
 
 DDL: `CREATE FUNCTION says_hi() -> str USING('hi')`
 
-And even the capitalization doesn't matter.
+大小写也无关紧要。
 
-But for types, DDL requires a lot more typing, using keywords like `CREATE`, `SET`, `ALTER`, and so on. This could still be worth it if you want to make small changes or quick types though. For example, here is a Cat type that just has a name:
+但是对于类型，DDL 需要更多的输入，使用诸如 `CREATE`、`SET`、`ALTER` 等关键字。如果你想进行小的更改或快速键入，这仍然是值得的。例如，这是一个只有名字的 Cat 类型：
 
 ```sdl
 type Cat {
@@ -409,7 +406,7 @@ type Cat {
 };
 ```
 
-When you enter `DESCRIBE TYPE Cat as SDL`, it will show something similar:
+当你输入 `DESCRIBE TYPE Cat as SDL` 时，它会显示类似的内容：
 
 ```sdl
 type default::Cat {
@@ -417,13 +414,13 @@ type default::Cat {
 };
 ```
 
-It's the same declaration but includes some information we didn't need to specify:
+这是相同的声明，但包括一些我们不需要指定的信息：
 
-- That it's in the module default
-- That it's optional, as opposed to required,
-- That it's a single property, as opposed to multi
+- 它在模块 default 中，
+- 它是可选的，而不是必需的，
+- 它是一个单一的属性，而不是多个。
 
-So what does it look like as DDL? `DESCRIBE TYPE Cat` will show us:
+那么它作为 DDL 是什么样子的呢？ `DESCRIBE TYPE Cat` 将向我们展示：
 
 ```edgeql
 CREATE TYPE default::Cat {
@@ -431,10 +428,10 @@ CREATE TYPE default::Cat {
 };
 ```
 
-Not as bad as you might have thought! The two general rules for experimenting a bit with DDL are:
+没有你想象的那么糟糕！使用 DDL 的两个一般规则是：
 
-- You can get a lot done just by adding `CREATE` to every line, `ALTER` to change things and `DROP` to delete them,
-- Using `DESCRIBE TYPE` and `DESCRIBE TYPE AS SDL` are very useful to compare the two. If you do this with a type you created and are familiar with, you'll be able to use it as a stepping stone if you are curious about DDL.
+- 只需在每一行添加 `CREATE` 你就可以完成很多工作，用 `ALTER` 更改内容，用 `DROP` 删除它们，
+- 使用 `DESCRIBE TYPE` 和 `DESCRIBE TYPE AS SDL` 来比较两者非常有用。如果使用你创建并熟悉的类型执行此操作，你将可以使用它作为垫脚石如果你对 DDL 好奇的话。
 
 ## EdgeDB 词法结构
 
