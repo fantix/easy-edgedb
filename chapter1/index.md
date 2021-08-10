@@ -58,31 +58,31 @@ type City {
 
 ## 迁移（Migration）
 
-我们尚未创建我们的数据库。[在安装 EdgeDB 后](https://edgedb.com/download) 我们需要做两个步骤。第一步，我们需要用关键字 `CREATE DATABASE` 及我们要赋予其的名称来创建一个数据库：
+目前我们还未创建我们的数据库。在 [安装 EdgeDB](https://edgedb.com/download) 后，还有两个小步骤需要做。首先，我们需要键入关键字 `CREATE DATABASE` 及数据库的名称（比如：dracula）来创建一个数据库：
 
 ```edgeql
 CREATE DATABASE dracula;
 ```
 
-然后我们键入 `\c dracula` 去链接它。
+然后我们键入 `\c dracula` 去连接该数据库。
 
-最后，我们需要做一个迁移。这将为数据库提供我们开始与之交互所需的结构。 EdgeDB 的迁移并不困难：
+最后，我们需要做一个迁移。这将为数据库提供我们可以开始与之交互所需的结构。 EdgeDB 的迁移并不困难：
 
-- 首先，键入 `START MIGRATION TO {}`
-- 在这个里面你至少要添加一个 `module`，你的类型才可以被访问。一个模块是一个命名空间，是相似类型聚集在一起的地方。`::` 左边的部分是模块的名称，右边是模块里包含的类型。如果你写了 `module default`，然后写 `type Person`，这意味着类型 `Person` 就会是 `default::Person`。因此，例如，当你看到像 `std::bytes` 这样的类型时，这意味着 `std`（标准库）中的类型 `bytes`。
-- 然后添加我们上面提及的类型，并以`}`结尾结束该块。然后在此之外，键入 `POPULATE MIGRATION` 以添加数据。
+- 首先，键入 `START MIGRATION TO {}`。
+- 在这个里面你至少要添加一个 `module`，你的类型才可以被访问。一个模块是一个命名空间，是相似类型聚集在一起的地方。`::` 左边的部分是模块的名称，右边是模块里包含的类型。如果你写了 `module default`，然后写 `type Person`，`Person` 类型将是 `default::Person`。因此，例如，当你看到像 `std::bytes` 这样的类型时，它是指 `std`（标准库）中的类型 `bytes`。
+- 然后添加我们上面提及的类型，并以`}`结尾来结束该表达块。然后在此之外，键入 `POPULATE MIGRATION` 以添加数据。
 - 最后，键入 `COMMIT MIGRATION` 以完成迁移。
 
-当然，除此之外还有很多其他命令，尽管我们在本书中不需要它们。但你可以将下面的四个页面添加至书签以供今后使用：
+当然，除此之外自然还有很多其他命令，尽管我们在本书中并不需要它们，但你可以将下面的四个页面添加至书签以供今后需要时使用：
 
 - [Admin commands](https://www.edgedb.com/docs/cheatsheet/admin)：创建用户角色，设置密码，配置端口等。
-- [CLI commands](https://www.edgedb.com/docs/cheatsheet/cli)：创建数据库，角色，为角色设置密码，链接数据库等。
+- [CLI commands](https://www.edgedb.com/docs/cheatsheet/cli)：创建数据库，角色，为角色设置密码，连接数据库等。
 - [REPL commands](https://www.edgedb.com/docs/cheatsheet/repl)：主要介绍我们将在本书中使用的许多命令的快捷方式。
-- [Various commands](https://www.edgedb.com/docs/edgeql/statements/tx_rollback#rollback)：关于回滚事务、保存点声明等。
+- [Various commands](https://www.edgedb.com/docs/edgeql/statements/tx_rollback#rollback)：关于回滚事务、保存点声明等等。
 
 我们还提供了以下编辑器的语法高亮插件，如果你愿意，可以通过相应的链接进行下载：[Atom](https://atom.io/packages/edgedb)，[Visual Studio Code](https://marketplace.visualstudio.com/itemdetails?itemName=magicstack.edgedb)，[Sublime Text](https://packagecontrol.io/packages/EdgeDB)，[Vim](https://github.com/edgedb/edgedb-vim).
 
-这里，我们创建类型 `City` 如下：
+这是我们刚刚创建的类型 `City`：
 
 ```edgeql
 type City {
@@ -93,13 +93,13 @@ type City {
 
 ## 选择（Selecting）
 
-在 EdgeDB 里，有三个包含了 `=` 的操作符：
+在 EdgeDB 里，有三个包含了 `=` 的操作符，它们分别是：
 
-- `:=` 用于声明，
-- `=` 用于检查相等性 (不是 `==`),
+- `:=` 用于声明；
+- `=` 用于检查相等性 (注意：不是 `==`)；
 - `!=` 是 `=` 相反的意思。
 
-让我们用 `SELECT` 来试试这些操作符。`SELECT` 是 EdgeDB 里主要的查询命令，你可以使用它根据其后面的输入语句查询相应的结果。
+让我们用 `SELECT` 来试试这些操作符。`SELECT` 是 EdgeDB 里主要的查询命令，你可以使用它基于其后面的输入语句查询相应的结果。
 
 顺便说一句，EdgeDB 里的关键字不区分大小写，因此使用 `SELECT`，`select` 和 `SeLeCT` 都是一样的效果。但是使用大写字母是数据库的常规做法，因此我们将继续以这种方式使用它们。
 
@@ -109,30 +109,30 @@ type City {
 SELECT 'Jonathan Harker\'s journey begins.';
 ```
 
-这将返回 `{'Jonathan Harker\'s journey begins.'}`，这并不惊讶。你是否注意到它是在一个花括号 `{}` 里返回的？这个 `{}` 意味着它是一个集合，并且事实上，[在 EdgeDB 里一切都是一个集合](https://www.edgedb.com/docs/edgeql/overview#everything-is-a-set)（请确保记住这一点）。这也是为什么 EdgedB 里没有 null：在其他语言里会有 null，在 EdgeDB 里你只会得到一个空集：`{}`。
+毫无意外，它将返回 `{'Jonathan Harker\'s journey begins.'}`，但你是否注意到它是在一个花括号 `{}` 里返回的？这个 `{}` 意味着它是一个集合，并且事实上，[在 EdgeDB 里一切都是一个集合](https://www.edgedb.com/docs/edgeql/overview#everything-is-a-set)（请确保记住这一点）。这也是为什么 EdgedB 里没有 null：在其他语言里会有 null，但在 EdgeDB 里你只会得到一个空集：`{}`。
 
-接下来，我们用 `:=` 为一个变量赋值：
+接下来，我们来用 `:=` 为一个变量赋值：
 
 ```edgeql
 SELECT jonathans_name := 'Jonathan Harker';
 ```
 
-这只是返回了我们给它的内容 `{'Jonathan Harker'}`。但是这次返回的是我们分配的名为 `jonathans_name` 的字符串。
+它只是返回了我们给它的内容 `{'Jonathan Harker'}`。但是这次返回的是我们赋予的变量名为 `jonathans_name` 的字符串。
 
-现在让我们用这个变量做一些事情。我们可以通过关键字 `WITH` 使用这个变量，然后将它和 `'Count Dracula'` 进行比较：
+现在让我们用这个变量做一些事情。我们可以通过用关键字 `WITH` 来使用这个变量，然后用它和 `'Count Dracula'` 进行比较：
 
 ```edgeql
 WITH jonathans_name := 'Jonathan Harker',
 SELECT jonathans_name != 'Count Dracula';
 ```
 
-输出结果是 `{true}`。当然，你可以只是写 `SELECT 'Jonathan Harker' != 'Count Dracula'` 而得到同样的额结果。很快我们就会对我们用 `:=` 分配的变量做一些事情。
+输出结果是 `{true}`。当然，你也可以写 `SELECT 'Jonathan Harker' != 'Count Dracula'` 而得到同样的结果。接下来我们马上就会对我们用 `:=` 赋值的变量做一些事情。
 
 ## 插入对象（Inserting objects）
 
-让我们回到架构上。稍后我们可以考虑为我们想象的游戏添加城市的时区和位置。但与此同时，我们将使用 `INSERT` 向数据库添加一些项目。
+回到架构设计上，稍后我们会考虑给我们游戏中的城市增加时区和地理位置等信息。但现在，我们先来使用 `INSERT` 向数据库中插入一些数据。
 
-别忘了用逗号分割各个属性，并用分号结束 `INSERT`。EdgeDB 也倾向用两个空格作为缩进。
+别忘了要用逗号分割开各个属性，并用分号结束 `INSERT` 语句。此外，EdgeDB 同样倾向用两个空格作为缩进。
 
 ```edgeql
 INSERT City {
@@ -150,9 +150,9 @@ INSERT City {
 };
 ```
 
-注意最后一项末尾的逗号是可选的 —— 你可以加上逗号，也可以不加逗号。在这里，我们有时会在末尾添加一个逗号，而在其他时候则将其省略。
+注意：花括号里最后一项末尾的逗号是可选的——你可以加上逗号，也可以不加逗号。本书里，我们有时会在末尾添加一个逗号，有时也会将其省略。
 
-最后，`Person` 的插入看起来像这样：
+最后，`Person` 的插入如下所示：
 
 ```edgeql
 INSERT Person {
@@ -161,16 +161,16 @@ INSERT Person {
 };
 ```
 
-但是请稍等，这个插入将不会链接到任何我们已经做过插入的 `City`。这是我们的架构需要改进的地方：
+但是稍等，这个插入将不会链接到任何我们已经插入到数据库里的 `City`。这是我们的架构需要改进的地方：
 
-- 我们拥有一个 `Person` 类型和一个 `City` 类型,
-- `Person` 类型具有带有城市名称的 `places_visited` 属性，但它们只是数组中的字符串。最好是能以某种方式将这个属性链接到 `City` 类型。
+- 我们有一个 `Person` 类型和一个 `City` 类型，
+- `Person` 类型含有属性 `places_visited`，用来展示访问过的城市的名称，但它们只是数组中的字符串。我们最好能以某种方式将这个属性链接到 `City` 类型上。
 
-所以我们先不要做 `Person` 的插入。我们将先通过将 `property` 的 `array<str>` 更改为 `City` 类型的、称为 `multi link` 的内容来修复 `Person` 类型。这将使他们连接在一起。
+所以这里我们先不急于做 `Person` 的插入。我们先来调整一下 `Person` 类型的定义，将 `array<str>` 从 `property` 更改为指向 `City` 类型的 `multi link`。这将使 `Person` 和 `City` 连接起来。
 
-但首先让我们仔细看看当我们使用 `INSERT` 时发生了什么。
+但首先让我们先仔细看看当我们使用 `INSERT` 时到底发生了什么。
 
-正如你所见，`str` 适用于像 ț 这样的 unicode 字母。甚至表情符号和特殊字符也很 OK：如果你愿意，你甚至可以创建一个名为“🤠”或“(╯°□°)╯︵ ┻━┻”的 `City`。
+正如你所见，`str` 适用于像 ț 这样的 unicode 字母。甚至表情符号和特殊字符也都 OK：如果你愿意，你甚至可以创建一个名为“🤠”或“(╯°□°)╯︵ ┻━┻”的 `City`。
 
 EdgeDB 也有一个字节文字类型，它为你提供字符串的字节。这主要用于人们在保存到文件时不需要查看的原始数据。它们必须是 1 个字节长的字符。
 
@@ -181,20 +181,20 @@ edgedb> SELECT b'Bistritz';
 {b'Bistritz'}
 ```
 
-因为字符必须是 1 个字节，只有 ASCII 才适用于这种类型。所以使用字节类型的 `modern_name` 中的名称如果有类似 `ț` 这样的字符，将会产生错误：
+因为字符必须是 1 个字节，因此只有 ASCII 才适用于这种类型。所以如果 `modern_name` 是字节类型且名字中有类似 `ț` 这样的字符，将会产生错误：
 
 ```edgeql-repl
 edgedb> SELECT b'Bistrița';
 error: invalid bytes literal: character 'ț' is unexpected, only ascii chars are allowed in bytes literals
 ```
 
-每当你 `INSERT` 一个项目时，EdgeDB 都会给你一个 `uuid`。这是每个项目的唯一编号，类似于：
+每当你 `INSERT` 一个项目（an item，一条数据）时，EdgeDB 都会给你一个 `uuid`。这是每个项目的唯一编号，类似于：
 
 ```
 {Object {id: d2af670c-f1d6-11ea-a30f-8b40bc5413e0}}
 ```
 
-这也是你使用 `SELECT` 选择一个类型时会显示的内容。只需键入带有类型的 `SELECT` 就会显示该类型的所有 `uuid`。让我们看看到目前为止我们拥有的所有城市：
+当你使用 `SELECT` 选择一个类型时也会显示类似的内容。只需键入 `SELECT` 和相应类型就会显示该类型下所有的 `uuid`。让我们看看到目前为止创建的所有城市：
 
 ```edgeql
 SELECT City;
@@ -210,7 +210,7 @@ SELECT City;
 }
 ```
 
-这仅仅是告诉我有三个 `City` 类型的对象。查看它们的内部，我们可以给查询添加属性或链接名称。这被称为描述我们想要的数据的 [形状](https://www.edgedb.com/docs/edgeql/expressions/shapes/#ref-eql-expr-shapes) 。我们选择所有 `City` 类型并通过下面这个查询显示他们的  `modern_name`：
+这仅说明我们已经有三个 `City` 类型的对象。如果想查看对象内部，我们可以在查询语句里添加需要查看的属性或链接的名称。这称为“描述我们想要的数据的 [形状](https://www.edgedb.com/docs/edgeql/expressions/shapes/#ref-eql-expr-shapes)”。我们选择所有 `City` 并通过下面这个查询显示他们的  `modern_name`：
 
 ```edgeql
 SELECT City {
@@ -218,17 +218,17 @@ SELECT City {
 };
 ```
 
-再一次说明，你不是必须在 `modern_name` 后面使用逗号，因为他是查询的末尾。
+再一次说明，你不是必须在 `modern_name` 后面使用逗号，因为它是查询的末尾。
 
-相信你还记得，书中提到的其中一个城市（维也纳 Vienna）并没有与之前不同的现代名称 `modern_name`。但是它仍会显示一个“空集”，因为在 EdgeDB 中，所有数值都是元素的集合，即使里面灭有任何东西。这是上面查询的结果：
+相信你还记得，书中提到的其中一个城市（维也纳 Vienna）并没有与以前不同的现代名称 `modern_name`。但是它仍会显示一个“空集”，因为在 EdgeDB 中，所有数值都是元素的集合，即使里面没有任何东西。这里是上面查询的结果：
 
 ```
 {Object {modern_name: {}}, Object {modern_name: 'Budapest'}, Object {modern_name: 'Bistrița'}}
 ```
 
-因此有对象的 `modern_name` 是空集，同时另外两个对象有各自的名字。这再一次向我们展示，EdgeDB 不存在其他一些语言里存在的 `null`，如果什么都没有，它会返回一个空的集合。 
+因此有对象的 `modern_name` 是空集，同时另外两个对象的 `modern_name` 都有各自的名字。这再一次向我们展示了 EdgeDB 不存在其他一些语言里的 `null`，如果什么都没有，它会返回一个空的集合。 
 
-目前看来第一个对象是个谜（因为不存在 `modern_name`），因此我们将在查询中添加 `name`，以便我们可以看到它是城市“维也纳”：
+现在第一个对象看起来是个谜（因为它不存在 `modern_name`），因此我们将在查询语句中添加 `name`，以便我们可以确认它就是城市“维也纳”（Vienna）：
 
 ```edgeql
 SELECT City {
@@ -247,15 +247,15 @@ SELECT City {
 }
 ```
 
-如果你只想返回类型的单个部分，而不是一个对象结构，你可以在类型名称后使用 `.` 。比如，`SELECT City.modern_name` 将输出结果：
+如果你只想返回类型的单个部分，而不是整个对象结构，你可以在类型名称后使用 `.` 。比如，`SELECT City.modern_name` 将输出结果：
 
 ```
 {'Budapest', 'Bistrița'}
 ```
 
-这种类型的表达式称为 _path 表达式_ 或 _path_，因为它是通往内部数值的直接路径。并且每个 `.` 都意味着前往再下一个路径，如果还有再深一层数值需要跟踪的话。
+这种表达式类型称为 _路径表达式_ 或 _路径（path)_，因为它是通往内部数值的直接路径。并且每个 `.` 都意味着前往再下一个路径，如果还有再深一层数值需要跟踪的话。
 
-如果需要，你也可以通过在所需名称后使用 `:=` 将诸如 `modern_name` 之类的属性名称更改为成任何其他名称。你所选定的那些名称将成为显示的变量名。例如：
+如果需要，你也可以在所需名称后使用 `:=`，将诸如 `modern_name` 之类的属性名称更改为成任何其他所需名称。这些名称将作为变量名在输出中显示出来。例如：
 
 ```edgeql
 SELECT City {
@@ -264,7 +264,7 @@ SELECT City {
 };
 ```
 
-这将打印出：
+输出结果为：
 
 ```
 {
@@ -274,9 +274,9 @@ SELECT City {
 }
 ```
 
-这将不会改变架构里的任何内容 —— 它只是一个在查询中使用的快速变量名。
+架构里的内容不会因此发生变化——它只是一个在查询中使用的快速变量名。
 
-顺便说一下，`.name` 是 `City.name` 的缩写。你也可以每次写 `City.name`（这被称为 _fully qualified name_），但不是必需的。
+顺便说一下，`.name` 是 `City.name` 的缩写。你也可以每次都写 `City.name`（这被称为 _fully qualified name_），但不是必需的。
 
 所以，如果你可以对 `.name` 做一个快速索引的属性 `name_in_dracula`，我们也可以做其他类似的事情吗？我们确实可以，为了简单易懂，我们在这里举一个例子：
 
@@ -288,7 +288,7 @@ SELECT City {
 };
 ```
 
-这是输出结果：
+输出结果是：
 
 ```
 {
@@ -298,13 +298,13 @@ SELECT City {
 }
 ```
 
-还要注意，`oh_and_by_the_way` 的类型是 `str`，即使我们不必说明它。EdgeDB 是强类型的：一切都需要一个类型，它不会尝试将不同类型混合在一起。因此，如果你写 `SELECT 'Jonathan Harker' + 8;`，EdgeDB 将拒绝你并给出错误提示 `QueryError: operator '+' cannot be applied to operands of type 'std::str' and 'std::int64'`。
+注意：`oh_and_by_the_way` 的类型是 `str`，即使我们不是必须说明它。EdgeDB 是强类型的：一切都需要一个类型，它不会尝试将不同类型混在一起。因此，如果你写 `SELECT 'Jonathan Harker' + 8;`，EdgeDB 会直接拒绝执行并给出错误提示 `QueryError: operator '+' cannot be applied to operands of type 'std::str' and 'std::int64'`。
 
-另一方面，EdgeDB 可以使用“类型推断”来猜测类型，这就是 EdgeDB 在上面的例子里所做的：它知道我们正在创建一个 `str`。我们之后很快就会看到如何改变类型及使用不同的类型。
+另一方面，EdgeDB 可以使用“类型推断”来猜测类型，这就是 EdgeDB 在上面的例子里所做的：它知道我们正在创建一个 `str`。之后我们很快就会看到如何改变类型并使用不同的类型。
 
 ## 链接（Links）
 
-所以现在剩下要做的最后一件事是将 `Person` 中名为 `places_visited` 的 `property` 更改为一个 `link`。现在，`places_visited` 为我们提供了我们想要的名称，但将 `Person` 和 `City` 联系在一起才更有意义。毕竟，`City` 类型内部有 `.name`，链接比重写 `Person` 中的所有内容更好些。我们将把 `Person` 改成这样：
+所以现在剩下要做的最后一件事是将 `Person` 中名为 `places_visited` 的 `property` 更改为 `link`。现在，`places_visited` 为我们提供了我们想要的城市名称，但将 `Person` 和 `City` 链接在一起才更有意义。毕竟，`City` 类型里面有 `.name`，链接它们比重写 `Person` 中的所有内容更好些。我们将把 `Person` 改成这样：
 
 ```sdl
 type Person {
@@ -313,9 +313,9 @@ type Person {
 }
 ```
 
-我们在 `link`前写了 `multi`，因为一个 `Person` 应该客户链接不止一个 `City`。`multi` 的相反是 `single`，使用 `single` 意味着仅允许链接一个对象。因为 `single` 是默认的，因此如果你仅仅写 `link`，EdgeDB 将把它视为 `single`。
+我们在 `link` 前写了 `multi`，因为一个 `Person` 应该可以链接不止一个 `City`。`multi` 的相反是 `single`，使用 `single` 意味着仅允许链接一个对象。因为 `single` 是默认的，所以如果你仅仅写 `link`，EdgeDB 将把它视为 `single`。
 
-现在当我们插入乔纳森·哈克（Jonathan Harker）时，他将被链接到类型 `City`。别忘了属性 `places_visited` 不是 `required`，所以我们仍然可以在插入的时候仅仅使用他的名字进行创建：
+现在当我们插入乔纳森·哈克（Jonathan Harker）时，他将被链接到类型 `City`。别忘了属性 `places_visited` 不是 `required` 的，所以我们仍然可以在插入时仅使用他的名字进行创建：
 
 ```edgeql
 INSERT Person {
@@ -323,7 +323,7 @@ INSERT Person {
 };
 ```
 
-这会生成一个 `Person` 类型的对象，其 `places_visited` 属性被链接到 `City` 类型且没有任何内容。让我们执行看看里面是什么：
+这会生成一个 `Person` 类型的对象，其 `places_visited` 属性被链接到 `City` 类型且没有任何内容。让我们看看里面是什么：
 
 ```edgeql
 SELECT Person {
@@ -343,7 +343,7 @@ INSERT Person {
 };
 ```
 
-我们没有过滤任何东西，所以 EdgeDB 会把所有 `City` 类型的对象放进来。现在然我们看看乔纳斯（Jonathan）都去了哪些地方。尝试一下下面的代码，你会发现这还不完全是我们需要的：
+我们没有做任何过滤，所以 EdgeDB 会把所有 `City` 类型的对象都放进来。现在让我们看看乔纳森（Jonathan）都去了哪些地方。尝试一下下面的代码，你会发现这还不完全是我们需要的：
 
 ```edgeql
 SELECT Person {
@@ -365,7 +365,7 @@ SELECT Person {
   },
 ```
 
-和我们理想的结果已经很接近了！因为我们没有提及 `City` 里的任何属性，所以我们只能得到一堆 Object ID。现在我们仅仅需要让 EdgeDB 知道我们实际上是想看到 `City` 类型中的 `name`。为了得到想要的结果，我们需要在 `places_visited`  后面添加一个冒号，并将 `name` 放到随后的花括号中：
+和我们理想的结果已经很接近了！因为我们没有提到 `City` 里的任何属性，所以我们只能得到一堆 Object ID。现在我们仅仅需要让 EdgeDB 知道我们实际上是想看到 `City` 类型中的 `name` 属性。为了得到想要的结果，我们需要在 `places_visited` 后面添加一个冒号，并将 `name` 放到随后的花括号中：
 
 ```edgeql
 select Person {
@@ -376,7 +376,7 @@ select Person {
 };
 ```
 
-太棒了！现在我们可以从输出结果中得到我们想要的了：
+成功了！现在我们可以从输出结果中得到我们想要的了：
 
 ```
   Object {
@@ -385,7 +385,7 @@ select Person {
   },
 ```
 
-当然，乔纳森·哈克已经成功被插入到数据库中并关联了每一个造访过的城市。现在我们只有三个 `City` 对象，所以这还没有什么问题。但是稍后我们将有更多的城市，并且不能对其他所有角色都使用 `places_visited := City`（因为他们造访过的城市列表并不一样）。为此，我们将需要用到 `FILTER`，我们将在下一章中学习如何使用它。
+当然，乔纳森·哈克（Jonathan Harker）已经成功被插入到数据库中并关联了每一个造访过的城市。现在我们只有三个 `City` 对象，所以这还没有什么问题。但是稍后我们将有更多的城市，并且不能对其他所有角色都使用 `places_visited := City`（因为他们造访过的城市列表并不一样）。为此，我们将需要用到 `FILTER`，我们将在下一章中学习如何使用它。
 
 [→ 点击这里查看第 1 章相关代码](code.md)
 
@@ -393,16 +393,16 @@ select Person {
 
 ## 小测验
 
-1. 输入下面的代码将会被返回一个错误，请尝试通过添加一个字符，使其返回结果为 `{true}`。
+1. 输入下面的代码将会被返回错误，请尝试通过添加一个字符，使其返回结果为 `{true}`。
 
    ```edgeql
    WITH my_name = 'Timothy',
    SELECT my_name != 'Benjamin';
    ```
 
-2. 请尝试插入一个名为 Constantinople 的 `City`，且存储其现在的命名为 İstanbul。
-3. 请尝试显示数据库中所有城市的名称。（提示：使用单行代码就可以做到，并不需要使用 `{}` ）
-4. 请尝试 SELECT 出所有城市的 `name` 和 `modern_name`，并支持用 `old_name` 来访问 `.name`，用 `name_now` 访问 `.modern_name`。
+2. 请尝试插入一个名为 Constantinople 的 `City`，其现代的命名为 İstanbul。
+3. 请尝试显示数据库中所有城市的名称。（提示：使用单行代码就可以做到，并不需要使用 `{}`）
+4. 请尝试 SELECT 出所有城市的 `name` 和 `modern_name`，并将 `.name` 显示为 `old_name`，将 `.modern_name` 显示为 `name_now`。
 5. 键入 `SelecT City;` 会发生错误吗？
 
 [点击这里查看答案](answers.md)
