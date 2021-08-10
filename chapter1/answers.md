@@ -2,7 +2,7 @@
 
 #### 1. 输入下面的代码将会被返回错误，请尝试通过添加一个字符，使其返回结果为 `{true}`。
 
-答：将 `WITH my_name = 'Timothy'` 修改为 `WITH my_name := 'Timothy'`。这样将给 `my_name` 赋值字符串 'Timothy'（而不是仅仅使用 '=' 尝试用 'Timothy' 和一个上不存在的变量 `my_name` 做比较）。然后用 '!=' 对被赋予 `'Timothy'` 的 `my_name` 与 `'Benjamin'` 进行比较，并返回了 `{true}`，因为他们确实不相等。
+将 `WITH my_name = 'Timothy'` 修改为 `WITH my_name := 'Timothy'`。这样将给 `my_name` 赋值字符串 'Timothy'（而不是仅仅使用 '=' 尝试用 'Timothy' 和一个上不存在的变量 `my_name` 做比较）。然后用 '!=' 对被赋予 `'Timothy'` 的 `my_name` 与 `'Benjamin'` 进行比较，并返回了 `{true}`，因为他们确实不相等。
 
 ---
 
@@ -19,7 +19,7 @@ INSERT City {
 
 #### 3. 请尝试显示数据库中所有城市的名称。（提示：使用单行代码就可以做到，并不需要使用 `{}`）
 
-答：`SELECT City.name;`
+`SELECT City.name;`
 
 ---
 
@@ -38,4 +38,4 @@ SELECT City {
 
 #### 5. 键入 `SelecT City;` 会发生错误吗？
 
-答：不会，因为 EdgeDB 里的关键字不区分大小写。
+不会，因为 EdgeDB 里的关键字不区分大小写。
