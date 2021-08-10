@@ -83,7 +83,7 @@ function can_enter(vampire: MinorVampire, place: HasCoffins) -> str
 
 One other area where you need to trust the user of the function is seen in the return type, which is just `-> str`. Beyond just returning a string, this return type also means that the function won't be called if the input is empty. So what if you want it to be called anyway? If you want it to be called no matter what, you can change the return type to `-> OPTIONAL str`. [The documentation](https://www.edgedb.com/docs/edgeql/overview#optional) explains it like this: `the function is called normally when the corresponding argument is empty`. And: `A notable example of a function that gets called on empty input is the coalescing operator.`
 
-Interesting! You'll remember the coalescing operator `?` that we first saw in Chapter 12. And when we look at [its signature](https://www.edgedb.com/docs/edgeql/funcops/set/#operator::COALESCE), you can see the `OPTIONAL` in there:
+Interesting! You'll remember the coalescing operator `??` that we first saw in Chapter 12. And when we look at [its signature](https://www.edgedb.com/docs/edgeql/funcops/set/#operator::COALESCE), you can see the `OPTIONAL` in there:
 
 `OPTIONAL anytype ?? SET OF anytype -> SET OF anytype`
 
@@ -259,13 +259,23 @@ type MinorVampire extending Person {
 
 > TODO: translate after fixing the original content.
 
-To add the `master` link again, the best way is to start with a property called `master_name` that is just a string. Then we can use this in a reverse search to link to the `Vampire` type if the name matches. It's a single link, so we'll add `LIMIT 1` (it won't work otherwise). Here is what the type would look like now:
+To add the `master` link again, one way to start would be with a property called `master_name` that is just a string. Then we can use this in a reverse search to link to the `Vampire` type if the name matches. It's a single link, so we'll add `LIMIT 1` (it won't work otherwise). Here is what the type would look like now:
 
 ```sdl
 type MinorVampire extending Person {
   link former_self -> Person;
   link master := (SELECT .<slaves[IS Vampire] LIMIT 1);
   required single property master_name -> str;
+};
+```
+
+But then again, if we want this `master_name` shortcut we can now just use the `master` link to do it. Let's change it from `required single property master_name -> str` to `property master_name := .master.name`:
+
+```sdl
+type MinorVampire extending Person {
+  link former_self -> Person;
+  link master := (SELECT .<slaves[IS Vampire] LIMIT 1);
+  property master_name := .master.name;
 };
 ```
 
@@ -277,11 +287,9 @@ INSERT Vampire {
   slaves := {
     (INSERT MinorVampire {
       name := 'Billy',
-      master_name := 'Kain'
     }),
     (INSERT MinorVampire {
       name := 'Bob',
-      master_name := 'Kain'
     })
   }
 };
