@@ -243,7 +243,7 @@ SELECT 1887#0503 is the first day of the book Dracula when...
 
 只是会返回 `{1887}`.
 
-[→ 点击这里查看第 2 章相关代码](code.md)
+[→ 点击这里查看到第 2 章为止的所有代码](code.md)
 
 <!-- quiz-start -->
 
