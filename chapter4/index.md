@@ -148,21 +148,21 @@ type Time {
 }
 ```
 
-`.date[0:2]` 是 ["slicing（切片）"](https://www.edgedb.com/docs/edgeql/funcops/array#operator::ARRAYSLICE)的一个例子。[0:2] 表示从索引 0（第一个索引）开始，在索引 2_之前_ 停止，即索引 0 和 1。这也说明当你要将 `str` 转换为 `cal::local_time`时，您需要用两个数字来表示小时（例如 09 可以，但 9 不行）。
+`.date[0:2]` 是使用 ["slicing（切片）"](https://www.edgedb.com/docs/edgeql/funcops/array#operator::ARRAYSLICE) 的一个例子。[0:2] 表示从索引 0（第一个索引）开始，在索引 2 _之前_ 停止，即索引 0 和 1。这也说明当你要将 `str` 转换为 `cal::local_time` 时，你需要用两个数字字符来表示小时（例如：09 可以，但 9 不行）。
 
-即如下语句是无法工作的：
+所以下面这个语句是无法正常工作的：
 
 ```edgeql
 SELECT <cal::local_time>'9:55:05';
 ```
 
-它将会给出错误：
+将会产生错误：
 
 ```
 ERROR: InvalidValueError: invalid input syntax for type cal::local_time: '9:55:05'
 ```
 
-因此，我们确信从索引 0 到 2 的切片将为我们提供两个表示一天中的小时的数字。
+由此我们可以确信索引 0 到 2 的切片可以为我们提供两个数字来表示一天中某个时间的小时数。
 
 现在使用这个 `Time` 类型，我们可以通过执行以下操作来获取小时。首先插入时间：
 
@@ -186,7 +186,7 @@ SELECT Time {
 
 `{Object {date: '09:55:05', local_time: <cal::local_time>'09:55:05', hour: '09'}}`.
 
-最后，我们可以在 `Time` 类型中添加一些逻辑来查看吸血鬼是醒着还是睡着了。我们可以使用一个 `enum`，但为了简单起见，我们将它设为一个 `str`。
+最后，我们可以在 `Time` 类型中添加一些逻辑来查看吸血鬼是醒着还是睡着了。这里我们可以使用一个 `enum`，但为了简单起见，我们将它设为一个 `str`。
 
 ```sdl
 type Time {
@@ -200,14 +200,14 @@ type Time {
 
 因此，`awake` 是如下这样计算的：
 
-- 首先 EdgeDB 会查看取到的小时的数值是否大于 7 且小于 19（晚上 7 点）。但是这里用数字进行比较比与字符串进行比较要好，因此我们编写`<int16>.hour` 而不是`.hour`，这样它就可以通过强制转换用数字与数字进行比较。
-- 然后 EdgeDB 会基于比较结果给出一个字符串来说明现在的状态是“睡着（'asleep'）”或“醒着（'awake'）”。
+- 首先 EdgeDB 会查看取到的小时的数值是否大于 7 且小于 19（晚上 7 点）。这里用两个数字进行比较比用数字与字符串进行比较要好，因此我们编写 `<int16>.hour` 而不是 `.hour`，这样就可以通过类型转换达到用数字与数字进行比较的目的。
+- 然后 EdgeDB 会基于比较结果给出一个字符串来说明现在的状态是“睡着（'asleep'）”还是“醒着（'awake'）”。
 
 现在，如果我们对所有属性进行 `SELECT`，我们将得到：
 
 `Object {date: '09:55:05', local_time: <cal::local_time>'09:55:05', hour: '09', awake: 'asleep'}`
 
-关于 `ELSE` 的另一个注意事项：你可以在 `(result) IF (condition) ELSE` 中多次使用 `ELSE`。下面是一个例子：
+关于 `ELSE` 有一个注意事项：你可以在 `(result) IF (condition) ELSE` 格式中根据需要多次使用 `ELSE`。例如：
 
 ```
 property awake := 'just waking up' IF <int16>.hour = 19 ELSE
@@ -218,7 +218,7 @@ property awake := 'just waking up' IF <int16>.hour = 19 ELSE
 
 ## 插入时做选择（SELECT while you INSERT）
 
-回到第 3 章，我们学习了如何在删除的同时做选择。你可以用 `INSERT` 做同样的事情，把它括在小括号中，然后选择它，与其他 `SELECT` 一样。当我们插入一个新的 `Time`，我们只能得到一个 `uuid`：
+回到第 3 章，我们学习了如何在删除的同时做选择。对于 `INSERT`，你可以做同样的事情。与其他 `SELECT` 一样，把 `INSERT` 括在小括号中，然后选择它。当我们插入一个新的 `Time`，我们只会得到一个 `uuid`：
 
 ```edgeql
 INSERT Time {
@@ -226,9 +226,9 @@ INSERT Time {
 };
 ```
 
-输出是这样的：`{Object {id: 528941b8-f638-11ea-acc7-2fbb84b361f8}}`
+其输出为：`{Object {id: 528941b8-f638-11ea-acc7-2fbb84b361f8}}`
 
-因此，让我们将整个输入包装在 `SELECT ()` 中，这样我们就可以在插入它时显示它的属性了。因为是括号括起来的，所以 EdgeDB 会先做括号里的操作，然后再用选择做一个普通的查询。除了要显示的属性外，我们还可以添加一个可计算的数据。让我们来试一试吧：
+现在让我们将整个输入包装在 `SELECT ()` 中，这样我们就可以在插入它时显示它的属性了。因为是括号括起来的，所以 EdgeDB 会先做括号里的操作，然后再用选择做一个普通的查询。除了要显示的属性外，我们还可以添加可计算的数据。让我们来试一下：
 
 ```edgeql
 SELECT ( # Start a selection
@@ -244,15 +244,15 @@ SELECT ( # Start a selection
   };
 ```
 
-现在的输出结果对我们更有意义了：`{Object {date: '22.44.10', hour: '22', awake: 'awake', double_hour: 44}}`。我们知道了时间和小时，我们可以了解到吸血鬼是醒着的，我们甚至可以对我们刚刚输入的对象做计算。
+现在的输出结果对我们来说更有意义了：`{Object {date: '22.44.10', hour: '22', awake: 'awake', double_hour: 44}}`。我们知道了时间（date）和小时（hour），也了解到了吸血鬼是醒着的，我们甚至可以对我们刚刚输入的对象做些计算。
 
-[→ 点击这里查看第 4 章相关代码](code.md)
+[→ 点击这里查看到第 4 章为止的所有代码](code.md)
 
 <!-- quiz-start -->
 
 ## 小测验
 
-1. 下面的插入语句不工作：
+1. 下面的插入语句无法正常工作：
 
    ```edgeql
    INSERT NPC {
@@ -265,11 +265,11 @@ SELECT ( # Start a selection
 
    另外，我们也可以使用另一种方法来使其在没有添加关键字的情况下工作。你能想到别的办法吗？
 
-2. 请显示最多 2 个名称包含字母 `a` 的 `Person` 类型的对象（以及它们的 `name` 属性）。
+2. 如何显示名称里包含字母 `a` 的 `Person` 对象，且最多显示 2 个（以及它们的 `name` 属性）？
 
-3. 请显示从未访问过任何地方的所有 `Person` 类型的对象（以及它们的 `name` 属性）。
+3. 如何显示出从未访问过任何地方的 `Person` 对象（以及它们的 `name` 属性）？
 
-   提示：获取 `.places_visited` 返回 `{}` 的所有 `Person` 类型的对象。
+   提示：获取 `.places_visited` 返回 `{}` 的所有 `Person` 对象。
 
 4. 假设你有以下 `cal::local_time` 类型：
 
@@ -277,7 +277,7 @@ SELECT ( # Start a selection
    SELECT has_nine_in_it := <cal::local_time>'09:09:09';
    ```
 
-   这会显示：`{<cal::local_time>'09:09:09'}`。如何改为：结果有 9 则显示 {true}，否则显示 {false}？
+   这会显示：`{<cal::local_time>'09:09:09'}`。如何改为：时间里有 9 则显示 {true}，没有则显示 {false}？
 
 5. 我们现在插入一个名为“The Innkeeper's Son”的角色：
 
@@ -294,4 +294,4 @@ SELECT ( # Start a selection
 
 <!-- quiz-end -->
 
-__接下来：__ _乔纳森的好奇心占了上风：城堡里有什么？_
+__接下来：__ _乔纳森愈发好奇：城堡里有什么？_
