@@ -2,13 +2,13 @@
 tags: Filtering On Insert, Json
 ---
 
-# 第六章 - 乔纳森还是逃不掉
+# 第六章 - 还是逃不掉
 
-> 女吸血鬼就在乔纳森的身边，且他无法动弹。突然，德古拉跑进房间，告诉女人们离开：“晚些时候你们可以拥有他，但今晚不行！”。女吸血鬼们听从了。乔纳森在他的床上醒来，感觉就像做了一场噩梦……但他看到他的衣服被叠好了，他知道这不会仅仅是一个梦。第二天会有一些来自斯洛伐克的游客造访城堡，所以乔纳森想到了个主意。他写了两封信，一封给米娜，一封给他的老板。他付了来访者一些钱，请求他们为他寄信。但是德古拉发现了这些信件，他很生气。他在乔纳森面前烧掉了它们，并告诉他不许再这样做了。乔纳森仍然被困在城堡里，德古拉知道乔纳森试图欺骗他从而逃跑。
+> 三个女吸血鬼就在乔纳森的身边，但他无法动弹。突然，德古拉跑进了房间，让这些女人离开：“之后你们可以拥有他，但今晚不行！”。女吸血鬼们听从并离开了。乔纳森时醒来躺在他的床上，感觉就像做了一场噩梦……但看有人叠好了他的衣服，他就知道这不会只是一个梦。明天会有一些来自斯洛伐克的游客参观城堡，所以乔纳森想了个主意。他写了两封信，一封给米娜，一封给他的老板。他给了来访者一些钱，请求他们为他寄信。但被德古拉发现了，他很生气。他在乔纳森面前烧毁了信件，并警告他不许再犯。乔纳森仍然被困在城堡里，德古拉知道他仍然在想办法试图逃跑。
 
 ## 插入时过滤集合（Filtering on sets when doing an insert）
 
-本章中没有太多关于类型的新内容，所以让我们来看看如何改进我们的架构（schema）。现在乔纳森·哈克（Jonathan Harker）的插入语句仍然是这样的：
+本章中没有太多关于类型的新内容，所以让我们来看看如何改进我们的架构（schema）。现在对乔纳森·哈克（Jonathan Harker）的插入语句仍然是这样的：
 
 ```edgeql
 INSERT NPC {
@@ -17,7 +17,7 @@ INSERT NPC {
 };
 ```
 
-当我们只有城市时，这是没问题的。但现在我们有了 `Place` 和 `Country` 两个类型。首先，我们先插入另外两个 `Country` 类型的对象以增加多样性：
+当我们只有城市时，这是没问题的。但现在我们有了 `Place` 和 `Country` 两个类型。首先，我们先来插入两个新的 `Country` 对象以增加多样性：
 
 ```edgeql
 INSERT Country {
@@ -28,11 +28,11 @@ INSERT Country {
 };
 ```
 
-（在第 9 章中，我们将学习如何只用一个 `INSERT` 来做到这一点！）
+（在第 9 章中，我们将学习如何只用一个 `INSERT` 来做到这同时插入多个对象！）
 
-然后我们为既不是城市也不是国家的地方创建一个名为 `OtherPlace` 的新类型。这很容易做到：`type OtherPlace extending Place;`。
+现在，我们为既不是城市也不是国家的地方创建一个名为 `OtherPlace` 的新类型。这很容易做到：`type OtherPlace extending Place;`。
 
-然后我们插入我们的第一个 `OtherPlace`：
+然后，插入我们的第一个 `OtherPlace`：
 
 ```edgeql
 INSERT OtherPlace {
@@ -40,9 +40,9 @@ INSERT OtherPlace {
 };
 ```
 
-这为我们提供了大量来自 `Place` 类型的对象，而不是 `City` 类型。
+`OtherPlace` 为我们提供了大量来自 `Place` 类型且不属于 `City` 类型的地方。
 
-回到乔纳森：在我们的数据库中，他去过了四个城市、一个国家和一个 `OtherPlace`……但他没有去过斯洛伐克（Slovakia）或法国（France），所以我们不能直接用 `places_visited := SELECT Place` 对其进行插入。但我们可以根据他访问过的地方的名称对 `Place` 进行过滤。像这样：
+回到乔纳森：在我们的数据库中，他去过四个城市、一个国家和一个 `OtherPlace`……但他没有去过斯洛伐克（Slovakia）或法国（France），所以我们不能直接用 `places_visited := SELECT Place` 对其进行插入。但我们可以根据他访问过的地方的名称对 `Place` 进行过滤。像这样：
 
 ```edgeql
 INSERT NPC {
@@ -53,7 +53,7 @@ INSERT NPC {
 
 你会留意到我们只是使用 `{}` 在集合中写入了这些地方的名称，我们不需要使用带有 `[]` 的数组来执行此操作。（顺便说一下，这称为 [set 构造函数](https://www.edgedb.com/docs/edgeql/expressions/overview/#set-constructor)。）
 
-现在如果乔纳森逃离德古拉城堡并到了一个新地方怎么办？让我们假装他逃跑了并逃到了斯洛伐克（Slovakia）。当然，我们修改他的 `INSERT`，在造访点的名字集合里加上 `'Slovakia'`。但是我们如何才能做一次快速的更新呢？对此，我们有关键字 `UPDATE` 和 `SET`。`UPDATE` 要更新的类型，`SET` 我们要更改的部分。像这样：
+现在如果乔纳森逃离了德古拉城堡并来到了一个新地方怎么办？让我们假装他逃跑了并逃到了斯洛伐克（Slovakia）。当然，我们可以修改他的 `INSERT`，在造访点的名字集合里加上 `'Slovakia'`。但是我们如何才能做一次快速的更新呢？对此，我们有关键字 `UPDATE` 和 `SET`。`UPDATE` 要更新的类型，`SET` 我们要修改的部分。像这样：
 
 ```edgeql
 UPDATE NPC
@@ -63,7 +63,7 @@ SET {
 };
 ```
 
-如果语句执行成功了，EdgeDB 将返回被成功更新对象的 ID 们。在上面的例子里，仅仅会返回一个 ID：
+如果语句执行成功了，EdgeDB 将返回更新成功的对象的 ID。在上面的例子里，仅仅会返回一个 ID（因为只有一个对象被更新）：
 
 ```
 {
@@ -71,14 +71,13 @@ SET {
 }
 ```
 
-如果我们写了类似 `FILTER .name = 'SLLLlovakia'` 的东西，那么 EdgeDB 会返回 `{}`，让我们知道没有任何可匹配的。或者更准确地说：顶级对象在 `FILTER .name = 'Jonathan Harker'` 上得到匹配，但 `places_visited` 并没有得到更新，因为 `FILTER` 里没有获得任何可匹配的。
+如果我们写了类似 `FILTER .name = 'SLLLlovakia'` 的过滤，那么 EdgeDB 会返回 `{}`，让我们知道没有匹配到任何。或者更准确地说：顶级对象在 `FILTER .name = 'Jonathan Harker'` 上得到匹配，但 `places_visited` 并没有得到更新，因为 `FILTER` 里没有获得任何可匹配的对象。
 
-由于乔纳森（Jonathan）还没有访问过斯洛伐克（Slovakia），我们现在可以使用 `-=` 代替 `+=` 并使用相同的 `UPDATE` 语法来删除它。
+由于乔纳森（Jonathan）还没有访问过斯洛伐克（Slovakia），我们现在可以使用 `-=` 代替 `+=`，并使用相同的 `UPDATE` 语法来删除它。
 
-现在我们了解到了在`SET` 之后可以使用的 [所有三个运算符](https://www.edgedb.com/docs/edgeql/statements/update) ：`:=`、`+=` 和`-=`。 
+现在我们了解了在 `SET` 之后可以使用的 [所有三个运算符](https://www.edgedb.com/docs/edgeql/statements/update) ：`:=`、`+=` 和`-=`。 
 
 让我们来做另一个更新。还记得这个吗？
-Let's do another update. Remember this?
 
 ```edgeql
 SELECT Person {
@@ -87,7 +86,7 @@ SELECT Person {
 } FILTER .name = 'Jonathan Harker';
 ```
 
-米娜·默里（Mina Murray）有乔纳森·哈克（Jonathan Harker）作为她的 `lover`，但因为我们先插入了乔纳森，所以乔纳森没有 `lover`。我们现在可以改变它：
+米娜·默里（Mina Murray）的 `lover` 是乔纳森·哈克（Jonathan Harker），但因为我们先插入了乔纳森，所以乔纳森没有 `lover`。我们现在可以更新它：
 
 ```edgeql
 UPDATE Person FILTER .name = 'Jonathan Harker'
@@ -96,9 +95,9 @@ SET {
 };
 ```
 
-现在 Jonathan 的 `link lover` 终于显示了 Mina 而不再是空的 `{}`。
+现在，Jonathan 的 `link lover` 终于显示了 Mina 而不再是空的 `{}`。
 
-当然，如果你在没有 `FILTER` 的情况下使用了 `UPDATE`，它将对所有类型进行相同的更改。例如，下面的更新将在数据库中为每个 `Person` 类型的对象的 `places_visited` 存入所有每一个 `Place`：
+当然，如果你在没有 `FILTER` 的情况下使用了 `UPDATE`，它将对所有对象进行相同的更改。例如，下面的语句会在数据库里把所有 `Place` 更新进每一个 `Person` 对象的 `places_visited` 属性中：
 
 ```edgeql
 UPDATE Person
