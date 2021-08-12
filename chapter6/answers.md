@@ -1,8 +1,8 @@
 # Chapter 6 Questions and Answers
 
-#### 1. 这个选择是不完整的。如何修改它从而使它能打印出“Pleased to meet you, I'm ”以及 NPC 的名字？
+#### 1. 下面这个选择是不完整的。如何修改它从而使它能打印出“Pleased to meet you, I'm ”以及 NPC 的名字？
 
-使用操作符 `++` 进行连接:
+使用操作符 `++` 进行级联:
 
 ```edgeql
 SELECT NPC {
@@ -22,7 +22,7 @@ SET {
 };
 ```
 
-如果您喜欢，您当然也可以使用 `UPDATE NPC` 和 `SELECT Country`。
+如果你喜欢，你也可以用 `UPDATE NPC` 和 `SELECT Country`。
 
 此外，你也可以使用 `WITH` 达到同样的效果：
 
@@ -36,9 +36,9 @@ SET {
 };
 ```
 
-#### 3. 你将如何显示所有名称（name）中包含 `{'W', 'J', 'C'}` 里任何大写字母的 `Person` 类型的对象？
+#### 3. 如何显示出名称（name）里包含 `{'W', 'J', 'C'}` 中任何一个大写字母的所有 `Person` 对象？
 
-像这样：
+答案是：
 
 ```edgeql
 WITH letters := {'W', 'J', 'C'}
@@ -47,7 +47,7 @@ SELECT Person {
 } FILTER .name LIKE '%' ++ letters ++ '%';
 ```
 
-应该会显示截止到现在我们插入过的以下角色：
+会显示截止到现在我们已经插入的以下角色：
 
 ```
 {
@@ -61,9 +61,9 @@ SELECT Person {
 
 关键点是 `LIKE` 需要一个字符串，所以你可以用 `++` 将左右的 `%` 连接起来。
 
-#### 4. 你将如何用 JSON 显示和上一题相同的查询？
+#### 4. 如何用 JSON 显示和上一题相同的查询？
 
-用 `<json>` 进行转换可以很容易得到 JSON 输出，但是应该放在哪里呢？你不能放在 `SELECT` 的前面，也不能用 `<json>Person`，因为它不是一个表达式，所以如下所做将无法工作：
+用 `<json>` 进行转换可以很容易得到 JSON 输出，但是应该放在哪里呢？你不能放在 `SELECT` 的前面，也不能用 `<json>Person`，因为它不是一个表达式，所以像下面这样是无法工作的：
 
 ```edgeql
 WITH letters := {'W', 'J', 'C'}
@@ -83,9 +83,9 @@ SELECT <json>(
 );
 ```
 
-如此，您正在选择 `SELECT Person` 被强制转换为 JSON 版本的结果。
+如此，你正在选择 `SELECT Person` 被强制转换为 JSON 版本的结果。
 
-#### 5. 你将如何将“ the Greate”添加到每个 Person 类型的对象中？
+#### 5. 如何将“ the Greate”添加到每个 Person 类型的对象中？
 
 很简单，只需在没有 `FILTER` 的情况下对类型进行更新：
 
@@ -96,9 +96,9 @@ SET {
 };
 ```
 
-现在她们的名字是：“Woman 1 the Great”, “Mina Murray the Great”等。
+现在她们的名字是：“Woman 1 the Great”, “Mina Murray the Great”等等。
 
-**额外问题**: 使用字符串索引来撤销上述操作的快速方法是用 `[0:-10]` 去掉 `name` 字符串后十位字符并再赋值给 `name`。
+**此外**: 使用字符串索引来撤销上述操作的快速方法是用 `[0:-10]` 去掉 `name` 字符串后十位字符并再赋值给 `name`。
 
 ```edgeql
 UPDATE Person
