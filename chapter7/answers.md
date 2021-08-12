@@ -24,7 +24,7 @@ SELECT City {
 
 #### 3. 如果在上一题中想用 `'Modern name does not exist'` 替代 0，作为 `modern_name` 不存在时的结果显示，该如何做？
 
-首先，这是我们不能做的：
+首先，如果像下面一样只是做简单的替换是无法工作的：
 
 ```edgeql
 SELECT City {
@@ -39,7 +39,7 @@ SELECT City {
 error: operator 'std::IF' cannot be applied to operands of type 'std::int64', 'std::bool', 'std::str'
 ```
 
-幸运的是，我们可以将结果转换为字符串：
+因此，我们可以将结果统一转换为字符串：
 
 ```edgeql
 SELECT City {
@@ -48,7 +48,7 @@ SELECT City {
 };
 ```
 
-它应该会给出结果如下所示：
+结果如下所示：
 
 ```
 {
@@ -69,12 +69,12 @@ INSERT NPC {
 };
 ```
 
-`SELECT count(NPC)` 给出了 NPC 数量，但我们同时插入了一个 `NPC`，所以我们需要 `DETACHED` 来选择泛指的 `NPC` 类型对象。
+`SELECT count(NPC)` 给出了 NPC 数量，但我们同时插入了一个 `NPC`，所以我们需要 `DETACHED` 来选择普遍的 `NPC` 类型对象。
 
 
-#### 5. 如何选择出名字最短的 `Person` 类型对象？
+#### 5. 如何选择出名字最短的 `Person` 类型的对象？
 
-首先，下面这是错误的写法：
+首先，下面是错误的写法：
 
 ```edgeql
 SELECT Person {
