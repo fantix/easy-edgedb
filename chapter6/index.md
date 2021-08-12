@@ -106,17 +106,17 @@ SET {
 };
 ```
 
-## 用 ++ 连接（Concatenation with ++）
+## 级联运算符 ++（Concatenation with ++）
 
-另一种运算符是`++`，它执行连接（连接在一起）而不是做“相加”。
+还有一个运算符是 `++`，它执行级联（连接在一起）而不是做“相加”。
 
-你可以像这样：`SELECT 'My name is ' ++ 'Jonathan Harker';` 做简单的操作，得到结果 `{'My name is Jonathan Harker'}`。或者你可以做更复杂的连接，只要你继续将字符串连接到字符串：
+你可以像这样：`SELECT 'My name is ' ++ 'Jonathan Harker';` 做简单的操作，从而得到结果 `{'My name is Jonathan Harker'}`。或者你可以做更复杂的级联，只要你继续将字符串连接到字符串：
 
 ```edgeql
 SELECT 'A character from the book: ' ++ (SELECT NPC.name) ++ ', who is not ' ++ (SELECT Vampire.name);
 ```
 
-这会打印出：
+输出为：
 
 ```
 {
@@ -126,9 +126,9 @@ SELECT 'A character from the book: ' ++ (SELECT NPC.name) ++ ', who is not ' ++ 
 }
 ```
 
-（这个连接运算符也适用于数组，会将它们合并放入到一个数组中。所以执行 `SELECT ['I', 'am'] ++ ['Jonathan', 'Harker'];` 的结果是 `{['I', 'am', 'Jonathan', 'Harker']}`。）
+（这个级联运算符也适用于数组，它可以将被操作的数组合并放入到一个数组中。所以执行 `SELECT ['I', 'am'] ++ ['Jonathan', 'Harker'];` 的结果是 `{['I', 'am', 'Jonathan', 'Harker']}`。）
 
-让我们也来更改一下 `Vampire` 类型，使其可以链接指向 `MinorVampire`。你应该记得德古拉伯爵是唯一一个真正的吸血鬼，而其他吸血鬼都是 `MinorVampire` 类型。这意味着我们需要一个 `multi link`：
+现在，让我们再来更改一下 `Vampire` 类型，使其也拥有链接可以指向被其掌控的 `MinorVampire`。你应该记得德古拉伯爵是唯一一个真正的吸血鬼，而其他吸血鬼都是 `MinorVampire` 类型。这意味着我们需要一个 `multi link`：
 
 ```sdl
 type Vampire extending Person {
@@ -137,10 +137,10 @@ type Vampire extending Person {
 }
 ```
 
-然后我们可以在插入德古拉伯爵（Count Dracula）的信息的同时 `INSERT` `MinorVampire` 类型的对象。但首先让我们先从 `MinorVampire` 中删除`link master`，因为我们不希望两个对象相互链接。原因有二：
+然后我们可以在插入德古拉伯爵（Count Dracula）信息的同时 `INSERT` 相关的 `MinorVampire` 对象。但首先让我们先从 `MinorVampire` 中删除 `link master`，因为我们不希望两个对象相互链接。原因有二：
 
-- 当我们声明一个 `Vampire` 时，它有 `slaves` 指向 `MinorVampire`，但如果还没有 `MinorVampire`，那么它将是空的：{}。如果我们首先声明`MinorVampire` 类型，它有一个 `master` 指向 `Vampire`，但还没有声明 `Vampire`，那么他们的 `master`（一个 `required link`）将不存在。
-- 如果这两种类型相互链接，我们将无法在需要时删除它们。会给出如下的错误：
+- 当我们声明一个 `Vampire` 时，它有 `slaves` 指向 `MinorVampire`，但如果还没有 `MinorVampire`，那么它将是空的：{}。如果我们首先声明 `MinorVampire` 类型，它有一个 `master` 指向 `Vampire`，但还没有声明 `Vampire`，那么他们的 `master`（一个 `required link`）将不存在。
+- 如果这两种类型相互链接，我们将无法在需要时删除它们。错误信息如下所示：
 
 ```
 ERROR: ConstraintViolationError: deletion of default::Vampire (cc5ee436-fa23-11ea-85e0-e78b548f5a59) is prohibited by link target policy
@@ -148,7 +148,7 @@ ERROR: ConstraintViolationError: deletion of default::Vampire (cc5ee436-fa23-11e
 DETAILS: Object is still referenced in link master of default::MinorVampire (cc87c78e-fa23-11ea-85e0-8f5149329e3a).
 ```
 
-因此，首先我们简单地将 `MinorVampire` 更改为 `Person` 的扩展类型：
+因此，我们先简单地将 `MinorVampire` 改为没有 `link master` 的 `Person` 扩展类型：
 
 ```sdl
 type MinorVampire extending Person {
@@ -177,9 +177,9 @@ INSERT Vampire {
 
 请注意两件事：（1）我们在 `slaves` 后面使用了 `{}`，并把所有要插入的 `INSERT` 都放到了这个集合；（2）每一个 `INSERT` 都放在了小括号 `()` 里去捕捉插入。
 
-现在我们不必先插入 `MinorVampire` 类型然后再过滤并更新给 `Vampire`：我们可以将她们与德古拉（Dracula）放在一起插入。
+现在我们不必像以前一样，先插入 `MinorVampire` 类型，然后再通过过滤并更新给 `Vampire`：我们可以将她们与德古拉（Dracula）放在一起插入。
 
-然后当我们像下面这样 `select Vampire` 时：
+然后当我们 `SELECT Vampire` 时：
 
 ```edgeql
 SELECT Vampire {
@@ -188,7 +188,7 @@ SELECT Vampire {
 };
 ```
 
-由此我们得到想要的输出结果，将德古拉（Dracula）和女吸血鬼们都显示了出来：
+我们可以由此得到想要的输出结果，将德古拉（Dracula）和女吸血鬼们一并显示出来：
 
 ```
 Object {
@@ -197,15 +197,15 @@ Object {
 },
 ```
 
-这可能会使你好奇：如果我们就是想建立双向链接怎么办？实际上确实有一种非常方便的方法（称为**向后链接**），但我们要到第 14 章和第 15 章才会看它。如果你真的很好奇，你可以直接跳到那些章节，但在那之前我们还有很多东西要学。
+这可能会使你好奇：如果我们就是想建立双向链接怎么办？实际上这里确实有一种非常方便的方法（称为 **向后链接**），但我们要到第 14 章和第 15 章才会看它。如果你真的很好奇，你可以直接跳到后面的章节，但在那之前我们还有很多东西要学。
 
 ## 用 \<json> 生成 JSON（Just type \<json> to generate json）
 
-如果我们想要输出为 JSON 格式，我们该怎么做？再简单不过了：使用 `<json>` 进行转换即可。 EdgeDB 中的任何类型（`bytes` 除外）都可以轻松转换为 JSON：
+如果我们想要输出 JSON 格式，该怎么做？再简单不过了：使用 `<json>` 进行转换即可。EdgeDB 中的任何类型（`bytes` 除外）都可以轻松转换为 JSON：
 
 ```edgeql
 SELECT <json>Vampire {
-      # <json> is the only difference from the SELECT above
+  # <json> is the only difference from the SELECT above
   name,
   slaves: {name}
 };
@@ -221,35 +221,37 @@ SELECT <json>Vampire {
 
 ## 从 JSON 转换回来（Converting back from JSON）
 
-那么反过来呢，就是把 JSON 转回成 EdgeDB 的类型？这也是可行的，但要当心 JSON 数据的类型，因为 EdgeDB 讲究转型的对称性：转成 JSON 前是什么类型，转回来还应该是什么类型。比如说，《德拉古拉》出现的第一个日期字符串，我们把它转换成 JSON 再转换回一个 `cal::local_date` 类型：
-
-```edgeql
-SELECT <cal::local_date><json>'18870503';
-```
-
-因为 `<json>` 将“18870503”转换为了 JSON 字符串，且 `cal::local_date` 可以接收字符串以进行创建，所以这句话可以正确执行。我们得到结果 `{<cal::local_date>'1887-05-03'}`。但是如果我们尝试将 JSON 值变为一个 `int64`，它将无法工作。
+那么反过来呢，就是把 JSON 转回成 EdgeDB 的类型呢？这也是可行的，但要当心 JSON 数据的类型，因为 EdgeDB 讲究转换的对称性：转成 JSON 前是什么类型，转回来还应该是什么类型。比如，《德古拉》里出现的第一个日期字符串 `'18870503'`，如果我们尝试将它的 JSON 值转换为一个 `int64`，它将无法正常工作：
 
 ```edgeql
 SELECT <int64><json>'18870503';
 ```
 
-问题在于它是从 JSON 字符串到 EdgeDB `int64` 的转换。EdgeDB 会给出错误提示：`ERROR: InvalidValueError: expected json number, null; got json string`。为了保持对称，你需要先将 JSON 字符串转换为 EdgeDB `str`，然后再转换为 `int64`：
+问题出在从 JSON 字符串到 EdgeDB `int64` 的转换，错误提示为：`ERROR: InvalidValueError: expected json number, null; got json string`。也就是说，EdgeDB `str` 转换为 JSON 字符串后，又试图转换为 EdgeDB `int64`，这是不可行的。（除非是 EdgeDB 数字类型转换为 JSON 数字，才可再转换回 EdgeDB 数字类型。）因此，这里为了保持对称，你需要先将 JSON 字符串转换为 EdgeDB 的 `str`，然后再转换为 `int64`：
 
 ```edgeql
 SELECT <int64><str><json>'18870503';
 ```
 
-现在它可以工作了：我们得到 `{18870503}`，它开始是 EdgeDB `str`，变成了 JSON 字符串，然后又回到 EdgeDB `str`，最后被转换为 `int64`。
+现在它正常工作了：我们可以得到 `{18870503}`，过程是 EdgeDB `str`，变成了 JSON 字符串，然后又回到 EdgeDB `str`，最后被转换为 `int64`。
 
-[关于 JSON 的文档](https://www.edgedb.com/docs/datamodel/scalars/json) 解释了哪些 JSON 类型可以转换为哪些 EdgeDB 类型，如果你需要对 JSON 进行大量转换，可以将其添加至书签，便于后续查阅。您还可以在 [此处](https://www.edgedb.com/docs/edgeql/funcops/json) 中查看到所有 JSON 的函数列表。
+接下来，我们再来看下面的列子，即把《德古拉》里出现的第一个日期字符串转换成 JSON 字符串后再转换回成 `cal::local_date` 类型：
 
-[→ 点击这里查看第 6 章相关代码](code.md)
+```edgeql
+SELECT <cal::local_date><json>'18870503';
+```
+
+你会发现它是可以正确执行的，结果是 `{<cal::local_date>'1887-05-03'}`。因为 `<json>` 将 `'18870503'` 转换为了 JSON 字符串，且 `cal::local_date` 可以接收 JSON 字符串以进行创建。换句话说，当你对 EdgeDB 的 `cal::local_date` 进行 JSON 转换时，你将得到一个 JSON 字符串，因此反之，你固然可以将符合日期格式的 JSON 字符串直接转换回 `cal::local_date`。
+
+[关于 JSON 的文档](https://www.edgedb.com/docs/datamodel/scalars/json) 解释了哪些 JSON 类型可以转换为哪些 EdgeDB 类型，如果你需要对 JSON 进行大量转换，可以将其添加至书签，便于后续查阅。你还可以在 [此处](https://www.edgedb.com/docs/edgeql/funcops/json) 查看到所有 JSON 的函数列表。
+
+[→ 点击这里查看到第 6 章为止的所有代码](code.md)
 
 <!-- quiz-start -->
 
 ## 小测验
 
-1. 这个选择是不完整的。如何修改它从而使它能打印出“Pleased to meet you, I'm ”以及 NPC 的名字？
+1. 下面这个选择是不完整的。如何修改它从而使它能打印出“Pleased to meet you, I'm ”以及 NPC 的名字？
 
    ```edgeql
    SELECT NPC {
@@ -260,18 +262,18 @@ SELECT <int64><str><json>'18870503';
 
 2. 如果米娜要去德古拉城堡参观，你会如何更新米娜（Mina）的 `places_visited`，让它也包括罗马尼亚？
 
-3. 你将如何显示所有名称（name）中包含 `{'W', 'J', 'C'}` 里任何大写字母的 `Person` 类型的对象？
+3. 如何显示出名称（name）里包含 `{'W', 'J', 'C'}` 中任何一个大写字母的所有 `Person` 对象？
 
-   提示：使用 `WITH` 和一些连接（concatenation）操作。 
+   提示：使用 `WITH` 和级联 `++`（concatenation）操作。 
 
-4. 你将如何用 JSON 显示和上一题相同的查询？
+4. 如何用 JSON 显示和上一题相同的查询？
 
-5. 你将如何将“ the Greate”添加到每个 Person 类型的对象中？
+5. 如何将“ the Greate”添加到每个 Person 类型的对象中？
 
-   额外问题：使用字符串索引来撤消此操作的快速方法是什么？
+   此外，使用字符串索引来撤消此操作的快速方法是什么？
 
 [点击这里查看答案](answers.md)
 
 <!-- quiz-end -->
 
-__接下来：__ _乔纳森爬上城墙进入伯爵的房间。_
+__接下来：__ _乔纳森爬上城墙进入德古拉的房间。_
