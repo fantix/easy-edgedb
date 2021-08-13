@@ -4,19 +4,19 @@ tags: Defaults, Overloading, For Loops
 
 # Chapter 9 - 在英格兰发生的奇怪事
 
-在本章中，我们回到了几周前，船刚刚离开瓦尔纳（Varna）而米娜（Mina）和露西（Lucy）还没有启程前往去惠特比（Whitby）的时候。故事情节也分为两部分介绍。这是第一个：
+在本章我们回到了几周前，即“德米特号”（载有德古拉的船）刚刚离开瓦尔纳（Varna）而米娜（Mina）和露西（Lucy）还没有启程前往惠特比（Whitby）的时候。故事情节也将分为两部分介绍。这是第一个：
 
-> 我们仍然不知道乔纳森（Jonathan）在哪里，德米特号（The Demeter）船正在前往英格兰（England）的途中，德古拉（Dracula）也在船上。与此同时，米娜（Mina）正在伦敦给她的朋友 露西·韦斯特拉（Lucy Westenra）写信。露西有三个男朋友，分别是约翰·苏厄德医生（Dr. John Seward）、昆西·莫里斯（Quincey Morris）和亚瑟·霍姆伍德（Arthur Holmwood），他们都想娶她……
+> 我们仍然不知道乔纳森（Jonathan）在哪里，德米特号（The Demeter）正在前往英格兰（England）的途中，德古拉（Dracula）也在船上。与此同时，米娜（Mina）正在伦敦给她的朋友露西·韦斯特拉（Lucy Westenra）写信。露西有三个男朋友，分别是约翰·苏厄德医生（Dr. John Seward）、昆西·莫里斯（Quincey Morris）和亚瑟·霍姆伍德（Arthur Holmwood），他们都想与她成婚……
 
 ## 关于日期的更多处理（Working with dates some more）
 
-按照故事情节的发展，看起来我们还有更多人物需要插入。但首先，让我们再思考一下那艘船。船上所有人都被德古拉（Dracula）杀死了，但我们并不想删除船员，因为他们仍然是我们游戏的一部分。小说告诉我们，这艘船是在 7 月 6 日离开的，最后一个人（船长）死于 8 月 4 日（1887 年）。
+按照故事情节的发展，看起来我们还有更多人物需要插入创建。但首先，让我们再来斟酌一下叫做“德米特号”的那艘船。船上所有人都被德古拉（Dracula）杀死了，但我们并不想删除船员，因为他们仍然是我们游戏的一部分。小说告诉我们，这艘船是在 7 月 6 日离开瓦尔纳的，船上的最后一个人（船长）死于 8 月 4 日（1887 年）。
 
-这正是给 `Person` 类型添加两个新属性的好时机，以展示一个角色存在的时间。我们给它们命名为 `first_appearance` 和 `last_appearance`。`last_appearance` 比起 `death` 更为合适，因为对于游戏来说这无关紧要：我们只想知道角色何时在场。
+这正是给 `Person` 类型添加两个新属性以展示一个角色在游戏里存活时间的好时机。我们给它们分别命名为 `first_appearance` 和 `last_appearance`。`last_appearance` 比起 `death` 更为合适，因为角色是否生理性死亡对我们的游戏来说无关紧要：我们只想知道角色何时在场。
 
-对于这两个属性，为了简单起见，我们将只使用 `cal::local_date`。还有包含了时间的 `cal::local_datetime` 类型，但我们应该只用得到日期。（当然还有 `cal::local_time` 类型，它只是我们在 `Date` 类型中拥有的一天中的时间。）
+对于这两个属性，为了简单起见，我们将只使用 `cal::local_date`。虽然也可以用包含了时间的 `cal::local_datetime` 类型，但我们应该只用得到日期。（当然还有 `cal::local_time` 类型，它只是用来表达一天中的某个时间。）
 
-对具有属性 `first_appearance` 和 `last_appearance` 的 `Crewman` 对象进行插入，如下所示：
+现在，如果对具有 `first_appearance` 和 `last_appearance` 属性的 `Crewman` 对象进行插入，应按如下所示：
 
 ```edgeql
 INSERT Crewman {
@@ -26,19 +26,19 @@ INSERT Crewman {
 };
 ```
 
-由于我们已经插入了很多 `Crewman` 对象，如果我们假设他们都同时死亡（或者并不需要那么精确），我们可以轻松地对所有这些对象使用 `UPDATE` 和 `SET`。
+由于我们已经插入了很多 `Crewman` 对象，如果我们假设他们都同时死亡（也就是并不需要那么精确），我们即可以很轻松地使用 `UPDATE` 和 `SET` 对这些对象进行更新。
 
-由于 `cal::local_date` 具有非常简单的 YYYYMMDD 格式，在插入中使用它的最简单方法就是从字符串进行转换：
+由于 `cal::local_date` 需要的格式非常简单：即：YYYYMMDD，因此在插入中使用它的最简单方法就是直接对字符串进行转换：
 
 ```edgeql
 SELECT <cal::local_date>'1887-07-08';
 ```
 
-但是我们之前使用过一个函数，可以将单独的数字输入到函数中，因此我们将继续使用该方法。
+但是考虑到可读性，以及我们之前使用过可以将年月日作为单独的数字进行输入的类似函数，这里我们将继续使用类似的函数。
 
-之前我们使用的是带有七个参数的函数 `std::to_datetime` ；这次我们将使用类似但更短的 [`cal::to_local_date`](https://www.edgedb.com/docs/edgeql/funcops/datetime#function::cal::to_local_date) 函数。它只需要三个整数。
+之前我们使用的是带有七个参数的函数 `std::to_datetime`；这里我们将使用类似但更短的 [`cal::to_local_date`](https://www.edgedb.com/docs/edgeql/funcops/datetime#function::cal::to_local_date) 函数。它只需要三个整数。
 
-这是它的签名（我们在使用第三个）：
+下面是它的三个签名（我们将使用第三个）：
 
 ```
 cal::to_local_date(s: str, fmt: OPTIONAL str = {}) -> local_date
@@ -46,7 +46,7 @@ cal::to_local_date(dt: datetime, zone: str) -> local_date
 cal::to_local_date(year: int64, month: int64, day: int64) -> local_date
 ```
 
-现在我们更新 `Crewman` 对象并给它们相同的日期以保持简单：
+现在我们来更新 `Crewman` 对象并赋予它们相同的起止日期以保持简洁：
 
 ```edgeql
 UPDATE Crewman
@@ -56,11 +56,11 @@ SET {
 };
 ```
 
-当然这些日期取决于我们的游戏。一个 `PC` 实际上可以在这艘船航行到英格兰时登船访问它吗？在德古拉杀死船员之前，会有试图拯救船员的任务吗？如果是这样，那么我们将需要更精确的日期。但现在，这些大致日期足够了。
+当然这些日期的具体数值应该取决于我们的游戏情节。比如，一个 `PC` 可以在这艘船航行至英格兰的途中登船访问吗？在德古拉杀死船员之前，会有试图拯救船员的任务吗？如果出现类似的故事情节，那么我们将需要更为精确的日期，甚至时间。但现在，这些大致的日期足够了。
 
-## 为类型添加默认值以及重载关键字（Adding defaults to a type, and the overloaded keyword）
+## 添加类型默认值，以及重载（Adding defaults to a type, and the overloaded keyword）
 
-现在让我们回到对新角色的插入。首先，我们将插入露西（Lucy）：
+现在让我们回到对新角色的插入。首先，我们将创建露西（Lucy）：
 
 ```edgeql
 INSERT NPC {
@@ -69,9 +69,9 @@ INSERT NPC {
 };
 ```
 
-嗯，看起来每当我们添加一个角色，我们都要做很多工作来插入 'London'。我们还剩下三个角色，他们也都来自伦敦。为了节省一些工作，我们可以将伦敦设为 `NPC` 的 `places_visited` 的默认值。为此，我们需要两件事：用 `default` 声明默认值，以及使用关键字 `overloaded`。`overloaded` 这个词表明我们使用 `placed_visited` 的方式不同于我们扩展自的 `Person` 类型。
+嗯，看起来每当我们添加一个角色，我们都要为插入 'London' 而写很多代码。我们还剩下三个角色，他们也都来自伦敦。为了节省一些工作，我们可以将伦敦设为 `NPC` 的 `places_visited` 的默认值。为此，我们需要做两件事：用 `default` 声明默认值，以及使用关键字 `overloaded`（重载）。`overloaded` 这个词表明我们使用 `placed_visited` 的方式将不同于我们扩展的 `Person` 类型。
 
-添加了 `default` 和 `overloaded` 后，看起来像这样：
+添加了 `default` 和 `overloaded` 后，`NPC` 的定义如下所示：
 
 ```sdl
 type NPC extending Person {
@@ -84,14 +84,14 @@ type NPC extending Person {
 
 ## datetime_current()
 
-这有一个方便的函数是 [datetime_current()](https://www.edgedb.com/docs/edgeql/funcops/datetime/#function::std::datetime_current)，它可以给出了现在的日期时间。让我们试试看：
+这里有一个方便的函数，它是 [datetime_current()](https://www.edgedb.com/docs/edgeql/funcops/datetime/#function::std::datetime_current)，它可以给出当前的日期时间。让我们试试看：
 
 ```edgeql-repl
 edgedb> SELECT datetime_current();
 {<datetime>'2020-11-17T06:13:24.418765000Z'}
 ```
 
-如果在插入对象时你需要一个发布日期，这会很有用。有了这个，你可以按日期排序，如果有重复项，则删除最近插入的条目，等等。让我们想象一下如果我们把它放在 `Place` 类型中会是什么样子。如下，很接近，但不完全是：
+如果你在插入对象时需要一个发布日期，这个函数会很有用。有了发布时间，你可以按日期排序，如果有重复项，则删除最近插入的条目，等等。让我们想象一下如果我们把它放在 `Place` 类型中会是什么样子。如下所示，很接近，但不完全是：
 
 ```sdl
 abstract type Place {
@@ -104,7 +104,7 @@ abstract type Place {
 }
 ```
 
-这实际上会在你*查询* `Place` 对象时生成日期，而不是在你插入它时。因此，要创建一个带有插入日期的 `Place` 类型，我们可以使用 `default` 代替：
+这样做只会在你 *查询* `Place` 对象时生成日期，而不是在你插入它时。因此，要创建一个带有插入日期的 `Place` 类型，我们可以使用 `default`：
 
 ```sdl
 abstract type Place {
@@ -119,22 +119,21 @@ abstract type Place {
 }
 ```
 
-在我们的架构（schema）中我们并不需要这个日期，所以我们并不去真的改变 `Place`，这里只是为了展示你可以如何操作。
+在我们的架构（schema）中我们并不需要这个日期，所以我们并不真的改变 `Place` 的定义，这里只是为了展示你可以如何操作。
 
 ## 使用 FOR 和 UNION（Using FOR and UNION）
 
-我们几乎准备好插入我们的新角色了，现在我们不需要每次都添加`(SELECT City FILTER .name = 'London')`。但是，如果我们可以使用单个插入而不是三个插入不是很好吗？
+我们几乎准备好插入我们的新角色了，现在我们不需要每次都编写 `(SELECT City FILTER .name = 'London')`。但是，如果我们可以只使用单个插入而不是三个插入不是更好吗？
 
-要做到这一点，我们可以使用 `FOR` 循环，后跟关键字 `UNION`。首先，这是 `FOR` 部分：
-To do this, we can use a `FOR` loop, followed by the keyword `UNION`. First, here's the `FOR` part:
+要做到这一点，我们可以使用一个 `FOR` 循环，后面跟着关键字 `UNION`。首先，这是 `FOR` 的部分：
 
 ```edgeql
 FOR character_name IN {'John Seward', 'Quincey Morris', 'Arthur Holmwood'}
 ```
 
-换句话说：获取这三个字符串组成的集合，并对每个字符串做一些事情。`character_name` 是我们选择调用这个集合中的每个字符串所用的变量名称。
+换句话说就是：获取这三个字符串组成的集合，并对每个字符串以此做一些事情。`character_name` 是我们选择调用集合中每个字符串时所用的变量名称。
 
-`UNION` 紧随其后，因为它是用于将集合连接在一起的关键字。例如，这个查询：
+`UNION` 是用于将集合连接在一起的关键字。例如：
 
 ```edgeql
 WITH city_names := (SELECT City.name),
@@ -142,9 +141,9 @@ WITH city_names := (SELECT City.name),
 SELECT city_names UNION castle_names;
 ```
 
-将名称集合合并在一起，从而输出：`{'Munich', 'Buda-Pesth', 'Bistritz', 'London', 'Castle Dracula'}`。
+该查询将 `city_names` 和 `castle_names` 两个名称集合合并在一起进行输出：`{'Munich', 'Buda-Pesth', 'Bistritz', 'London', 'Castle Dracula'}`。
 
-现在让我们回到带有变量名 `character_name` 的 `FOR` 循环，它看起来像这样：
+现在让我们回到带有变量名 `character_name` 的 `FOR` 循环，如下所示：
 
 ```edgeql
 FOR character_name IN {'John Seward', 'Quincey Morris', 'Arthur Holmwood'}
@@ -156,9 +155,9 @@ UNION (
 );
 ```
 
-我们会得到三个 `uuid` 作为响应，表示三个角色已被输入。
+我们会得到三个 `uuid` 作为响应，表示三个角色均已被插入。
 
-然后让我们检查一下以确保它确实成功了：
+然后让我们来检查一下以确保我们确实操作成功了：
 
 ```edgeql
 SELECT NPC {
@@ -172,7 +171,7 @@ SELECT NPC {
 } FILTER .name IN {'John Seward', 'Quincey Morris', 'Arthur Holmwood'};
 ```
 
-正如我们所希望的那样，他们现在都与露西有关。
+正如我们所希望的那样，他们现在都与露西有关（即他们的 `lover` 都是露西）。
 
 ```
 {
@@ -194,7 +193,7 @@ SELECT NPC {
 }
 ```
 
-顺便说一下，现在我们可以使用这个方法将我们的五个 `Crewman` 对象用一个 `INSERT` 完成插入，而不是 `INSERT` 五次。我们可以将船员的编号放在一个集合中，并使用 `FOR` 和 `UNION` 来插入他们。当然，在之前我们已经使用过 `UPDATE` 更改了插入，但从现在开始，在我们的代码中，船员的插入将如下所示：
+顺便说一下，现在我们也可以使用同样的方法将我们的五个 `Crewman` 对象用一个 `INSERT` 完成插入，而不是 `INSERT` 五次。我们可以将船员的编号放在一个集合中，并使用 `FOR` 和 `UNION` 来创建他们。当然，在这之前我们已经使用了 `UPDATE` 对他们进行了更改，但从现在开始，在我们的代码中，船员的插入将如下所示：
 
 ```edgeql
 FOR n IN {1, 2, 3, 4, 5}
@@ -207,7 +206,7 @@ UNION (
 );
 ```
 
-使用 `FOR` 时，最好熟悉 [要遵循的顺序](https://www.edgedb.com/docs/edgeql/statements/for#for)：
+使用 `FOR` 时，最好熟悉 [要遵循的书写顺序](https://www.edgedb.com/docs/edgeql/statements/for#for)：
 
 ```edgeql-synopsis
 [ WITH with-item [, ...] ]
@@ -217,9 +216,9 @@ FOR variable IN "{" iterator-set [, ...]  "}"
 UNION output-expr ;
 ```
 
-重要的部分是 `{` 和 `}`，因为 `FOR` 只用于集合。如果你尝试使用数组或其他类型，则会出现错误。
+最重要的是 `{` 和 `}`，因为 `FOR` 只作用于集合。如果你尝试使用数组或其他类型，则会出现错误。
 
-现在是时候对露西（Lucy）更新三个情人了。露西已经破坏了我们将 `lover` 仅仅作为一个 `link`（这意味着 `single link`）的设定。我们要将其设置为 `multi link`，这样我们就可以添加所有三个人了。这里是我们对她的更新：
+现在是时候更新露西（Lucy）的情人链接了（但她有三个情人）。露西已经破坏了我们将 `lover` 仅仅作为一个 `link`（即 `single link`）的设定。我们不得不将其变更为 `multi link`，这样我们就可以添加他们三个人了。这里是我们对露西的更新：
 
 ```edgeql
 UPDATE NPC FILTER .name = 'Lucy Westenra'
@@ -230,7 +229,7 @@ SET {
 };
 ```
 
-现在我们查询她以验证更新有效。这次让我们在做过滤器的时候使用 `LIKE`：
+现在我们来查询她以验证更新是否有效。这次让我们在过滤器中使用 `LIKE`：
 
 ```edgeql
 SELECT NPC {
@@ -241,7 +240,7 @@ SELECT NPC {
 } FILTER .name LIKE 'Lucy%';
 ```
 
-这确实把她和她的三个情人打印出来了。
+确实输出了她和她的三个情人：
 
 ```
 {
@@ -258,7 +257,7 @@ SELECT NPC {
 
 ## 用重载替代新类型的创建（Overloading instead of making a new type）
 
-所以现在我们知道关键字 `overloaded`，我们不再需要 `NPC` 中用到的 `HumanAge` 类型了。`HumanAge` 长这样：
+我们已经了解到了关键字 `overloaded`，因此我们不再需要 `NPC` 中用到的 `HumanAge` 类型了。现在的 `HumanAge` 类型长这样：
 
 ```sdl
 scalar type HumanAge extending int16 {
@@ -266,7 +265,7 @@ scalar type HumanAge extending int16 {
 }
 ```
 
-你应该还记得我们制作这个类型是因为吸血鬼可以永生，但人类只能活到 120 岁。但现在我们对其进行简化。首先，我们将 `age` 属性移到 `Person` 类型。然后（在 `NPC` 类型内）我们使用 `overloaded` 对 `age` 添加一个约束。现在 `NPC` 里使用了两个 `overloaded`：
+你应该还记得我们制作这个类型是因为吸血鬼可以永生，但人类只能活到 120 岁。现在我们来对其进行简化。首先，我们将 `age` 属性移到 `Person` 类型。然后在 `NPC` 类型内使用 `overloaded` 对 `age` 添加一个约束。现在 `NPC` 里使用了两个 `overloaded`：
 
 ```sdl
 type NPC extending Person {
@@ -288,11 +287,11 @@ type Vampire extending Person {
 }
 ```
 
-你可以看到，如果你可以正确使用抽象类型和关键字 `overloaded`，你的架构可以被简化。
+你可以看到，如果你可以正确使用抽象类型和关键字 `overloaded`，你的架构是可以被简化许多的。
 
-好的，接下来让我们阅读本章介绍的剩余部分。它继续解释了露西（Lucy）在做什么：
+接下来，让我们阅读本章介绍的剩余部分。它继续解释了露西（Lucy）在做什么：
 
-> ……她选择嫁给亚瑟·霍姆伍德（Arthur Holmwood），并向另外两人道歉。另外两个男人很难过，好在他们成为了彼此的朋友。苏厄德医生（Dr. Seward）很沮丧，并试图专注于他的工作以摆脱情伤。他是一名精神病医生，在伦敦郊外不远处的一座名为 Carfax 的大宅邸附近的精神病院工作。疯人院里有个奇怪的人，名叫伦菲尔德（Renfield），苏厄德医生觉得他最有趣。雷菲尔德有时冷静，有时癫狂，苏厄德医生不知道为什么他的情绪变化如此之快。此外，伦菲尔德似乎相信他可以通过吃活物来获得力量。他不是吸血鬼，但有时看起来很相似。
+> ……露西选择了嫁给亚瑟·霍姆伍德（Arthur Holmwood），并向另外两人道了歉。另外两个男人很难过，但幸运的是三个男人彼此成为了朋友。苏厄德医生（Dr. Seward）很沮丧，并试图专注于他的工作以摆脱情伤。他是一名精神病医生，在伦敦郊外不远处的精神病院工作，附近有一座名为 Carfax 的大别墅。疯人院里有个奇怪的人，名叫伦菲尔德（Renfield），苏厄德医生对他很感兴趣。雷菲尔德有时冷静，有时癫狂，苏厄德医生不知道为什么他的情绪变化会如此之快。此外，伦菲尔德似乎相信通过吃活物可以获得力量。他不是吸血鬼，但有时看起来又很相似。
 
 哎呀！看起来露西（Lucy）已经没有三个情人了。现在我们必须将她更新为只有亚瑟（Arthur）一个情人：
 
@@ -303,7 +302,7 @@ SET {
 };
 ```
 
-然后将她从另外两个“备胎”中移除。我们只好给他们一个悲伤的空集了。
+然后将她从另外两个男人的 `lover` 中移除。于是我们只好给他们一个悲伤的空集了。
 
 ```edgeql
 UPDATE NPC FILTER .name in {'John Seward', 'Quincey Morris'}
@@ -312,7 +311,7 @@ SET {
 };
 ```
 
-现在看起来基本上都是最新了。就剩下插入神秘的伦菲尔德（Renfield）了。这很容易，因为他没有情人，不需要做 `FILTER`：
+现在看起来基本上一切都是最新的了。就剩下插入创建神秘的伦菲尔德（Renfield）了。这很容易，因为他没有情人，不需要做 `FILTER`：
 
 ```edgeql
 INSERT NPC {
@@ -322,9 +321,9 @@ INSERT NPC {
 };
 ```
 
-但他与德古拉似乎有某种关系，类似于 `MinorVampire` 类型但又不同。他也很强壮（稍后我们会看到），所以我们给他的 `strength` 设置为 10。稍后我们将对他以及他与德古拉的关系有更进一步的了解。
+但他与德古拉似乎有某种关系，类似于 `MinorVampire` 类型但又不同。他也很强壮（稍后我们会看到），所以我们给他的 `strength` 设置为 10。稍后我们将对他以及他与德古拉的关系有更进一步的探索。
 
-[→ 点击这里查看第 9 章相关代码](code.md)
+[→ 点击这里查看到第 9 章为止的所有代码](code.md)
 
 <!-- quiz-start -->
 
@@ -345,7 +344,7 @@ INSERT NPC {
 3. 如果所有的吸血鬼都需要一个最小为 10 的力量值，如何修改 `Vampire` 类型？
 4. 如何更新所有的 `Person` 类型的对象，表明他们都死于 1887 年 9 月 11 日？
 
-   提示：这里是 `Person` 类型的定义：
+   提示：下面是 `Person` 类型当前的定义：
 
    ```sdl
    abstract type Person {
@@ -361,7 +360,7 @@ INSERT NPC {
    }
    ```
 
-5. 所有名字中带有 `e` 或 `a` 的 `Person` 角色都被复活了。对此你将如何更新？
+5. 如果所有名字中带有 `e` 或 `a` 的 `Person` 角色都被复活了，你将如何更新？
 
    提示：“复活”意味着 `last_appearance` 应该返回 `{}`。
 
