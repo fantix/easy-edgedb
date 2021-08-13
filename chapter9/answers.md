@@ -30,7 +30,7 @@ SELECT (
 
 #### 3. 如果所有的吸血鬼都需要一个最小为 10 的力量值，如何修改 `Vampire` 类型？
 
-由于 `strength` 来自 `abstract type Person`，你需要重载（overload）它并给它一个约束。 `Vampire` 类型应被修改为：
+由于 `strength` 来自 `abstract type Person`，你需要在 `Vampire` 里重载（overload）它并给它一个约束。`Vampire` 类型应被修改为：
 
 ```sdl
 type Vampire extending Person {
@@ -43,7 +43,7 @@ type Vampire extending Person {
 
 #### 4. 如何更新所有的 `Person` 类型的对象，表明他们都死于 1887 年 9 月 11 日？
 
-如下所示，你将对每一个 `Person` 的 `last_appearance` 进行赋值：
+如下所示，你将对每一个 `Person` 的 `last_appearance` 进行更新：
 
 ```edgeql
 UPDATE Person
@@ -52,9 +52,9 @@ SET {
 };
 ```
 
-#### 5. 所有名字中带有 `e` 或 `a` 的 `Person` 角色都被复活了。对此你将如何更新？
+#### 5. 如果所有名字中带有 `e` 或 `a` 的 `Person` 角色都被复活了，你将如何更新？
 
-你可以通过在集合上使用 `LIKE` 而不是在单个字母上使用来进行 `UPDATE`：
+你可以通过在集合上而不是在单个字母上使用 `LIKE` 来进行 `UPDATE`：
 
 ```edgeql
 UPDATE Person FILTER .name LIKE {'%a%', '%e%'}
