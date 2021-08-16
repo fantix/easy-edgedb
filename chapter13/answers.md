@@ -1,8 +1,8 @@
 # Chapter 13 Questions and Answers
 
-#### 1. 尝试用一个单独的插入语句插入一个名为“Mr. Swales”的 `NPC`，他曾到访过名为“York”的 `City`，名为“England”的  `Country` 以及名为“Whitby Abbey”的 `OtherPlace`。
+#### 1. 如何用一个单独的插入语句插入一个名为“Mr. Swales”，且到访过名为“York”的 `City`，名为“England”的 `Country` 以及名为“Whitby Abbey”的 `OtherPlace` 的 `NPC`？
 
-类似于我们之前章节中所做的 `Ship` 插入：
+类似于我们在之前的章节中插入 `Ship` 时所做的：
 
 ```edgeql
 INSERT NPC {
@@ -21,7 +21,7 @@ INSERT NPC {
 };
 ```
 
-#### 2. 这个内省查询的可读性如何？
+#### 2. 下面这个内省查询结果的可读性如何？
 
 这个查询：
 
@@ -33,7 +33,7 @@ SELECT (INTROSPECT Ship) {
 };
 ```
 
-三分之一可读：`name` 实际上会显示为人类可读的名称。结果如下：
+三分之一可读：只有 `name` 部分会显示为人类可读的名称。结果如下：
 
 ```
 {
@@ -81,9 +81,9 @@ SELECT (INTROSPECT Ship) {
 }
 ```
 
-#### 3. 查看 `Vampire` 类型有哪些链接的最简短的方法是什么？
+#### 3. 查看 `Vampire` 类型有哪些链接的最简单的方法是什么？
 
-类似于 `SELECT Vampire.name` 给出 `Vampire` 类型的所有名称（与 `SELECT Vampire { name }` 相反），你可以这样做：
+类似于 `SELECT Vampire.name` 可以给出所有 `Vampire` 对象的名称，你可以这样做：
 
 ```edgeql
 SELECT (Introspect Vampire).links { name };
@@ -100,7 +100,7 @@ SELECT (Introspect Vampire).links { name };
 }
 ```
 
-#### 4. 你认为 `SELECT DISTINCT {1, 2} + {1, 2};` 的输出会是什么？
+#### 4. `SELECT DISTINCT {1, 2} + {1, 2};` 的输出会是什么？
 
 输出是：
 
@@ -110,8 +110,8 @@ SELECT (Introspect Vampire).links { name };
 
 你可以看到 `DISTINCT` 是独立作用于一个集合的（所以这里只是作用在了第一个上），所以 `SELECT DISTINCT {1, 2} + {1, 2};` 和 `SELECT {1, 2} + {1, 2};` 是相同的。如果你要写 `SELECT DISTINCT {2, 2}`，输出将只是 `{2}`。
 
-#### 5. 你认为 `SELECT DISTINCT {2, 2} + {2, 2};` 的输出会是什么？
+#### 5. `SELECT DISTINCT {2, 2} + {2, 2};` 的输出会是什么？
 
-输出将为 `{4, 4}`，因为 `DISTINCT` 仅适用于第一个集合。
+输出将为 `{4, 4}`，因为 `DISTINCT` 仅作用于第一个集合。
 
-要获得输出 `{4}`，你可以重复 `DISTINCT`：`DISTINCT`: `SELECT DISTINCT {2, 2} + DISTINCT {2, 2};`。或者你可以像这样包装整个运算：`SELECT DISTINCT({2, 2} + {2,2})`。
+要想输出为 `{4}`，你可以重复使用 `DISTINCT`：即 `SELECT DISTINCT {2, 2} + DISTINCT {2, 2};`。或者你可以像这样包装整个运算：`SELECT DISTINCT({2, 2} + {2,2})`。
