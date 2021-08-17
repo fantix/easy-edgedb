@@ -284,7 +284,7 @@ SELECT MinorVampire {
 
 这就要靠反向链接了，我们使用 `.<` 代替 `.` 并指定我们要查找的类型：`[IS Vampire]`。
 
-首先让我们抛开 `MinorVampire` 的查询，看看`.<` 是如何工作的。这有一个例子：
+首先让我们抛开对 `MinorVampire` 的查询，看看`.<` 是如何工作的。这有一个例子：
 
 ```edgeql
 SELECT MinorVampire.<slaves[IS Vampire] {
@@ -293,9 +293,9 @@ SELECT MinorVampire.<slaves[IS Vampire] {
 };
 ```
 
-它是以相反顺序执行的，因此这是指选择具有类型为 `MinorVampire` 的 `.slaves` 的 `Vampire`。
+这并不是在选择 `MinorVampire` 的 `slaves`，它是在选择 `Vampire`，且需要满足其 `.slaves` 链接有指向的 `MinorVampire` 对象。
 
-你可以将 `MinorVampire.<slaves[IS Vampire] {name, age}` 视为“选择‘拥有 MinorVampire 类型奴隶’的 Vampire 的名称和年龄”——从右到左。
+你可以将 `MinorVampire.<slaves[IS Vampire] {name, age}` 视为：选择“拥有 MinorVampire 奴隶”的 Vampire 的名称和年龄”。
 
 这里是输出：
 
@@ -303,7 +303,7 @@ SELECT MinorVampire.<slaves[IS Vampire] {
 {default::Vampire {name: 'Count Dracula', age: 800}}
 ```
 
-这与 `SELECT Vampire: {name, age}` 的结果相同，但它对前面的 `SELECT MinorVampire` 查询非常有用，因为我们想访问多个类型。现在我们可以来选择所有 `MinorVampire` 对象以及它们的主人了：
+这与 `SELECT Vampire: {name, age}` 的输出结果相同，但它对前面的 `SELECT MinorVampire` 查询非常有用，因为我们想访问多个类型。现在我们可以来选择所有 `MinorVampire` 对象以及它们的主人了：
 
 ```edgeql
 SELECT MinorVampire {
@@ -345,13 +345,13 @@ SELECT MinorVampire {
 
 1. 如何仅显示所有 `Person` 对象的编号？比如，如果有 20 个，则显示 `1, 2, 3..., 18, 19, 20`。
 
-2. 使用反向查找，你将如何显示 1）所有名称中带有 `o` 的 `Place` 的对象（及他们的名字）；2）访问过这些地方的人的名字？
+2. 使用反向查找，如何显示 1）所有名称中带有 `o` 的 `Place` 的对象（及他们的名称）；2）访问过这些地方的人物的名字？
 
-3. 使用反向查找，你将如何显示所有后来成为了 `MinorVampire` 的 `Person` 对象？
+3. 使用反向查找，如何显示所有后来成为了 `MinorVampire` 的 `Person` 对象？
 
-   提示：别忘了，`MinorVampire` 有一个指向自己成为吸血鬼之前的前身的链接。
+   提示：别忘了，`MinorVampire` 有一个指向自己（成为吸血鬼之前）前身的链接。
 
-4. 如何给 `MinorVampire` 类型一个名为 `note` 的注解，说明 `'first_appearance for MinorVampire should always match last_appearance for its matching NPC type'`？
+4. 如何给 `MinorVampire` 类型一个名为 `note` 的注解，并添加说明 `'first_appearance for MinorVampire should always match last_appearance for its matching NPC type'`？
 
 5. 如何在查询中看到 `MinorVampire` 的 `note` 注释？
 
