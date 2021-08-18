@@ -137,15 +137,18 @@ type Vampire extending Person {
 }
 ```
 
-然后我们可以在插入德古拉伯爵（Count Dracula）信息的同时 `INSERT` 相关的 `MinorVampire` 对象。但首先让我们先从 `MinorVampire` 中删除 `link master`，因为我们不希望两个对象相互链接。原因有二：
+然后我们可以在插入德古拉伯爵（Count Dracula）信息的同时 `INSERT` 相关的 `MinorVampire` 对象。但首先让我们先从 `MinorVampire` 中删除 `required link master`，因为我们不希望两个对象相互链接。原因有二：
 
-- 当我们声明一个 `Vampire` 时，它有 `slaves` 指向 `MinorVampire`，但如果还没有 `MinorVampire`，那么它将是空的：{}。如果我们首先声明 `MinorVampire` 类型，它有一个 `master` 指向 `Vampire`，但还没有声明 `Vampire`，那么他们的 `master`（一个 `required link`）将不存在。
+- 会使事情变得复杂。假设我们声明的 `Vampire` 里包含一个指向 `MinorVampire` 的 `slaves` 链接，在我们插入 `Vampire` 时，如果我们还没有创建对应的 `MinorVampire`，那么它将是空 `{}`，则我们将不得不在创建 `MinorVampire` 后，再对 `Vampire` 进行更新；如果我们先创建的是 `MinorVampire`，且它有一个指向 `Vampire` 的 `master` 链接，而我们还没有创建 `Vampire`，那么这个 `master` 将不存在，尤其当它是个 `required link` 时，我们必须提供一个 `master`。
 - 如果这两种类型相互链接，我们将无法在需要时删除它们。错误信息如下所示：
 
 ```
-ERROR: ConstraintViolationError: deletion of default::Vampire (cc5ee436-fa23-11ea-85e0-e78b548f5a59) is prohibited by link target policy
-
-DETAILS: Object is still referenced in link master of default::MinorVampire (cc87c78e-fa23-11ea-85e0-8f5149329e3a).
+edgedb> delete MinorVampire;
+ERROR: ConstraintViolationError: deletion of default::MinorVampire (ee6ca100-006f-11ec-93a9-4b5d85e60114) is prohibited by link target policy
+  Detail: Object is still referenced in link slave of default::Vampire (e5ef5bc6-006f-11ec-93a9-77e907d251d6).
+edgedb> delete Vampire;
+ERROR: ConstraintViolationError: deletion of default::Vampire (e5ef5bc6-006f-11ec-93a9-77e907d251d6) is prohibited by link target policy
+  Detail: Object is still referenced in link master of default::MinorVampire (ee6ca100-006f-11ec-93a9-4b5d85e60114).
 ```
 
 因此，我们先简单地将 `MinorVampire` 改为没有 `link master` 的 `Person` 扩展类型：
